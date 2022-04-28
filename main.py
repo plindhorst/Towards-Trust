@@ -7,6 +7,8 @@ from SaR_gui import visualization_server
 from worlds1.worldBuilder import create_builder
 from typing import final, List, Dict, Final
 from pathlib import Path
+from agents1 import HighInterdependenceAgent
+
 
 if __name__ == "__main__":
     print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
@@ -79,6 +81,10 @@ if __name__ == "__main__":
         mssg_len_human = message_contents[-1]['average_message_length_human']
         mssg_len_agent = message_contents[-1]['average_message_length_agent']
         no_ticks = action_contents[-1]['tick_nr']
+
+        #Altered by Justin: Now the number of ticks will be the amount after 'ready' has been pressed.
+        no_ticks = str(int(action_contents[-1]['tick_nr']) - HighInterdependenceAgent.HighInterdependenceAgent.numberOfTicksWhenReady)
+
         success = action_contents[-1]['done']
         print("Saving output...")
         with open(os.path.join(recent_dir,'world_1/output.csv'),mode='w') as csv_file:

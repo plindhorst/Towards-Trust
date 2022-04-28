@@ -407,6 +407,11 @@ class CollectionGoal(WorldGoal):
         # Progress in percentage
         self.__progress = progress / sum([len(goal_blocks)\
             for goal_blocks in self.__drop_off.values()])
+
+        # # Added by Justin, In case you want to stop the game sooner for testing/debugging, uncomment this.
+        # if grid_world.current_nr_ticks >= 200:
+        #     return True
+
         return is_satisfied
 
     def __find_drop_off_locations(self, grid_world):

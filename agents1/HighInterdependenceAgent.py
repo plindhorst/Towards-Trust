@@ -32,6 +32,8 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP=16
     
 class HighInterdependenceAgent(BW4TBrain):
+    numberOfTicksWhenReady = None
+
     def __init__(self, condition, slowdown:int):
         super().__init__(condition, slowdown)
         self._phase=Phase.INTRODUCTION
@@ -43,6 +45,7 @@ class HighInterdependenceAgent(BW4TBrain):
         self._collectedVictims = []
         self._foundVictimLocs = {}
         self._maxTicks = 11577
+        HighInterdependenceAgent.numberOfTicksWhenReady = self._maxTicks
         self._sendMessages = []
         self._mode = 'normal'
         self._currentDoor=None    
@@ -84,6 +87,15 @@ class HighInterdependenceAgent(BW4TBrain):
                 #Moreover, I am not able to distinguish between critically injured girl and critically injured boy or mildly injured girl and mildly injured boy. \
                 
                 if self.received_messages and self.received_messages[-1]=='Ready!' or not state[{'is_human_agent':True}]:
+
+                    # # Added by Justin: for testing/debugging purposes
+                    # print("amount of ticks when ready was pressed: ")
+                    # print(state['World']['nr_ticks'])
+
+                    #Added by Justin: Store the amount of ticks when pressed 'ready' in a static variable
+                    if HighInterdependenceAgent.numberOfTicksWhenReady == self._maxTicks:
+                        HighInterdependenceAgent.numberOfTicksWhenReady = state['World']['nr_ticks']
+
                     self._phase=Phase.FIND_NEXT_GOAL
                 else:
                     return None,{}
