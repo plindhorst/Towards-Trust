@@ -1,13 +1,13 @@
 import argparse
 import os, requests
-import sys
 import csv
 import glob
 import pathlib
+import sys
+
 from SaR_gui import visualization_server
+from trustworthiness.Trustworthiness import Trustworthiness
 from worlds1.worldBuilder import create_builder
-from typing import final, List, Dict, Final
-from pathlib import Path
 from agents1 import HighInterdependenceAgent
 
 
@@ -15,7 +15,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-xai", action='store', help="Explainability of agent", type=str)
+    parser.add_argument("-trustworthiness", action='store_true', help="Measure trustworthiness of human", default=False)
     args = parser.parse_args()
+
+    if args.trustworthiness:
+        trustworthiness = Trustworthiness()
+        trustworthiness.check_searched_rooms()
+        sys.exit(0)
 
     choice1 = args.xai
     if args.xai is None or args.xai == "":
