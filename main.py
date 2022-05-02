@@ -1,3 +1,4 @@
+import argparse
 import os, requests
 import sys
 import csv
@@ -11,8 +12,15 @@ from agents1 import HighInterdependenceAgent
 
 
 if __name__ == "__main__":
-    print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
-    choice1=input()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-xai", action='store', help="Explainability of agent", type=str)
+    args = parser.parse_args()
+
+    choice1 = args.xai
+    if args.xai is None or args.xai == "":
+        print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
+        choice1=input()
 
     # Hardcode interdependence to high
     choice2="high"
