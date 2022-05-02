@@ -86,7 +86,7 @@ def add_agents(builder, condition, exp_version):
             if exp_version=="low":
                 brain = LowInterdependenceAgent(condition, slowdown=25)
             if exp_version=="high":
-                brain = HighInterdependenceAgent(condition, slowdown=25)
+                brain = HighInterdependenceAgent(condition, slowdown=7)
             loc = (9,23)
             builder.add_agent(loc, brain, team=team_name, name=f"Agent {agent_nr} in {team_name}",
                               sense_capability=sense_capability, is_traversable=True, img_name="/images/robotics5.svg")
