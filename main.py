@@ -13,8 +13,9 @@ from agents1 import HighInterdependenceAgent
 if __name__ == "__main__":
     print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
     choice1=input()
-    print("\nEnter one of the interdependence conditions 'trial', 'low', or 'high':")
-    choice2=input()
+
+    # Hardcode interdependence to high
+    choice2="high"
 
     # Create our world builder
     builder = create_builder(exp_version=choice2, condition=choice1)
