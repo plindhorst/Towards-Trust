@@ -111,7 +111,7 @@ def create_builder(exp_version, condition):
         goal = CollectionGoal(max_nr_ticks=11577)
     # Create our world builder
     builder = WorldBuilder(shape=[24,25], tick_duration=tick_duration, run_matrx_api=True,
-                           run_matrx_visualizer=False, verbose=verbose, simulation_goal=goal, visualization_bg_img="/images/background_70.svg")
+                           run_matrx_visualizer=True, verbose=verbose, simulation_goal=goal, visualization_bg_img="/images/background_70.svg")
     if exp_version=="low":
         current_exp_folder = datetime.now().strftime("exp_LOW_at_time_%Hh-%Mm-%Ss_date_%dd-%mm-%Yy")
         logger_save_folder = os.path.join("experiment_logs", current_exp_folder)
