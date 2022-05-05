@@ -27,7 +27,7 @@
     <!-- Toolbar -->
     <div id="matrx-toolbar" class="row toolbar bg-dark">
         <div class="col-sm">
-            <img src="/static/images/matrx_logo_light.svg" alt="MATRX" id="matrx_logo">
+            <img src="/static/images/matrx_logo_light.svg" alt="MATRX" id="matrx_logo" style="display:none;">
             <button type="button" class="btn btn-dark" id="start_button" style="display:none;"><i class="fas fa-play text-light"></i></button>
             <button type="button" class="btn btn-dark hidden" id="pause_button" style="display:none;"><i class="fas fa-pause text-light"></i></button>
             <button type="button" class="btn btn-dark" id="stop_button" style="display:none;"><i class="fas fa-stop text-light"></i></button>
@@ -36,11 +36,11 @@
                 <div id="agent_dropdown" class="dropdown-menu">
                 </div>
             </div>
-            
-            <b style="color:white" >B / Q - Grab Object | N / E - Drop Object</b>
+
+            <b style="color:white" >WASD - Move, Q - Grab Object, E - Drop Object</b>
             
         </div>
-        <div class="col-sm" align="right">
+        <div class="col-sm" align="right" style="display:none;">
             <button type="button" class="btn btn-dark" id="chat_button" onclick="chatToggle()" data-toggle="collapse" data-target="#chat" aria-expanded="false" aria-controls="chat"><i class="fas fa-comments text-light"></i></button>
             <button type="button" class="btn btn-dark" id="draw_button" onclick="drawToggle()"><i class="fas fa-pencil-alt text-light"></i></button>
             <button type="button" class="btn btn-dark" id="erase_button" onclick="eraseToggle()"><i class="fas fa-eraser text-light"></i></button>
@@ -56,11 +56,11 @@
         </div>
 
         <!-- Chat -->
-        <div class="collapse" id="chat">
+        <div class="collapse show" id="chat">
             <div class="container-fluid">
-                <h5>Chats</h5>
+                <h5>Messages</h5>
                 <div class="row">
-                    <div class="col-md-3" id="chatrooms_list">
+                    <div class="col-md-3" id="chatrooms_list" style="display:none;">
                         <div class="contact" id="new_chat_button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+</div>
                         <div id="new_chat_dropdown" class="dropdown-menu"></div>
                     </div>

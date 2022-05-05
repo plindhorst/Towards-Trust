@@ -1,17 +1,14 @@
 import os
-import sys
-import itertools
-from collections import OrderedDict
-from itertools import product
 from matrx import WorldBuilder
 import numpy as np
-from matrx.actions import MoveNorth, OpenDoorAction, CloseDoorAction
+from matrx.actions import MoveNorth
 from matrx.actions.move_actions import MoveEast, MoveSouth, MoveWest
-from matrx.agents import AgentBrain, HumanAgentBrain, SenseCapability
+from matrx.agents import SenseCapability
 from matrx.grid_world import GridWorld, DropObject, GrabObject, AgentBody
 from matrx.objects import EnvObject
-from matrx.world_builder import RandomProperty
 from matrx.goals import WorldGoal
+
+from agents1.Spy import Spy
 from agents1.TutorialAgent import TutorialAgent
 from agents1.LowInterdependenceAgent import LowInterdependenceAgent
 from agents1.HighInterdependenceAgent import HighInterdependenceAgent
@@ -52,7 +49,7 @@ agent_sense_range = 2  # the range with which agents detect other agents
 block_sense_range = 1  # the range with which agents detect blocks
 other_sense_range = np.inf  # the range with which agents detect other objects (walls, doors, etc.)
 agent_memory_decay = 5  # we want to memorize states for seconds / tick_duration ticks
-fov_occlusion = True
+fov_occlusion = False
 
 agent_slowdown=[3,2,1,1,1]
 
@@ -90,6 +87,11 @@ def add_agents(builder, condition, exp_version):
             loc = (9,23)
             builder.add_agent(loc, brain, team=team_name, name=f"Agent {agent_nr} in {team_name}",
                               sense_capability=sense_capability, is_traversable=True, img_name="/images/robotics5.svg")
+
+        spy_sense_capability = SenseCapability({AgentBody: np.inf,
+                                            CollectableBlock: np.inf,
+                                            None: np.inf})
+        builder.add_agent((0, 1), Spy(), team=team_name, name="spy", sense_capability=spy_sense_capability, is_traversable=True, img_name="/images/transparent.png")
 
         # Add human agents
         for human_agent_nr in range(human_agents_per_team):
