@@ -154,4 +154,4 @@ def run_matrx_visualizer(verbose, media_folder):
     return vis_thread
 
 if __name__ == "__main__":
-    run_matrx_visualizer()
+    run_matrx_visualizer(True, 'C:/Users/yepiru/OneDrive - Delft University of Technology/Coding/Projects/Towards-Trust/')
