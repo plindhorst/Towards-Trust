@@ -1,7 +1,7 @@
 from matrx.agents import AgentBrain
 import pickle
 
-from actions1.HumanAction import MessageSearch, MessageFound, EnterRoom
+from actions1.HumanAction import MessageSearch, MessageFound, EnterRoom, MessagePickUp, DropOff, PickUp
 
 ACTION_FILE = "./actions.pkl"
 
@@ -12,6 +12,7 @@ class Spy(AgentBrain):
         super().__init__()
 
         self._rooms = []
+        self._human_is_carrying = False
         self._last_action = None
 
         f = open(ACTION_FILE, "w+")  # init action file
@@ -33,7 +34,9 @@ class Spy(AgentBrain):
 
         self._read_human_messages()  # Remember communicated actions
         self._check_enter_room()  # Check if human enters a room
-        # TODO: add actions for picking up/dropping/helping agent
+        self._check_pick_up()  # Check if human picks up a person
+        self._check_drop_off()  # Check if human drops up a person
+        # TODO: add actions for helping agent
 
         return None, {}
 
@@ -45,14 +48,22 @@ class Spy(AgentBrain):
 
     def _read_human_messages(self):
         for message in list(self.received_messages):
-            if "Search: " in message:
+
+            if message.startswith("Search:"):
                 tick = self.state['World']['nr_ticks']
                 room_name = message.replace("Search: ", "")
                 self._save_action_to_file(MessageSearch(tick, room_name))
-            elif "Found: " in message:
+            elif message.startswith("Found:"):
                 tick = self.state['World']['nr_ticks']
                 person = message.replace("Found: ", "")
                 self._save_action_to_file(MessageFound(tick, person))
+            elif message.startswith("Collect:"):
+                tick = self.state['World']['nr_ticks']
+                if len(message.split()) == 6:
+                    person = ' '.join(message.split()[1:4])
+                else:
+                    person = ' '.join(message.split()[1:5])
+                self._save_action_to_file(MessagePickUp(tick, person))
 
             self.received_messages.remove(message)
 
@@ -72,3 +83,23 @@ class Spy(AgentBrain):
                 else:
                     self._save_action_to_file(EnterRoom(tick, room_name))
                     break
+
+    def _check_pick_up(self):
+        human = self.state.get_agents()[2]
+
+        if not self._human_is_carrying and len(human["is_carrying"]) > 0:
+            tick = self.state['World']['nr_ticks']
+            person = human["is_carrying"][0]
+            location = human["location"]
+            self._save_action_to_file(PickUp(tick, person, location))
+            self._human_is_carrying = True
+
+    def _check_drop_off(self):
+        human = self.state.get_agents()[2]
+
+        if self._human_is_carrying and len(human["is_carrying"]) == 0:
+            tick = self.state['World']['nr_ticks']
+            person = human["is_carrying"][0]
+            location = human["location"]
+            self._save_action_to_file(DropOff(tick, person, location))
+            self._human_is_carrying = False

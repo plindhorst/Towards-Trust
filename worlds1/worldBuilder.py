@@ -49,7 +49,7 @@ agent_sense_range = 2  # the range with which agents detect other agents
 block_sense_range = 1  # the range with which agents detect blocks
 other_sense_range = np.inf  # the range with which agents detect other objects (walls, doors, etc.)
 agent_memory_decay = 5  # we want to memorize states for seconds / tick_duration ticks
-fov_occlusion = True
+fov_occlusion = False
 
 agent_slowdown=[3,2,1,1,1]
 
