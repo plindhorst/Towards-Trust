@@ -13,6 +13,7 @@ class Spy(AgentBrain):
 
         self._rooms = []
         self._human_is_carrying = False
+        self._carried_person = None
         self._last_action = None
 
         f = open(ACTION_FILE, "w+")  # init action file
@@ -93,13 +94,15 @@ class Spy(AgentBrain):
             location = human["location"]
             self._save_action_to_file(PickUp(tick, person, location))
             self._human_is_carrying = True
+            self._carried_person = person
 
     def _check_drop_off(self):
         human = self.state.get_agents()[2]
 
         if self._human_is_carrying and len(human["is_carrying"]) == 0:
             tick = self.state['World']['nr_ticks']
-            person = human["is_carrying"][0]
+            person = self._carried_person
             location = human["location"]
             self._save_action_to_file(DropOff(tick, person, location))
             self._human_is_carrying = False
+            self._carried_person = None
