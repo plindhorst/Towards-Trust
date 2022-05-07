@@ -27,8 +27,9 @@ if __name__ == "__main__":
         print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
         choice1 = input()
 
-    # Hardcode interdependence to high
-    choice2 = "high"
+    # Hardcode interdependence to trial or high
+    print("\nEnter one of the interdependence conditions 'trial' or 'high'")
+    choice2 = input()
 
     # Create our world builder
     builder = create_builder(exp_version=choice2, condition=choice1)
