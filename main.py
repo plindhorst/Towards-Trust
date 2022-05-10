@@ -14,10 +14,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-xai", action='store', help="Explainability of agent", type=str)
-    parser.add_argument("-trustworthiness", action='store_true', help="Measure trustworthiness of human", default=False)
+    parser.add_argument("-tw", action='store_true', help="Measure trustworthiness of human", default=False)
     args = parser.parse_args()
 
-    if args.trustworthiness:
+    if args.tw:
         trustworthiness = Trustworthiness()
         # trustworthiness.check_searched_rooms()
         trustworthiness.to_string()
