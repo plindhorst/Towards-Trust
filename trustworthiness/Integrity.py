@@ -119,6 +119,7 @@ class Integrity:
                             # check if next pickup is same person as communicated
                             if action.person == other_action.person:
                                 truth += 1
+                            break
 
         if count == 0:
             return 1
