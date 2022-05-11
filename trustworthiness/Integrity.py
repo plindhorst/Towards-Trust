@@ -38,7 +38,7 @@ class Integrity:
                             for person in get_persons_in_room(action.room_name, action.map_state):
                                 if person["name"].startswith("critically injured boy in area "):
                                     truth += 1
-                                break
+                                    break
         if count == 0:
             return 1
         else:
