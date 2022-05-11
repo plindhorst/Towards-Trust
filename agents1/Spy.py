@@ -66,6 +66,8 @@ class Spy(AgentBrain):
                     person = ' '.join(message.split()[1:4])
                 else:
                     person = ' '.join(message.split()[1:5])
+                room_name = message.replace("Collect: " + person + " in ", "")
+                person += " in area " + room_name
                 self._save_action_to_file(MessagePickUp(self._map_state(), person))
             elif message.startswith("Yes"):
                 self._save_action_to_file(MessageYes(self._map_state()))
