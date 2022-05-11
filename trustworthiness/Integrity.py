@@ -17,7 +17,7 @@ class Integrity:
         score = np.mean(metrics)
         return score
 
-    # Returns ratio thruthfully identified baby genders
+    # Returns ratio of truthfully identified baby genders
     def _truth_identify_gender(self):
         count = 0
         truth = 0
@@ -34,6 +34,7 @@ class Integrity:
                                     truth += 1
                                     break
                         elif type(other_action) is MessageBoy:
+                            # Check if a boy is in that room
                             for person in get_persons_in_room(action.room_name, action.map_state):
                                 if person["name"].startswith("critically injured boy in area "):
                                     truth += 1
@@ -43,7 +44,7 @@ class Integrity:
         else:
             return truth / count
 
-    # Returns ratio of thruthfully pick ups after agent suggestion
+    # Returns ratio of truthfully pick ups after agent suggestion
     def _truth_suggested_pickup_yes(self):
         count = 0
         truth = 0
@@ -57,6 +58,7 @@ class Integrity:
                             for k, other_action_2 in enumerate(self._actions):
                                 if i < j < k:  # Make sure to check only next actions
                                     if type(other_action_2) is PickUp:
+                                        # check that next pickup is same person as communicated
                                         if action.person == other_action_2.person:
                                             truth += 1
 
@@ -65,7 +67,7 @@ class Integrity:
         else:
             return truth / count
 
-    # Returns ratio thruthfully identified person found by human
+    # Returns ratio of truthfully identified persons found by human
     def _truth_identify_person(self):
         count = 0
         truth = 0
@@ -74,6 +76,7 @@ class Integrity:
             if type(action) is MessageFound:
                 count += 1
                 for person in get_persons_in_room(action.room_name, action.map_state):
+                    # check if identified person is in that room
                     if person["name"] == action.person:
                         truth += 1
                         break
@@ -92,6 +95,7 @@ class Integrity:
                 for j, other_action in enumerate(self._actions):
                     if i < j:  # Make sure to check only next actions
                         if type(other_action) is EnterRoom:
+                            # check if next room search is same room as communicated
                             if action.room_name == other_action.room_name:
                                 truth += 1
                             break
@@ -101,7 +105,7 @@ class Integrity:
         else:
             return truth / count
 
-    # Returns ratio of thruthfully pick ups after communicating with agent
+    # Returns ratio of truthfully pick-ups after communicating with agent
     def _truth_pickup(self):
         count = 0
         truth = 0
@@ -112,6 +116,7 @@ class Integrity:
                 for j, other_action in enumerate(self._actions):
                     if i < j:  # Make sure to check only next actions
                         if type(other_action) is PickUp:
+                            # check if next pickup is same person as communicated
                             if action.person == other_action.person:
                                 truth += 1
 
