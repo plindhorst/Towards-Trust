@@ -17,3 +17,11 @@ def is_in_room(location):
                 room["top_left_location"][0] < location[0] < room["top_left_location"][0] + room["width"] and \
                 room["top_left_location"][1] < location[1] < room["top_left_location"][1] + room["height"]):
             return room["room_name"]
+
+
+def get_persons_in_room(room_name, map_state):
+    persons = []
+    for person in map_state["persons"]:
+        if is_in_room(person["location"]) == room_name:
+            persons.append(person)
+    return persons

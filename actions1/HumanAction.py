@@ -14,7 +14,8 @@ class MessageSearch(HumanAction):
 
 class MessageFound(HumanAction):
     def __init__(self, map_state, person):
-        self.person = person
+        self.room_name = person.split(" ")[-1]
+        self.person = person.replace(self.room_name, "area " + self.room_name)
         super().__init__(map_state)
 
 

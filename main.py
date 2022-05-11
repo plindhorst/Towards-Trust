@@ -19,8 +19,9 @@ if __name__ == "__main__":
 
     if args.tw:
         trustworthiness = Trustworthiness()
-        # trustworthiness.check_searched_rooms()
-        trustworthiness.to_string()
+
+        trustworthiness.actions_to_string()
+        trustworthiness.compute()
         sys.exit(0)
 
     choice1 = args.xai
