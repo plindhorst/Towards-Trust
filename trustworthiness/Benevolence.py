@@ -1,4 +1,5 @@
 from actions1.HumanAction import *
+from actions1.AgentAction import MessageAskGender, MessageSuggestPickup
 
 
 class Benevolence:
@@ -35,8 +36,24 @@ class Benevolence:
         count = 0
 
         for i, action in enumerate(self._actions):
-            if type(action) is (MessageBoy or MessageGirl):
-                count += 1
+            if type(action) is MessageAskGender:
+                for j, other_action in enumerate(self._actions):
+                    if i < j:  # Make sure to check only next actions
+                        if type(other_action) is (MessageGirl or MessageBoy):
+                            count += 1
+
+        return count
+
+    # Returns the times the human replied to agent advices human to pick up a certain victim
+    def suggested_pickup_yes_no(self):
+        count = 0
+
+        for i, action in enumerate(self._actions):
+            if type(action) is MessageSuggestPickup:
+                for j, other_action in enumerate(self._actions):
+                    if i < j:  # Make sure to check only next actions
+                        if type(other_action) is MessageYes:
+                            count += 1
 
         return count
 
