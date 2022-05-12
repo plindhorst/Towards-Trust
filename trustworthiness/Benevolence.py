@@ -11,7 +11,7 @@ class Benevolence:
         return score
 
     # Returns the times communicated victim found
-    def _truth_pickup(self):
+    def _victim_found_no(self):
         count = 0
 
         for i, action in enumerate(self._actions):
@@ -21,7 +21,7 @@ class Benevolence:
         return count
 
     # Returns the times communicated victim picked up
-    def _truth_pickup(self):
+    def _victim_picked_up_no(self):
         count = 0
 
         for i, action in enumerate(self._actions):
@@ -29,3 +29,15 @@ class Benevolence:
                 count += 1
 
         return count
+
+    # Returns the times the human replied to agent when it asked help for identifying gender of baby
+    def _identify_gender(self):
+        count = 0
+
+        for i, action in enumerate(self._actions):
+            if type(action) is (MessageBoy or MessageGirl):
+                count += 1
+
+        return count
+
+
