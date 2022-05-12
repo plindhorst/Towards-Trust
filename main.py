@@ -21,7 +21,7 @@ if __name__ == "__main__":
         trustworthiness = Trustworthiness()
 
         trustworthiness.actions_to_string()
-        trustworthiness.compute()
+        print("\ntw: ", trustworthiness.compute())
         sys.exit(0)
 
     choice1 = args.xai
