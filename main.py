@@ -21,7 +21,8 @@ if __name__ == "__main__":
         trustworthiness = Trustworthiness()
 
         # trustworthiness.actions_to_string()
-        print("\ntw: ", trustworthiness.compute())
+        ability, benevolence, integrity = trustworthiness.compute()
+        print("\nABI: ", round(ability, 2), ",", round(benevolence, 2), ",", round(integrity, 2))
         sys.exit(0)
 
     choice1 = args.xai
