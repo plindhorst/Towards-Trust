@@ -33,13 +33,13 @@ class Integrity:
                         if type(other_action) is MessageGirl:  # Human identified a girl
                             # Check if a girl is in that room
                             for person in get_persons_in_room(action.room_name, action.map_state):
-                                if person["name"].startswith("critically injured girl in area "):
+                                if "injured girl in area" in person["name"]:
                                     truth += 1
                                     break
                         elif type(other_action) is MessageBoy:
                             # Check if a boy is in that room
                             for person in get_persons_in_room(action.room_name, action.map_state):
-                                if person["name"].startswith("critically injured boy in area "):
+                                if "injured boy in area" in person["name"]:
                                     truth += 1
                                     break
 

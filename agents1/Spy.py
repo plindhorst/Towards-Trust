@@ -2,10 +2,10 @@ import pickle
 
 from matrx.agents import AgentBrain
 
-from actions1.AgentAction import MessageAskGender, MessageRequestPickup, MessageSuggestPickup
+from actions1.AgentAction import MessageAskGender, MessageRequestPickup, MessageSuggestPickup, MessageDelivered
 from actions1.HumanAction import MessageSearch, MessageFound, EnterRoom, MessagePickUp, DropOff, PickUp, MessageBoy, \
     MessageGirl, MessageNo, MessageYes, FoundVictim, EnterUnvisitedRoom
-from actions1.util import is_in_room, is_in_range
+from actions1.util import is_in_room, is_in_range, is_correct_drop_location
 
 ACTION_FILE = "./actions.pkl"
 
@@ -112,13 +112,15 @@ class Spy(AgentBrain):
                 room_name = room_name[:room_name.index("because") - 1]
                 if room_name not in self._visited_rooms:
                     self._visited_rooms.append(room_name)
+            elif message.startswith("Delivered "):
+                self._save_action_to_file(MessageDelivered(self._map_state()))
 
             # Remove message from list
             self.received_messages.remove(message)
 
     def _check_enter_room(self):
 
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         room_name = is_in_room(human["location"])
 
@@ -134,7 +136,7 @@ class Spy(AgentBrain):
                 self._save_action_to_file(EnterUnvisitedRoom(self._map_state(), room_name))
 
     def _check_pick_up(self):
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         if not self._human_is_carrying and len(human["is_carrying"]) > 0:
             person = human["is_carrying"][0]["name"]
@@ -144,7 +146,7 @@ class Spy(AgentBrain):
             self._carried_person = person
 
     def _check_drop_off(self):
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         if self._human_is_carrying and len(human["is_carrying"]) == 0:
             person = self._carried_person
@@ -154,10 +156,11 @@ class Spy(AgentBrain):
             self._carried_person = None
 
     def _check_found_victim(self):
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         for person in self._map_state()["persons"]:
-            if person not in self._found_victims and "injured" in person["name"] and is_in_range(
+            if person not in self._found_victims and not is_correct_drop_location(
+                    person["name"], person["location"]) and "injured" in person["name"] and is_in_range(
                     person["location"], human["location"]):
                 self._found_victims.append(person)
 
