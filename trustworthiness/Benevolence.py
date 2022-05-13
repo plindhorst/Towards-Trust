@@ -56,7 +56,7 @@ class Benevolence:
         if count > total or total == 0:
             return 1
 
-        return count or total
+        return count / total
 
     # return ratio of communicated room search to total number of room search actions.
     def _communicated_room_search(self):
@@ -76,7 +76,7 @@ class Benevolence:
         if count > total or total == 0:
             return 1
 
-        return count or total
+        return count / total
 
     # return ratio of communicated pick-ups to total number of pick-up actions.
     def _communicated_pickup(self):
