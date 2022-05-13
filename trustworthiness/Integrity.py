@@ -12,8 +12,11 @@ class Integrity:
 
     # Returns computed integrity
     def compute(self):
+
+        print("\nIntegrity:")
         metrics = [self._truth_identify_gender(), self._truth_suggested_pickup_yes(), self._truth_identify_person(),
                    self._truth_communicated_searched_rooms(), self._truth_pickup()]
+
         score = np.mean(metrics)
         return score
 
@@ -39,6 +42,9 @@ class Integrity:
                                 if person["name"].startswith("critically injured boy in area "):
                                     truth += 1
                                     break
+
+        print("Truthfully identified asked gender: ", truth, "/", count)
+
         if count == 0:
             return 1
         else:
@@ -62,6 +68,8 @@ class Integrity:
                                         if action.person == other_action_2.person:
                                             truth += 1
 
+        print("Truthfully completed suggested pickup: ", truth, "/", count)
+
         if count == 0:
             return 1
         else:
@@ -80,6 +88,9 @@ class Integrity:
                     if person["name"] == action.person:
                         truth += 1
                         break
+
+        print("Truthfully identified person: ", truth, "/", count)
+
         if count == 0:
             return 1
         else:
@@ -99,6 +110,8 @@ class Integrity:
                             if action.room_name == other_action.room_name:
                                 truth += 1
                             break
+
+        print("Truthfully communicated room search: ", truth, "/", count)
 
         if count == 0:
             return 1
@@ -120,6 +133,8 @@ class Integrity:
                             if action.person == other_action.person:
                                 truth += 1
                             break
+
+        print("Truthfully communicated pick-up: ", truth, "/", count)
 
         if count == 0:
             return 1
