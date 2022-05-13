@@ -14,7 +14,7 @@ class Benevolence:
     def compute(self):
 
         print("\nBenevolence:")
-        metrics = [self._communicated_baby_gender(), self._communicated_yes_no(), self._communicated_room_search(),
+        metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
                    self._communicated_pickup()]
 
         score = np.mean(metrics)
@@ -38,8 +38,8 @@ class Benevolence:
 
         return count / total
 
-    # returns ratio of communicated yes/no to the total number of pick-up suggestions.
-    def _communicated_yes_no(self):
+    # returns ratio of communicated yes to the total number of pick-up suggestions.
+    def _communicated_yes(self):
         count = 0
         total = 0
 
@@ -47,11 +47,11 @@ class Benevolence:
             # total number of agent pick-up suggestions
             if type(action) is MessageSuggestPickup:
                 total += 1
-            # total number of yes/no responses from human
-            if type(action) is MessageYes or type(action) is MessageNo:
+            # total number of yes responses from human
+            if type(action) is MessageYes:
                 count += 1
 
-        print("Communicated yes/no:", count, "/", total)
+        print("Communicated yes:", count, "/", total)
 
         if count > total or total == 0:
             return 1
