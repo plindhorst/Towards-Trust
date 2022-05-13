@@ -1,8 +1,7 @@
-from actions1.HumanAction import *
-from actions1.AgentAction import *
-from actions1.util import is_correct_drop_location
+import numpy as np
 
-NUMBER_OF_PATIENTS = 8
+from actions1.util import NUMBER_OF_VICTIMS, is_correct_drop_location
+
 
 class Ability:
     def __init__(self, actions):
@@ -10,27 +9,19 @@ class Ability:
 
     # Returns computed ability
     def compute(self):
-        score = 0
+        print("\nAbility:")
+        metrics = [self._game_completion()]
+
+        score = np.mean(metrics)
         return score
 
-
-    def _victims_saved(self):
+    def _game_completion(self):
         count = 0
-        for i, action in enumerate(self._actions):
-            if type(action) is DropOff:
-                if is_correct_drop_location(action.person, action.location):
-                    count += 1
+        last_map_state = self._actions[-1].map_state
+        for person in last_map_state["persons"]:
+            if is_correct_drop_location(person["name"], person["location"]):
+                count += 1
 
-        return count/NUMBER_OF_PATIENTS
-        # return count - if we want to normalize through aggregation.
+        print("Game completion: ", count, "/", NUMBER_OF_VICTIMS)
 
-
-    # def _victims_saved_alternative(self):
-    #     count = 0
-    #     for i, action in enumerate(self._actions):
-    #         if type(action) is DropOff:
-    #             if action.person["is_goal_block"] and action.location["is_drop_zone"]:
-    #                 count += 1
-    #
-    #     return count/NUMBER_OF_PATIENTS
-    #     # return count - if we want to normalize through aggregation.
+        return count / NUMBER_OF_VICTIMS

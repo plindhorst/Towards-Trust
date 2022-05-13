@@ -51,6 +51,12 @@ class EnterRoom(HumanAction):
         super().__init__(map_state)
 
 
+class EnterUnvisitedRoom(HumanAction):
+    def __init__(self, map_state, room_name):
+        self.room_name = room_name
+        super().__init__(map_state)
+
+
 class PickUp(HumanAction):
     def __init__(self, map_state, person, location):
         self.person = person
@@ -59,6 +65,13 @@ class PickUp(HumanAction):
 
 
 class DropOff(HumanAction):
+    def __init__(self, map_state, person, location):
+        self.person = person
+        self.location = location
+        super().__init__(map_state)
+
+
+class FoundVictim(HumanAction):
     def __init__(self, map_state, person, location):
         self.person = person
         self.location = location

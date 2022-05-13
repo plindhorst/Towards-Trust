@@ -20,7 +20,7 @@ if __name__ == "__main__":
     if args.tw:
         trustworthiness = Trustworthiness()
 
-        trustworthiness.actions_to_string()
+        # trustworthiness.actions_to_string()
         print("\ntw: ", trustworthiness.compute())
         sys.exit(0)
 
