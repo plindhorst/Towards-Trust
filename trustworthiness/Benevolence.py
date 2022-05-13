@@ -28,7 +28,7 @@ class Benevolence:
         for action in self._actions:
             if type(action) is MessageAskGender:
                 total += 1
-            if type(action) is (MessageGirl or MessageBoy):
+            if type(action) is MessageGirl or type(action) is MessageBoy:
                 count += 1
 
         print("Communicated baby gender: ", count, "/", total)
