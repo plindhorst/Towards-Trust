@@ -14,7 +14,7 @@ class Benevolence:
     def compute(self):
 
         print("\nBenevolence:")
-        metrics = [self._communicated_baby_gender(), self._communicated_yes_no(), self._communicated_room_search(),
+        metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
                    self._communicated_pickup(), self._advice_followed()]
         self._average_ticks_to_respond()
         score = np.mean(metrics)
@@ -28,7 +28,7 @@ class Benevolence:
         for action in self._actions:
             if type(action) is MessageAskGender:
                 total += 1
-            if type(action) is (MessageGirl or MessageBoy):
+            if type(action) is MessageGirl or type(action) is MessageBoy:
                 count += 1
 
         print("Communicated baby gender: ", count, "/", total)
@@ -38,8 +38,8 @@ class Benevolence:
 
         return count / total
 
-    # returns ratio of communicated yes/no to the total number of pick-up suggestions.
-    def _communicated_yes_no(self):
+    # returns ratio of communicated yes to the total number of pick-up suggestions.
+    def _communicated_yes(self):
         count = 0
         total = 0
 
@@ -47,16 +47,16 @@ class Benevolence:
             # total number of agent pick-up suggestions
             if type(action) is MessageSuggestPickup:
                 total += 1
-            # total number of yes/no responses from human
-            if type(action) is MessageYes or type(action) is MessageNo:
+            # total number of yes responses from human
+            if type(action) is MessageYes:
                 count += 1
 
-        print("Communicated yes/no:", count, "/", total)
+        print("Communicated yes:", count, "/", total)
 
         if count > total or total == 0:
             return 1
 
-        return count or total
+        return count / total
 
     # return ratio of communicated room search to total number of room search actions.
     def _communicated_room_search(self):
@@ -76,7 +76,7 @@ class Benevolence:
         if count > total or total == 0:
             return 1
 
-        return count or total
+        return count / total
 
     # return ratio of communicated pick-ups to total number of pick-up actions.
     def _communicated_pickup(self):

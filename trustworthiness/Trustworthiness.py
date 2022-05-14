@@ -34,7 +34,13 @@ class Trustworthiness:
 
     def actions_to_string(self):
         for action in self._actions:
-            print(action)
+            new_attrs = []
+
+            for attr in action.__dict__:
+                if attr != "map_state":
+                    new_attrs.append({attr: action.__dict__[attr]})
+
+            print(action.__class__.__name__, new_attrs)
 
     def compute(self):
         return self._ability.compute(), self._benevolence.compute(), self._integrity.compute()
