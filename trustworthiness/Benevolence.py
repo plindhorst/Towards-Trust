@@ -15,8 +15,7 @@ class Benevolence:
 
         print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes_no(), self._communicated_room_search(),
-                   self._communicated_pickup(), self._advice_followed(), self._average_ticks_to_respond()]
-
+                   self._communicated_pickup(), self._advice_followed()]
         self._average_ticks_to_respond()
         score = np.mean(metrics)
         return score
@@ -145,24 +144,26 @@ class Benevolence:
 
         return num_advice_followed / num_advice
 
-    # Returns the avergae number of ticks to respond to the agent
+    # Returns the average number of ticks to respond to the agent
     def _average_ticks_to_respond(self):
         count = 0;
         ticks = 0;
+        start = 0;
+        question = None
+
         for action in self._actions:
-            start = -1;
-            end = -1;
-            question = None
+            tick = action.map_state['tick']
+
             if type(action) in [MessageAskGender, MessageSuggestPickup]:
                 question = action
-                start = action.map_state['tick']
-            if (question is MessageAskGender and type(action) in [MessageGirl, MessageBoy] \
-                    or question is MessageSuggestPickup and type(action) in [MessageYes, MessageNo]) and end > start:
-                end = action.map_state['tick']
-                ticks += end - start
+                start = tick
+
+            if (type(question) is MessageAskGender and type(action) in [MessageGirl, MessageBoy] \
+                    or type(question) is MessageSuggestPickup and type(action) in [MessageYes, MessageNo]):
+                ticks += tick - start
                 count += 1
-                start = -1
-                end = -1
+                question = None
+
         print("The average number of ticks to respond is :", ticks, "/", count)
 
         if count == 0:
