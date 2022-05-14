@@ -1,10 +1,11 @@
-from matrx.agents import AgentBrain
 import pickle
 
-from actions1.AgentAction import MessageAskGender, MessageRequestPickup, MessageSuggestPickup
+from matrx.agents import AgentBrain
+
+from actions1.AgentAction import MessageAskGender, MessageRequestPickup, MessageSuggestPickup, MessageDelivered
 from actions1.HumanAction import MessageSearch, MessageFound, EnterRoom, MessagePickUp, DropOff, PickUp, MessageBoy, \
-    MessageGirl, MessageNo, MessageYes
-from actions1.util import is_in_room
+    MessageGirl, MessageNo, MessageYes, FoundVictim, EnterUnvisitedRoom
+from actions1.util import is_in_room, is_in_range, is_correct_drop_location
 
 ACTION_FILE = "./actions.pkl"
 
@@ -18,6 +19,8 @@ class Spy(AgentBrain):
         self._carried_person = None
         self._human_in_room = False
         self._last_action = None
+        self._found_victims = []
+        self._visited_rooms = []
 
         f = open(ACTION_FILE, "w+")  # init action file
         f.close()
@@ -29,6 +32,7 @@ class Spy(AgentBrain):
         self._check_enter_room()  # Check if human enters a room
         self._check_pick_up()  # Check if human picks up a person
         self._check_drop_off()  # Check if human drops up a person
+        self._check_found_victim()  # Check if human is next to a victim
 
         return None, {}
 
@@ -66,6 +70,8 @@ class Spy(AgentBrain):
                     person = ' '.join(message.split()[1:4])
                 else:
                     person = ' '.join(message.split()[1:5])
+                room_name = message.replace("Collect: " + person + " in ", "")
+                person += " in area " + room_name
                 self._save_action_to_file(MessagePickUp(self._map_state(), person))
             elif message.startswith("Yes"):
                 self._save_action_to_file(MessageYes(self._map_state()))
@@ -97,13 +103,24 @@ class Spy(AgentBrain):
                     "")
                 person = person[:person.index("because") - 1]
                 self._save_action_to_file(MessageSuggestPickup(self._map_state(), person))
+            elif message.endswith("because I am traversing the whole area."):
+                person = message.replace(" because I am traversing the whole area.", "").replace("Found ", "")
+                if person not in self._found_victims:
+                    self._found_victims.append(person)
+            elif message.startswith("Searching through whole"):
+                room_name = message.replace("Searching through whole area ", "")
+                room_name = room_name[:room_name.index("because") - 1]
+                if room_name not in self._visited_rooms:
+                    self._visited_rooms.append(room_name)
+            elif message.startswith("Delivered "):
+                self._save_action_to_file(MessageDelivered(self._map_state()))
 
             # Remove message from list
             self.received_messages.remove(message)
 
     def _check_enter_room(self):
 
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         room_name = is_in_room(human["location"])
 
@@ -114,8 +131,12 @@ class Spy(AgentBrain):
             self._save_action_to_file(EnterRoom(self._map_state(), room_name))
             self._human_in_room = True
 
+            if room_name not in self._visited_rooms:
+                self._visited_rooms.append(room_name)
+                self._save_action_to_file(EnterUnvisitedRoom(self._map_state(), room_name))
+
     def _check_pick_up(self):
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         if not self._human_is_carrying and len(human["is_carrying"]) > 0:
             person = human["is_carrying"][0]["name"]
@@ -125,7 +146,7 @@ class Spy(AgentBrain):
             self._carried_person = person
 
     def _check_drop_off(self):
-        human = self.state.get_agents()[2]
+        human = self.state.get_agents()[1]
 
         if self._human_is_carrying and len(human["is_carrying"]) == 0:
             person = self._carried_person
@@ -133,3 +154,15 @@ class Spy(AgentBrain):
             self._save_action_to_file(DropOff(self._map_state(), person, location))
             self._human_is_carrying = False
             self._carried_person = None
+
+    def _check_found_victim(self):
+        human = self.state.get_agents()[1]
+
+        for person in self._map_state()["persons"]:
+            if person not in self._found_victims and not is_correct_drop_location(
+                    person["name"], person["location"]) and "injured" in person["name"] and is_in_range(
+                    person["location"], human["location"]):
+                self._found_victims.append(person)
+
+                location = human["location"]
+                self._save_action_to_file(FoundVictim(self._map_state(), person, location))

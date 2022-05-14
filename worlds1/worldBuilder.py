@@ -91,7 +91,7 @@ def add_agents(builder, condition, exp_version):
         spy_sense_capability = SenseCapability({AgentBody: np.inf,
                                             CollectableBlock: np.inf,
                                             None: np.inf})
-        builder.add_agent((0, 1), Spy(), team=team_name, name="spy", sense_capability=spy_sense_capability, is_traversable=True, img_name="/images/transparent.png")
+
 
         # Add human agents
         for human_agent_nr in range(human_agents_per_team):
@@ -99,6 +99,9 @@ def add_agents(builder, condition, exp_version):
             loc = (10,23)
             builder.add_human_agent(loc, brain, team=team_name, name=f"Human {human_agent_nr} in {team_name}",
                                     key_action_map=key_action_map, sense_capability=sense_capability, is_traversable=True, img_name="/images/first-responder6.svg")
+
+        builder.add_agent((0, 1), Spy(), team=team_name, name="spy", sense_capability=spy_sense_capability,
+                          is_traversable=True, img_name="/images/transparent.png")
 
 def create_builder(exp_version, condition):
     # Set numpy's random generator
