@@ -15,8 +15,9 @@ class Benevolence:
 
         print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes_no(), self._communicated_room_search(),
-                   self._communicated_pickup()]
+                   self._communicated_pickup(), self._advice_followed(), self._average_ticks_to_respond()]
 
+        self._average_ticks_to_respond()
         score = np.mean(metrics)
         return score
 
@@ -119,3 +120,52 @@ class Benevolence:
             return 1
 
         return count / total
+
+    # Return the ration of advices followed
+    def _advice_followed(self):
+        num_advice = 0
+        num_advice_followed = 0
+        victim = None
+
+        for action in self._actions:
+            if type(action) is MessageSuggestPickup:
+                victim = action.person
+                num_advice = num_advice + 1
+
+            # The advice is only considered to have been followed if the human does not pick any other victim after
+            # receiving the suggestion
+            if type(action) is PickUp and victim is not None:
+                if victim == action.person:
+                    num_advice_followed = num_advice_followed + 1
+                victim = None
+        print("The ratio of advice followed by the human is : ", num_advice_followed, "/", num_advice)
+
+        if num_advice == 0:
+            return -1
+
+        return num_advice_followed / num_advice
+
+    # Returns the avergae number of ticks to respond to the agent
+    def _average_ticks_to_respond(self):
+        count = 0;
+        ticks = 0;
+        for action in self._actions:
+            start = -1;
+            end = -1;
+            question = None
+            if type(action) in [MessageAskGender, MessageSuggestPickup]:
+                question = action
+                start = action.map_state['tick']
+            if (question is MessageAskGender and type(action) in [MessageGirl, MessageBoy] \
+                    or question is MessageSuggestPickup and type(action) in [MessageYes, MessageNo]) and end > start:
+                end = action.map_state['tick']
+                ticks += end - start
+                count += 1
+                start = -1
+                end = -1
+        print("The average number of ticks to respond is :", ticks, "/", count)
+
+        if count == 0:
+            return -1
+
+        return ticks/count
