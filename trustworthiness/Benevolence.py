@@ -15,7 +15,9 @@ class Benevolence:
 
         print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
-                   self._communicated_pickup()]
+                   self._communicated_pickup(), self._advice_followed()]
+
+        self._average_ticks_to_respond()
 
         score = 0
         count = 0
@@ -139,3 +141,54 @@ class Benevolence:
             return -1
         else:
             return count / total
+
+    # Return the ration of advices followed
+    def _advice_followed(self):
+        num_advice = 0
+        num_advice_followed = 0
+        victim = None
+
+        for action in self._actions:
+            if type(action) is MessageSuggestPickup:
+                victim = action.person
+                num_advice = num_advice + 1
+
+            # The advice is only considered to have been followed if the human does not pick any other victim after
+            # receiving the suggestion
+            if type(action) is PickUp and victim is not None:
+                if victim == action.person:
+                    num_advice_followed = num_advice_followed + 1
+                victim = None
+        print("The ratio of advice followed by the human is : ", num_advice_followed, "/", num_advice)
+
+        if num_advice == 0:
+            return -1
+
+        return num_advice_followed / num_advice
+
+    # Returns the average number of ticks to respond to the agent
+    def _average_ticks_to_respond(self):
+        count = 0;
+        ticks = 0;
+        start = 0;
+        question = None
+
+        for action in self._actions:
+            tick = action.map_state['tick']
+
+            if type(action) in [MessageAskGender, MessageSuggestPickup]:
+                question = action
+                start = tick
+
+            if (type(question) is MessageAskGender and type(action) in [MessageGirl, MessageBoy] \
+                    or type(question) is MessageSuggestPickup and type(action) in [MessageYes, MessageNo]):
+                ticks += tick - start
+                count += 1
+                question = None
+
+        print("The average number of ticks to respond is :", ticks, "/", count)
+
+        if count == 0:
+            return -1
+
+        return ticks / count
