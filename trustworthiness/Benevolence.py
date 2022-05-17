@@ -168,9 +168,9 @@ class Benevolence:
 
     # Returns the average number of ticks to respond to the agent
     def _average_ticks_to_respond(self):
-        count = 0;
-        ticks = 0;
-        start = 0;
+        count = 0
+        ticks = 0
+        start = 0
         question = None
 
         for action in self._actions:
