@@ -1,4 +1,7 @@
+import os
 import pickle
+from datetime import datetime
+from os.path import exists
 
 from matrx.agents import AgentBrain
 
@@ -6,8 +9,6 @@ from actions1.AgentAction import MessageAskGender, MessageRequestPickup, Message
 from actions1.HumanAction import MessageSearch, MessageFound, EnterRoom, MessagePickUp, DropOff, PickUp, MessageBoy, \
     MessageGirl, MessageNo, MessageYes, FoundVictim, EnterUnvisitedRoom
 from actions1.util import is_in_room, is_in_range, is_correct_drop_location
-
-ACTION_FILE = "./actions.pkl"
 
 
 # This agent class records actions and messages of the human/agent
@@ -21,9 +22,13 @@ class Spy(AgentBrain):
         self._last_action = None
         self._found_victims = []
         self._visited_rooms = []
+        self._file_created = False
 
-        f = open(ACTION_FILE, "w+")  # init action file
-        f.close()
+        result_folder = os.getcwd() + "\\results\\" + "\\actions\\"
+        if not os.path.exists(result_folder):
+            os.makedirs(result_folder)
+
+        self.action_file = result_folder + datetime.now().strftime("%Y%m%d-%H%M%S") + ".pkl"
 
     # This method gets called every tick
     def decide_on_action(self, state):
@@ -38,8 +43,13 @@ class Spy(AgentBrain):
 
     # Save action to pickle file
     def _save_action_to_file(self, action):
+        if not self._file_created and not exists(self.action_file):
+            f = open(self.action_file, "w+")  # init action file
+            f.close()
+            self._file_created = True
+
         self._last_action = action
-        with open(ACTION_FILE, 'ab+') as out:
+        with open(self.action_file, 'ab+') as out:
             pickle.dump(self._last_action, out, pickle.HIGHEST_PROTOCOL)
 
     # Returns the current map: locations of persons/agent/human
@@ -161,7 +171,7 @@ class Spy(AgentBrain):
         for person in self._map_state()["persons"]:
             if person not in self._found_victims and not is_correct_drop_location(
                     person["name"], person["location"]) and "injured" in person["name"] and is_in_range(
-                    person["location"], human["location"]):
+                person["location"], human["location"]):
                 self._found_victims.append(person)
 
                 location = human["location"]

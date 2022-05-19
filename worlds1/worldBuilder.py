@@ -17,7 +17,10 @@ from loggers.action_logger import ActionLogger
 from datetime import datetime
 from loggers.message_logger import MessageLogger
 
-tick_duration = 0.05
+tick_duration = 0.07
+max_minutes = 0.5
+MAX_TICKS = int(max_minutes * 60 / 0.05)
+
 random_seed = 1
 verbose = False
 key_action_map = {
@@ -111,20 +114,11 @@ def create_builder(exp_version, condition):
     if exp_version == "trial":
         goal = CollectionGoal(max_nr_ticks=10000000000000000000)
     if exp_version == "low" or exp_version == "high":
-        goal = CollectionGoal(max_nr_ticks=11577)
+        goal = CollectionGoal(max_nr_ticks=MAX_TICKS)
     # Create our world builder
     builder = WorldBuilder(shape=[24,25], tick_duration=tick_duration, run_matrx_api=True,
                            run_matrx_visualizer=False, verbose=verbose, simulation_goal=goal, visualization_bg_img="/images/background_70.svg")
-    if exp_version=="low":
-        current_exp_folder = datetime.now().strftime("exp_LOW_at_time_%Hh-%Mm-%Ss_date_%dd-%mm-%Yy")
-        logger_save_folder = os.path.join("experiment_logs", current_exp_folder)
-        builder.add_logger(ActionLogger, log_strategy=1, save_path=logger_save_folder, file_name_prefix="actions_")
-        builder.add_logger(MessageLogger, save_path=logger_save_folder, file_name_prefix="messages_")
-    if exp_version=="high":
-        current_exp_folder = datetime.now().strftime("exp_HIGH_at_time_%Hh-%Mm-%Ss_date_%dd-%mm-%Yy")
-        logger_save_folder = os.path.join("experiment_logs", current_exp_folder)
-        builder.add_logger(ActionLogger, log_strategy=1, save_path=logger_save_folder, file_name_prefix="actions_")
-        builder.add_logger(MessageLogger, save_path=logger_save_folder, file_name_prefix="messages_")
+
 
     # Add the world bounds (not needed, as agents cannot 'walk off' the grid, but for visual effects)
     builder.add_room(top_left_location=(0, 0), width=24, height=25, name="world_bounds")
@@ -394,6 +388,7 @@ class CollectionGoal(WorldGoal):
         self.__progress = 0
 
     def goal_reached(self, grid_world: GridWorld):
+        print(grid_world.current_nr_ticks, self.max_nr_ticks)
         if grid_world.current_nr_ticks >= self.max_nr_ticks:
             return True
         return self.isBlocksPlaced(grid_world)

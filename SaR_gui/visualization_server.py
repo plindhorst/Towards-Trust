@@ -1,6 +1,12 @@
-import threading
+import json
 import logging
-from flask import Flask, render_template, request, jsonify, send_from_directory
+import os
+import shutil
+import threading
+from datetime import datetime
+
+import requests
+from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, send_file
 
 '''
 This file holds the code for the MATRX RESTful api. 
@@ -9,73 +15,39 @@ userinput or other information to MATRX. The api is a Flask (Python) webserver.
 
 For visualization, see the seperate MATRX visualization folder / package.
 '''
-
 debug = True
 port = 3000
 app = Flask(__name__, template_folder='templates')
-
+running = False
 # the path to the media folder of the user (outside of the MATRX package)
 ext_media_folder = ""
+
 
 #########################################################################
 # Visualization server routes
 #########################################################################
 
-@app.route('/human-agent/<id>')
-def human_agent_view(id):
-    """
-    Route for HumanAgentBrain
+@app.route('/experiment')
+def human_agent_view():
+    requests.get("http://localhost:3001/start")
 
-    Parameters
-    ----------
-    id
-        The human agent ID. Is obtained from the URL.
-
-    Returns
-    -------
-    str
-        The template for this agent's view.
-
-    """
-    return render_template('human_agent.html', id=id)
+    global running
+    running = True
+    return render_template('human_agent.html', id="human_0_in_team_0")
 
 
-# route for agent, get the ID from the URL
-@app.route('/agent/<id>')
-def agent_view(id):
-    """
-    Route for AgentBrain
-
-    Parameters
-    ----------
-    id
-        The agent ID. Is obtained from the URL.
-
-    Returns
-    -------
-    str
-        The template for this agent's view.
-
-    """
-    return render_template('agent.html', id=id)
-
-
-@app.route('/god')
-def god_view():
-    """
-    Route for the 'god' view which contains the ground truth of the world without restrictions.
-
-    Returns
-    -------
-    str
-        The template for this view.
-
-    """
-    return render_template('god.html')
+@app.route('/results')
+def get_results():
+    if not os.path.exists("./results"):
+        return False
+    shutil.make_archive('results', 'zip', "./results")
+    if os.path.isfile('./results.zip'):
+        return send_file('../results.zip')
+    else:
+        return False
 
 
 @app.route('/')
-@app.route('/start')
 def start_view():
     """
     Route for the 'start' view which shows information about the current scenario, including links to all agents.
@@ -86,9 +58,40 @@ def start_view():
         The template for this view.
 
     """
-    return render_template('start.html')
+    global running
+    if not running:
+        return render_template('main.html')
+    else:
+        return render_template('error.html')
 
 
+@app.route('/questionnaire')
+def questionnaire():
+    f = open('./trustworthiness/questionaire.json')
+    questionnaire_json = json.load(f)
+    f.close()
+    return render_template('questionnaire.html', data=questionnaire_json)
+
+
+@app.route('/questionnaire_answers', methods=['GET', 'POST'])
+def questionnaire_answers():
+    answers = []
+    for question in request.args:
+        answers.append({question: request.args[question]})
+    result_folder = os.getcwd() + "\\results\\questionnaire\\"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    result_file = result_folder + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+    with open(result_file, 'w+') as outfile:
+        outfile.write(json.dumps(answers))
+
+    return redirect('/done')
+
+
+@app.route('/done')
+def done():
+    return render_template('done.html')
 
 
 @app.route('/shutdown_visualizer', methods=['GET', 'POST'])
@@ -104,6 +107,19 @@ def shutdown():
         raise RuntimeError('Unable to shutdown visualizer server. Not running with the Werkzeug Server')
     func()
     print("Visualizer server shutting down...")
+    return jsonify(True)
+
+
+@app.route('/is_done', methods=['GET', 'POST'])
+def is_done():
+    global running
+    return jsonify(not running)
+
+
+@app.route('/set_done')
+def set_done():
+    global running
+    running = False
     return jsonify(True)
 
 
@@ -131,12 +147,12 @@ def _flask_thread():
     """
     Starts the Flask server on localhost:3000
     """
-
     if not debug:
         log = logging.getLogger('werkzeug')
         log.setLevel(logging.ERROR)
 
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
+
 
 def run_matrx_visualizer(verbose, media_folder):
     """
@@ -152,6 +168,3 @@ def run_matrx_visualizer(verbose, media_folder):
     vis_thread = threading.Thread(target=_flask_thread)
     vis_thread.start()
     return vis_thread
-
-if __name__ == "__main__":
-    run_matrx_visualizer(True, 'C:/Users/yepiru/OneDrive - Delft University of Technology/Coding/Projects/Towards-Trust/')

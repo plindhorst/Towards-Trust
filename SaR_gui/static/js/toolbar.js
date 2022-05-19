@@ -75,6 +75,7 @@ function send_api_message(type) {
         contentType: "application/json; charset=utf-8",
         dataType: 'json'
     });
+
 }
 
 function send_matrx_api_post_message(type, post_data) {

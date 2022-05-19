@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <title>Towards Trust Experiment</title>
+</head>
+
+<body>
+<div>
+    <h3>Questionnaire</h3>
+    <form action="/questionnaire_answers", id="form_questionnaire">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<script>
+    let data = JSON.parse('{{ data | tojson | safe}}');
+
+    let element = document.getElementById("form_questionnaire");
+
+    for (let i = 0; i < data.length; i++) {
+        console.log(data[i]);
+
+        let div = document.createElement('div');
+        div.innerHTML = '<p>' + data[i]["question"] + '</p>' +
+            '<input type="radio" id="answer_0" name="' + data[i]["name"] + '" value="0"> <label for="answer_0">Disagree strongly</label><br>' +
+            '<input type="radio" id="answer_1" name="' + data[i]["name"] + '" value="1"> <label for="answer_1">Disagree</label><br>' +
+            '<input type="radio" id="answer_2" name="' + data[i]["name"] + '" value="2"> <label for="answer_2">Neither Agree nor Disagree</label><br>' +
+            '<input type="radio" id="answer_3" name="' + data[i]["name"] + '" value="3"> <label for="answer_3">Agree</label><br>' +
+            '<input type="radio" id="answer_4" name="' + data[i]["name"] + '" value="4"> <label for="answer_4">Agree strongly</label><br>';
+
+        element.appendChild(div);
+    }
+</script>
+</body>
+
+</html>

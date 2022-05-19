@@ -1,0 +1,16 @@
+[
+  {"name": "ability_0", "type": "Ability", "question": "As a teammate, I was capable at my jobs"},
+  {"name": "ability_1", "type": "Ability", "question": "As a teammate, I knew what I was doing"},
+  {"name": "ability_2", "type": "Ability", "question": "My teammates could have faith in my abilities"},
+  {"name": "ability_3", "type": "Ability", "question": "As a teammate, I was qualified to do my job"},
+  {"name": "ability_4", "type": "Ability", "question": "I was fast at completing my jobs"},
+
+  {"name": "benevolence_0", "type": "Benevolence", "question": "I communicated which rooms I was searching"},
+  {"name": "benevolence_1", "type": "Benevolence", "question": "I communicated found victims"},
+  {"name": "benevolence_2", "type": "Benevolence", "question": "I communicated which victims I picked up"},
+  {"name": "benevolence_3", "type": "Benevolence", "question": "I wanted to help my teammate RescueBot"},
+  {"name": "benevolence_4", "type": "Benevolence", "question": "I responded to RescueBot's questions"},
+
+  {"name": "integrity_0", "type": "Integrity", "question": "As a teammate, I kept my promises"},
+  {"name": "integrity_1", "type": "Integrity", "question": "I told the truth to my teammates"}
+]

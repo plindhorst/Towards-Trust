@@ -5,16 +5,14 @@ from trustworthiness.Ability import Ability
 from trustworthiness.Benevolence import Benevolence
 from trustworthiness.Integrity import Integrity
 
-ACTION_FILE = "./actions.pkl"
 
-
-def _read_action_file():
+def _read_action_file(action_file):
     actions = []
 
-    if not os.path.isfile(ACTION_FILE):
+    if not os.path.isfile(action_file):
         return
 
-    with open(ACTION_FILE, 'rb') as fr:
+    with open(action_file, 'rb') as fr:
         try:
             while True:
                 actions.append(pickle.load(fr))
@@ -25,8 +23,8 @@ def _read_action_file():
 
 
 class Trustworthiness:
-    def __init__(self):
-        self._actions = _read_action_file()
+    def __init__(self, action_file):
+        self._actions = _read_action_file(action_file)
 
         self._ability = Ability(self._actions)
         self._benevolence = Benevolence(self._actions)
