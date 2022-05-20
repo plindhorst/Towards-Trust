@@ -67,8 +67,10 @@
                     <div class="col-md-9">
                         <div id="messages">
                         </div>
-                        <input class="form-control" id="chat_form_input" placeholder="Open a chatroom first.." style="display:none;">
-                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="send_message(event)" disabled style="display:none;">Send</button>
+                        <input class="form-control" id="chat_form_input" placeholder="Open a chatroom first..">
+{#                        <input class="form-control" id="chat_form_input" placeholder="Open a chatroom first.." style="display:none;">#}
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="send_message(event)" disabled>Send</button>
+{#                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="send_message(event)" disabled style="display:none;">Send</button>#}
                         <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Ready!')">Ready!</button>
                         <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Boy')">Boy</button>
                         <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Girl')">Girl</button>
