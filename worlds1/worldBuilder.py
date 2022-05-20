@@ -8,10 +8,11 @@ from matrx.grid_world import GridWorld, DropObject, GrabObject, AgentBody
 from matrx.objects import EnvObject
 from matrx.goals import WorldGoal
 
+from agents1.HighInterdependenceAgentExperimental import HighInterdependenceAgentExperimental
 from agents1.Spy import Spy
 from agents1.TutorialAgent import TutorialAgent
 from agents1.LowInterdependenceAgent import LowInterdependenceAgent
-from agents1.HighInterdependenceAgent import HighInterdependenceAgent
+from agents1.HighInterdependenceAgentControl import HighInterdependenceAgentControl
 from brains1.HumanBrain import HumanBrain
 from loggers.action_logger import ActionLogger
 from datetime import datetime
@@ -54,7 +55,7 @@ fov_occlusion = False
 agent_slowdown=[3,2,1,1,1]
 
 def add_drop_off_zones(builder, exp_version):
-    if exp_version == "trial" or exp_version == "high":
+    if exp_version == "trial" or exp_version == "high-control" or exp_version == "high-experimental":
         nr_drop_zones = 1
         for nr_zone in range(nr_drop_zones):
             builder.add_area((1,23), width=8, height=1, name=f"Drop off {nr_zone}", visualize_opacity=0.5, visualize_colour=drop_off_color, drop_zone_nr=nr_zone,
@@ -82,8 +83,10 @@ def add_agents(builder, condition, exp_version):
                 brain = TutorialAgent(condition, slowdown=25)
             if exp_version=="low":
                 brain = LowInterdependenceAgent(condition, slowdown=25)
-            if exp_version=="high":
-                brain = HighInterdependenceAgent(condition, slowdown=7)
+            if exp_version=="high-control":
+                brain = HighInterdependenceAgentControl(condition, slowdown=7)
+            if exp_version=="high-experimental":
+                brain = HighInterdependenceAgentExperimental(condition, slowdown=7)
             loc = (9,23)
             builder.add_agent(loc, brain, team=team_name, name=f"Agent {agent_nr} in {team_name}",
                               sense_capability=sense_capability, is_traversable=True, img_name="/images/robotics5.svg")
@@ -110,7 +113,7 @@ def create_builder(exp_version, condition):
     # Create the goal
     if exp_version == "trial":
         goal = CollectionGoal(max_nr_ticks=10000000000000000000)
-    if exp_version == "low" or exp_version == "high":
+    if exp_version == "low" or exp_version == "high-control" or exp_version == "high-experimental":
         goal = CollectionGoal(max_nr_ticks=11577)
     # Create our world builder
     builder = WorldBuilder(shape=[24,25], tick_duration=tick_duration, run_matrx_api=True,
@@ -120,8 +123,13 @@ def create_builder(exp_version, condition):
         logger_save_folder = os.path.join("experiment_logs", current_exp_folder)
         builder.add_logger(ActionLogger, log_strategy=1, save_path=logger_save_folder, file_name_prefix="actions_")
         builder.add_logger(MessageLogger, save_path=logger_save_folder, file_name_prefix="messages_")
-    if exp_version=="high":
-        current_exp_folder = datetime.now().strftime("exp_HIGH_at_time_%Hh-%Mm-%Ss_date_%dd-%mm-%Yy")
+    if exp_version=="high-control":
+        current_exp_folder = datetime.now().strftime("exp_HIGH-CONTROL_at_time_%Hh-%Mm-%Ss_date_%dd-%mm-%Yy")
+        logger_save_folder = os.path.join("experiment_logs", current_exp_folder)
+        builder.add_logger(ActionLogger, log_strategy=1, save_path=logger_save_folder, file_name_prefix="actions_")
+        builder.add_logger(MessageLogger, save_path=logger_save_folder, file_name_prefix="messages_")
+    if exp_version=="high-experimental":
+        current_exp_folder = datetime.now().strftime("exp_HIGH-EXPERIMENTAL_at_time_%Hh-%Mm-%Ss_date_%dd-%mm-%Yy")
         logger_save_folder = os.path.join("experiment_logs", current_exp_folder)
         builder.add_logger(ActionLogger, log_strategy=1, save_path=logger_save_folder, file_name_prefix="actions_")
         builder.add_logger(MessageLogger, save_path=logger_save_folder, file_name_prefix="messages_")
@@ -272,7 +280,7 @@ def create_builder(exp_version, condition):
         builder.add_object((7,23),name="Collect Block", callable_class=GhostBlock,visualize_shape='img',img_name="/images/mildly injured boy.svg",drop_zone_nr=1)
         builder.add_object((8,23),name="Collect Block", callable_class=GhostBlock,visualize_shape='img',img_name="/images/mildly injured woman.svg",drop_zone_nr=1)
 
-    if exp_version=="high":
+    if exp_version=="high-control" or exp_version=="high-experimental":
         builder.add_object((4,3),'critically injured elderly woman in area A1', callable_class=CollectableBlock, 
     visualize_shape='img',img_name="/images/critically injured elderly woman.svg")
         builder.add_object((2,18),'healthy cat in area C1', callable_class=CollectableBlock, 

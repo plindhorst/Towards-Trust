@@ -8,7 +8,7 @@ import sys
 from SaR_gui import visualization_server
 from trustworthiness.Trustworthiness import Trustworthiness
 from worlds1.worldBuilder import create_builder
-from agents1 import HighInterdependenceAgent
+from agents1 import HighInterdependenceAgentControl, HighInterdependenceAgentExperimental
 
 if __name__ == "__main__":
 
@@ -30,8 +30,9 @@ if __name__ == "__main__":
         print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
         choice1 = input()
 
-    # Hardcode interdependence to high
-    choice2 = "high"
+    # Hardcode interdependence to trial or high
+    print("\nEnter one of the interdependence conditions 'trial', 'high-control' or 'high-experimental'")
+    choice2 = input()
 
     # Create our world builder
     builder = create_builder(exp_version=choice2, condition=choice1)
@@ -101,8 +102,13 @@ if __name__ == "__main__":
         no_ticks = action_contents[-1]['tick_nr']
 
         # Altered by Justin: Now the number of ticks will be the amount after 'ready' has been pressed.
-        no_ticks = str(int(
-            action_contents[-1]['tick_nr']) - HighInterdependenceAgent.HighInterdependenceAgent.numberOfTicksWhenReady)
+        if choice2 == 'high-control':
+            no_ticks = str(int(
+                action_contents[-1]['tick_nr']) - HighInterdependenceAgentControl.HighInterdependenceAgentControl.numberOfTicksWhenReady)
+
+        if choice2 == 'high-experimental':
+            no_ticks = str(int(
+                action_contents[-1]['tick_nr']) - HighInterdependenceAgentExperimental.HighInterdependenceAgentExperimental.numberOfTicksWhenReady)
 
         success = action_contents[-1]['done']
         print("Saving output...")
