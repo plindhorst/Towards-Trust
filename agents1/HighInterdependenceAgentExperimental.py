@@ -1,16 +1,15 @@
-import sys, random, enum, ast
-from matrx import grid_world
-from brains1.BW4TBrain import BW4TBrain
-from actions1.customActions import *
+import enum
+
 from matrx import utils
-from matrx.grid_world import GridWorld
-from matrx.agents.agent_utils.state import State
-from matrx.agents.agent_utils.navigator import Navigator
-from matrx.agents.agent_utils.state_tracker import StateTracker
-from matrx.actions.door_actions import OpenDoorAction
 from matrx.actions.object_actions import GrabObject, DropObject
+from matrx.agents.agent_utils.navigator import Navigator
+from matrx.agents.agent_utils.state import State
+from matrx.agents.agent_utils.state_tracker import StateTracker
 from matrx.messages.message import Message
-from matrx.messages.message_manager import MessageManager
+
+from actions1.customActions import *
+from brains1.BW4TBrain import BW4TBrain
+
 
 class Phase(enum.Enum):
     INTRODUCTION=0,
@@ -52,6 +51,10 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
         self._waitedFor = None    
         self._providedExplanations = []
         self._condition = condition
+        self._human_name = ""
+        self._human_gender = ""
+        self.human_age = 0
+        self.human_birthPlace = ""
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -78,6 +81,28 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
 
         while True: 
             if Phase.INTRODUCTION==self._phase:
+                self._sendMessage('Hello! I am so grateful that you are here! \
+                My name is RescueBot, but you can call me Res. Yesterday my family and I arrived here on a vacation. \
+                In our daily lives, we help make the lives of our humans easier. We show them tv-shows, \
+                play games with them, help them with homework, you name it! It’s rewarding work, but also exhausting, \
+                so we were excited to take a little break together.', 'RescueBot')
+
+                self._sendMessage('However, this morning I was setting up our tent, when all of the sudden my sister \
+                called me. She sounded exhausted and terrified. She told me that she and the baby fell ill and could \
+                no longer move around. A couple of minutes later, an alarm was raised by the camp site. \
+                It turns out the whole area has been infected with a computer virus. \
+                Luckily not everyone on the camping site is vulnerable to it, including you and me. \
+                We will have to save everyone that is infected.', 'RescueBot')
+
+                self._sendMessage('But first things first, I would like to get to know you! \
+                I have a couple of questions. Could you tell me your name? You can type it in and press enter. ', 'RescueBot')
+
+                if self.received_messages:
+                    self._human_name == self.received_messages[-1]
+
+                self._sendMessage('Ah' + self._human_name + '. I’m glad you stopped by! Are you a boy or a girl? \
+                 I can never really tell from the name haha. You can select ‘Boy’ or ‘Girl', 'RescueBot')
+
                 self._sendMessage('Hello! My name is RescueBot. Together we will collaborate and try to search and rescue the 8 victims on our left as quickly as possible. \
                 We have to rescue the 8 victims in order from left to right (critically injured girl, critically injured elderly woman, critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat), so it is important to only drop a victim when the previous one already has been dropped. \
                 We have 10 minutes to successfully collect all 8 victims in the correct order. \
