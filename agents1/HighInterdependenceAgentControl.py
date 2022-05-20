@@ -31,7 +31,7 @@ class Phase(enum.Enum):
     FIX_ORDER_GRAB=15,
     FIX_ORDER_DROP=16
     
-class HighInterdependenceAgent(BW4TBrain):
+class HighInterdependenceAgentControl(BW4TBrain):
     numberOfTicksWhenReady = None
 
     def __init__(self, condition, slowdown:int):
@@ -45,7 +45,7 @@ class HighInterdependenceAgent(BW4TBrain):
         self._collectedVictims = []
         self._foundVictimLocs = {}
         self._maxTicks = 11577
-        HighInterdependenceAgent.numberOfTicksWhenReady = self._maxTicks
+        HighInterdependenceAgentControl.numberOfTicksWhenReady = self._maxTicks
         self._sendMessages = []
         self._mode = 'normal'
         self._currentDoor=None    
@@ -93,8 +93,8 @@ class HighInterdependenceAgent(BW4TBrain):
                     # print(state['World']['nr_ticks'])
 
                     #Added by Justin: Store the amount of ticks when pressed 'ready' in a static variable
-                    if HighInterdependenceAgent.numberOfTicksWhenReady == self._maxTicks:
-                        HighInterdependenceAgent.numberOfTicksWhenReady = state['World']['nr_ticks']
+                    if HighInterdependenceAgentControl.numberOfTicksWhenReady == self._maxTicks:
+                        HighInterdependenceAgentControl.numberOfTicksWhenReady = state['World']['nr_ticks']
 
                     self._phase=Phase.FIND_NEXT_GOAL
                 else:
