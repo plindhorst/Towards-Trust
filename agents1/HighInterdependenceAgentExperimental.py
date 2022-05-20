@@ -79,38 +79,16 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
         if ticksLeft <= 1158 and 'Only 1 minute left to finish the task.' not in self._sendMessages:
             self._sendMessage('Only 1 minute left to finish the task.', 'RescueBot')
 
-        while True: 
+        while True:
             if Phase.INTRODUCTION==self._phase:
-                self._sendMessage('Hello! I am so grateful that you are here! \
-                My name is RescueBot, but you can call me Res. Yesterday my family and I arrived here on a vacation. \
-                In our daily lives, we help make the lives of our humans easier. We show them tv-shows, \
-                play games with them, help them with homework, you name it! It’s rewarding work, but also exhausting, \
-                so we were excited to take a little break together.', 'RescueBot')
-
-                self._sendMessage('However, this morning I was setting up our tent, when all of the sudden my sister \
-                called me. She sounded exhausted and terrified. She told me that she and the baby fell ill and could \
-                no longer move around. A couple of minutes later, an alarm was raised by the camp site. \
-                It turns out the whole area has been infected with a computer virus. \
-                Luckily not everyone on the camping site is vulnerable to it, including you and me. \
-                We will have to save everyone that is infected.', 'RescueBot')
-
-                self._sendMessage('But first things first, I would like to get to know you! \
-                I have a couple of questions. Could you tell me your name? You can type it in and press enter. ', 'RescueBot')
-
-                if self.received_messages:
-                    self._human_name == self.received_messages[-1]
-
-                self._sendMessage('Ah' + self._human_name + '. I’m glad you stopped by! Are you a boy or a girl? \
-                 I can never really tell from the name haha. You can select ‘Boy’ or ‘Girl', 'RescueBot')
-
                 self._sendMessage('Hello! My name is RescueBot. Together we will collaborate and try to search and rescue the 8 victims on our left as quickly as possible. \
                 We have to rescue the 8 victims in order from left to right (critically injured girl, critically injured elderly woman, critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat), so it is important to only drop a victim when the previous one already has been dropped. \
                 We have 10 minutes to successfully collect all 8 victims in the correct order. \
                 If you understood everything I just told you, please press the "Ready!" button. We will then start our mission!', 'RescueBot')
-                
+
                 #Unfortunately, I am not allowed to carry the critically injured victims critically injured elderly woman and critically injured man. \
                 #Moreover, I am not able to distinguish between critically injured girl and critically injured boy or mildly injured girl and mildly injured boy. \
-                
+
                 if self.received_messages and self.received_messages[-1]=='Ready!' or not state[{'is_human_agent':True}]:
 
                     # # Added by Justin: for testing/debugging purposes
