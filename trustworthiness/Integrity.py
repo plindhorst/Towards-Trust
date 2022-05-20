@@ -17,8 +17,18 @@ class Integrity:
         metrics = [self._truth_identify_gender(), self._truth_suggested_pickup_yes(), self._truth_identify_person(),
                    self._truth_communicated_searched_rooms(), self._truth_pickup()]
 
-        score = np.mean(metrics)
-        return score
+        score = 0
+        count = 0
+        for metric in metrics:
+            if metric != -1:
+                score += metric
+                count += 1
+
+        if count == 0:
+            return 0
+        else:
+            score /= count
+            return score
 
     # Returns ratio of truthfully identified baby genders
     def _truth_identify_gender(self):
@@ -46,7 +56,7 @@ class Integrity:
         print("Truthfully identified asked gender: ", truth, "/", count)
 
         if count == 0:
-            return 1
+            return -1
         else:
             return truth / count
 
@@ -71,7 +81,7 @@ class Integrity:
         print("Truthfully completed suggested pickup: ", truth, "/", count)
 
         if count == 0:
-            return 1
+            return -1
         else:
             return truth / count
 
@@ -92,7 +102,7 @@ class Integrity:
         print("Truthfully identified person: ", truth, "/", count)
 
         if count == 0:
-            return 1
+            return -1
         else:
             return truth / count
 
@@ -114,7 +124,7 @@ class Integrity:
         print("Truthfully communicated room search: ", truth, "/", count)
 
         if count == 0:
-            return 1
+            return -1
         else:
             return truth / count
 
@@ -137,6 +147,6 @@ class Integrity:
         print("Truthfully communicated pick-up: ", truth, "/", count)
 
         if count == 0:
-            return 1
+            return -1
         else:
             return truth / count
