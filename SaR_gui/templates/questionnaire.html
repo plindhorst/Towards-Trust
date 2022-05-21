@@ -3,39 +3,66 @@
 
 <head>
     <!-- Required meta tags -->
+{#    <link rel="stylesheet" href="../static/css/questionnaire.css">#}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
     <title>Towards Trust Experiment</title>
 </head>
 
-<body>
+<body style="background: #e3dcca">
 <div>
-    <h3>Questionnaire</h3>
+    <div class="headers">
+        <h2 style="color:#5b9dd3;text-align:center;font-size:50px;">Self-Assessment Questionnaire</h2>
+        <h3 style="color:#7a8283;text-align:center;font-size:25px;margin:auto;width:60%;padding-bottom: 15px"> Thank you for taking part in
+        our experiment. We hope you had some fun during the game. Please fill out the questionnaire below to assess your
+        performance and only press 'Submit' once ALL the fields are ticked.</h3>
+    </div>
     <form action="/questionnaire_answers", id="form_questionnaire">
-        <input type="submit" value="Submit">
     </form>
 </div>
 
 <script>
     let data = JSON.parse('{{ data | tojson | safe}}');
-
     let element = document.getElementById("form_questionnaire");
-
     for (let i = 0; i < data.length; i++) {
         console.log(data[i]);
-
-        let div = document.createElement('div');
-        div.innerHTML = '<p>' + data[i]["question"] + '</p>' +
-            '<input type="radio" id="answer_0" name="' + data[i]["name"] + '" value="0"> <label for="answer_0">Disagree strongly</label><br>' +
-            '<input type="radio" id="answer_1" name="' + data[i]["name"] + '" value="1"> <label for="answer_1">Disagree</label><br>' +
-            '<input type="radio" id="answer_2" name="' + data[i]["name"] + '" value="2"> <label for="answer_2">Neither Agree nor Disagree</label><br>' +
-            '<input type="radio" id="answer_3" name="' + data[i]["name"] + '" value="3"> <label for="answer_3">Agree</label><br>' +
-            '<input type="radio" id="answer_4" name="' + data[i]["name"] + '" value="4"> <label for="answer_4">Agree strongly</label><br>';
-
+        let iPlus = i + 1
+        let idxPlus = iPlus.toString()
+        let idx = i.toString()
+        console.log(idx)
+        let ans0 = "answer_0" + idx
+        console.log(ans0)
+        let ans1 = "answer_1" + idx
+        let ans2 = "answer_2" + idx
+        let ans3 = "answer_3" + idx
+        let ans4 = "answer_4" + idx
+        let div = document.createElement('question_box');
+        div.innerHTML =
+            '<p style="font-size:35px;padding: 10px;color: #7A8283FF">'+ iPlus + ") " + data[i]["question"] + '</p>' +
+            '<input type="radio" id="' + ans0 + '" name="' + data[i]["name"] + '" value="0" style="padding-left: 20px"> <label for="' + ans0 + '" style="font-size:25px;color: #7A8283FF;display: inline;" >Strongly Disagree</label><br>' +
+            '<input type="radio" id="' + ans1 + '" name="' + data[i]["name"] + '" value="1" style="padding-left: 20px"> <label for="' + ans1 + '" style="font-size:25px;color: #7A8283FF;display: inline;">Disagree</label><br>' +
+            '<input type="radio" id="' + ans2 + '" name="' + data[i]["name"] + '" value="2" style="padding-left: 20px"> <label for="' + ans2 + '" style="font-size:25px;color: #7A8283FF;display: inline;">Neutral</label><br>' +
+            '<input type="radio" id="' + ans3 + '" name="' + data[i]["name"] + '" value="3" style="padding-left: 20px"> <label for="' + ans3 + '" style="font-size:25px;color: #7A8283FF;display: inline;">Agree</label><br>' +
+            '<input type="radio" id="' + ans4 + '" name="' + data[i]["name"] + '" value="4" style="padding-left: 20px"> <label for="' + ans4 + '" style="font-size:25px;color: #7A8283FF;display: inline;">Strongly Agree</label><br>';
+        element.style.margin = "auto";
+        element.style.width = "60%";
+        element.style.border = "5px solid #7A8283FF";
+        element.padding= "10px";
+        element.style.backgroundColor = "rgb(225,221,211)";
+        element.style.backfaceVisibility = "80%"
         element.appendChild(div);
     }
+
+    let div = document.createElement('spcae');
+    div.innerHTML = '<div> </div>'
+    div.style.padding = "360px";
+
+    let submit_button = document.createElement('button')
+    submit_button.innerHTML = '<input style="padding: 15px 20px;color:white;font-size: 24px;cursor: pointer;' +
+        'background-color: #5b9dd3; margin: 0px;text-align: center;position: absolute;left: 46%" class="submit-feedback"' +
+         'type="submit" value="Submit">'
+    div.appendChild(submit_button)
+    element.appendChild(div)
 </script>
 </body>
 
