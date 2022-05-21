@@ -8,7 +8,8 @@ import sys
 from SaR_gui import visualization_server
 from trustworthiness.Trustworthiness import Trustworthiness
 from worlds1.worldBuilder import create_builder
-from agents1 import HighInterdependenceAgentControl, HighInterdependenceAgentExperimental
+from agents1 import HighInterdependenceAgentControl, HighInterdependenceAgentExperimental, \
+    HighInterdependenceAgentControlDutch, HighInterdependenceAgentExperimentalDutch
 
 if __name__ == "__main__":
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         choice1 = input()
 
     # Hardcode interdependence to trial or high
-    print("\nEnter one of the interdependence conditions 'trial', 'high-control' or 'high-experimental'")
+    print("\nEnter one of the interdependence conditions 'trial', trial-dutch, 'high-control-dutch' or 'high-experimental-dutch'")
     choice2 = input()
 
     # Create our world builder
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     r = requests.get("http://localhost:" + str(visualization_server.port) + "/shutdown_visualizer")
     vis_thread.join()
 
-    if choice2 == "low" or choice2 == "high":
+    if choice2 != "trial" and choice2 != "trial-dutch":
         fld = os.getcwd()
         recent_dir = max(glob.glob(os.path.join(fld, '*/')), key=os.path.getmtime)
         recent_dir = max(glob.glob(os.path.join(recent_dir, '*/')), key=os.path.getmtime)
@@ -106,9 +107,18 @@ if __name__ == "__main__":
             no_ticks = str(int(
                 action_contents[-1]['tick_nr']) - HighInterdependenceAgentControl.HighInterdependenceAgentControl.numberOfTicksWhenReady)
 
+        if choice2 == 'high-control-dutch':
+            no_ticks = str(int(
+                action_contents[-1]['tick_nr']) - HighInterdependenceAgentControlDutch.HighInterdependenceAgentControlDutch.numberOfTicksWhenReady)
+
         if choice2 == 'high-experimental':
             no_ticks = str(int(
                 action_contents[-1]['tick_nr']) - HighInterdependenceAgentExperimental.HighInterdependenceAgentExperimental.numberOfTicksWhenReady)
+
+        if choice2 == 'high-experimental-dutch':
+            no_ticks = str(int(
+                action_contents[-1]['tick_nr']) - HighInterdependenceAgentExperimentalDutch.HighInterdependenceAgentExperimentalDutch.numberOfTicksWhenReady)
+
 
         success = action_contents[-1]['done']
         print("Saving output...")
