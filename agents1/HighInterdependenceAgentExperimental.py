@@ -1,4 +1,5 @@
 import enum
+from random import randrange
 
 from matrx import utils
 from matrx.actions.object_actions import GrabObject, DropObject
@@ -72,6 +73,7 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
         self._introBool3 = False
         self._introBool4 = False
         self._introBool5 = False
+        self._positivenessGiven = []
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -100,6 +102,10 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
             self._sendMessage('Only 1 minute left to finish the task.', 'RescueBot')
 
         while True:
+            if self.received_messages:
+                if 'Collect' in self.received_messages[-1][0:7]:
+                    self._sendPositiveMessage()
+
             if Phase.INTRODUCTION == self._phase:
                 self._sendMessage('Hello! I am so grateful that you are here! \
                 My name is RescueBot, but you can call me Res. Yesterday my family and I arrived here on a vacation. \
@@ -144,7 +150,7 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
 
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
                     self._sendMessage("Ahaa hi " + self._human_name + "! I’m glad you stopped by! Are you a boy or a girl? \
-                     I can never really tell from the name haha. You can select the button ‘Boy’ or ‘Girl‘", 'RescueBot')
+                     I can never really tell from the name haha. You can select the button ‘Boy’ or ‘Girl‘.", 'RescueBot')
                 else:
                     return None, {}
 
@@ -216,7 +222,7 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
                     self._sendMessage("Okay let’s get back to the problem we have here. \
                     I need to rescue my family, but I cannot do it alone. Could you please help me? You \
-                                      can press the button 'Yes' or 'No'", 'RescueBot')
+                                      can press the button 'Yes' or 'No'.", 'RescueBot')
                 else:
                     return None, {}
 
@@ -1028,3 +1034,48 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
             return "90 to 95"
         elif age >= 95 and age < 100:
             return "95 to 100"
+
+    def _sendPositiveMessage(self):
+        seed = randrange(12)
+
+        if seed == 0 and "See, I said that I was lucky to have you!" not in self.received_messages:
+            self._positivenessGiven.append("See, I said that I was lucky to have you!")
+            self._sendMessage("See, I said that I was lucky to have you!", "RescueBot")
+
+        elif seed == 1 and "Well done " + self._human_name + "!" not in self._positivenessGiven:
+            self._positivenessGiven.append("Well done " + self._human_name + "!")
+            self._sendMessage("Well done " + self._human_name + "!", "RescueBot.")
+
+        elif seed == 2 and "My family thanks you." not in self._positivenessGiven:
+            self._positivenessGiven.append("My family thanks you.")
+            self._sendMessage("My family thanks you.", "RescueBot")
+
+        elif seed == 3 and "You know what " + self._human_name + ", you are great I really like you." not in self.received_messages:
+            self._positivenessGiven.append("You know what " + self._human_name + ", you are great. I really like you.")
+            self._sendMessage("You know what " + self._human_name + ", you are great. I really like you.", "RescueBot")
+
+        elif seed == 4 and "That is some talent right there." not in self._positivenessGiven:
+            self._positivenessGiven.append("That is some talent right there.")
+            self._sendMessage("That is some talent right there.", "RescueBot")
+
+        elif seed == 5 and "That's amazing. You are amazing. Keep it up!" not in self._positivenessGiven:
+            self._positivenessGiven.append("That's amazing. You are amazing. Keep it up!")
+            self._sendMessage("That's amazing. You are amazing. Keep it up!", "RescueBot")
+
+        elif seed == 6 and "Thank you! If I were human I would definitely want to hang out together." not in self.received_messages:
+            self._positivenessGiven.append("Thank you! If I were human I would definitely want to hang out together.")
+            self._sendMessage("Thank you! If I were human I would definitely want to hang out together.", "RescueBot")
+
+        elif seed == 7 and "We are actually saving them!" not in self._positivenessGiven:
+            self._positivenessGiven.append("We are actually saving them!")
+            self._sendMessage("We are actually saving them!", "RescueBot")
+        elif seed == 8 and "Yes we can do it!" not in self._positivenessGiven:
+            self._positivenessGiven.append("Yes we can do it!")
+            self._sendMessage("Yes we can do it!", "RescueBot")
+        elif seed == 9 and "Oohh what a magnificent man you are" not in self._positivenessGiven and "Oohh what a magnificent woman you are" not in self._positivenessGiven:
+            if self._human_gender == 'Boy':
+                self._positivenessGiven.append("Oohh what a magnificent man you are")
+                self._sendMessage("Oohh what a magnificent man you are", "RescueBot")
+            else:
+                self._positivenessGiven.append("Oohh what a magnificent woman you are")
+                self._sendMessage("Oohh what a magnificent woman you are", "RescueBot")
