@@ -32,7 +32,7 @@ if __name__ == "__main__":
         choice1 = input()
 
     # Hardcode interdependence to trial or high
-    print("\nEnter one of the interdependence conditions 'trial', trial-dutch, 'high-control-dutch' or 'high-experimental-dutch'")
+    print("\nEnter one of the interdependence conditions 'trial', trial-dutch, 'high-control', 'high-control-dutch', 'high-experimental' or 'high-experimental-dutch'")
     choice2 = input()
 
     # Create our world builder
