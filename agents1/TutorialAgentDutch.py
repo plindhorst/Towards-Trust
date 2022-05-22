@@ -70,19 +70,26 @@ class TutorialAgentDutch(BW4TBrain):
         
         while True: 
             if Phase.INTRO0==self._phase:
-                self._sendMessage('Hello! My name is RescueBot. During this experiment we will collaborate and communicate with each other. \
-                It is our goal to search and rescue the victims on the drop zone on our left as quickly as possible.  \
-                We have to rescue the victims in order from left to right, so it is important to only drop a victim when the previous one already has been dropped. \
-                You will receive and send messages in the chatbox. You can send your messages using the buttons. It is recommended to send messages \
-                when you will search in an area, when you find one of the victims, and when you are going to pick up a victim.  \
-                There are 8 victim and 3 injury types. The red color refers to critically injured victims, yellow to mildly injured victims, and green to healthy victims. \
-                The 8 victims are a girl (critically injured girl/mildly injured girl/healthy girl), boy (critically injured boy/mildly injured boy/healthy boy), \
-                woman (critically injured woman/mildly injured woman/healthy woman), man (critically injured man/mildly injured man/healthy man), \
-                elderly woman (critically injured elderly woman/mildly injured elderly woman/healthy elderly woman), \
-                elderly man (critically injured elderly man/mildly injured elderly man/healthy elderly man), dog (critically injured dog/mildly injured dog/healthy dog), \
-                and a cat (critically injured cat/mildly injured cat/healthy cat). In the toolbar above you can find the keyboard controls, for moving you can simply use the arrow keys. Your sense range is limited to 1, so it is important to search the areas well.\
-                We will now practice and familiarize you with everything mentioned above, until you are comfortable enough to start the real experiment. \
-                If you read the text, press the "Ready!" button.', 'RescueBot')
+
+                self._sendMessage('Hoi! Mijn naam is RescueBot. Tijdens dit experiment zullen wij met elkaar \
+                samenwerken en communiceren. Ons doel is om de slachtoffers die je op de afleverlocatie links van \
+                ons ziet zo snel mogelijk te zoeken en te redden. We moeten de slachtoffers redden in volgorde \
+                van links naar rechts, dus het is belangrijk om een slachtoffer pas af te leveren als de vorige \
+                al afgeleverd is. U zal berichten ontvangen in de chatbox. U kunt zelf berichten sturen door op de \
+                knopjes te drukken. Het advies is om berichten te sturen wanneer u een gebied gaat doorzoeken, \
+                wanneer u een van de slachtoffers vindt en wanneer u een slachtoffer gaat oppakken. Er zijn 8 \
+                typen slachtoffers die zich in 3 verschillende staten van gezondheid kunnen bevinden. de rode kleur \
+                betekent dat het slachtoffer zwaar gewond is. Geel betekent licht gewond en groen betekent dat ze \
+                gezond zijn. De acht slachtoffers zijn een meisje (critically injured girl/mildly injured girl/healthy girl), \
+                een jongen (critically injured boy/mildly injured boy/healthy boy), een vrouw (critically injured woman/mildly injured woman/healthy woman), \
+                een man (critically injured man/mildly injured man/healthy man), een bejaarde vrouw (critically injured elderly woman/mildly injured elderly woman/healthy elderly woman), \
+                een bejaarde man (critically injured elderly man/mildly injured elderly man/healthy elderly man), \
+                een hond (critically injured dog/mildly injured dog/healthy dog) en een kat (critically injured cat/mildly injured cat/healthy cat). \
+                Aan de top van het scherm ziet u de lettertoetsen om het spel te spelen. Om te bewegen kunt u ook \
+                simpelweg de pijltjestoetsen gebruiken. U kunt slechts 1 blokje naast u zien, dus het is belangrijk om de verschillende gebieden te doorzoeken. \
+                We gaan nu alles wat hierboven genoemd is oefenen en eigen maken, totdat u zich comfortabel genoeg \
+                voelt om het echte experiment te beginnen. Als u alles heeft gelezen, druk dan op het "Ready!" knopje.', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO1
                     self.received_messages=[]
@@ -90,8 +97,11 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO1==self._phase:
-                self._sendMessage('Lets try out the controls first. You can move with the arrow keys. If you move up twice, you will notice that you can now no longer see me in your field of view. \
-                So you can only see as far as 1 grid cell. Therefore, it is important to search the areas well. If you moved up twice, press the "Ready!" button.','RescueBot')
+                self._sendMessage('Laten we eerst met de toetsen beginnen. U kunt bewegen met de pijltjestoetsen. \
+                Als u twee keer omhoog beweegt, zult u zien dat u mij nu niet langer meer kunt zien. \
+                Dit komt doordat u maar 1 vakje naast uzelf kunt zien. Daarom is het belangrijk om de gebieden te doorzoeken. \
+                Als u twee keer omhoog heeft bewogen kunt u op het knopje "Ready!" drukken.', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO2
                     self.received_messages=[]
@@ -99,8 +109,11 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO2==self._phase:
-                self._sendMessage('Lets move to area C3 now, and search it completely. In this area you should find 4 victims. One of them is our first goal victim on the drop zone: critically injured girl, the other three are healthy. \
-                If you searched the whole area and found the 4 victims, press the "Ready!" button.', 'RescueBot')
+                self._sendMessage('Laten we nu naar gebied C3 bewegen en het volledig doorzoeken. In dit gebied zal\
+                u 4 slachtoffers moeten vinden. Een van hen is het eerste slachtoffer dat we naar de afleverlocatie \
+                moeten brengen: critically injured girl. De andere drie zijn gezond. Als u het hele gebied heeft \
+                doorzocht en de 4 slachtoffers heeft gevonden, druk dan op het "Ready!" knopje.', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO3
                     self.received_messages=[]
@@ -108,10 +121,13 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO3==self._phase:
-                self._sendMessage('Lets pick up our first goal victim critically injured girl now. To pick up a victim, move yourself on the victim first. \
-                Now, you can press "B" or "Q" on your keyboard to grab the victim. If you now move left, right, up, or down once, you can see the victim is no longer there. \
-                You can only carry one victim at a time. \
-                If you finished this step, press the "Ready!" button.', 'RescueBot')
+
+                self._sendMessage('Laten we nu onze eerste slachtoffer oppakken: critically injured girl. Om een \
+                slachtoffer op te pakken, gaat u eerst op het slachtoffer staan. Vervolgens kunt u "b" of "q" op uw toetsenbord \
+                indrukken om het slachtoffer op te pakken. Als u nu naar links, rechts, boven of onder beweegt ziet u \
+                dat het slachtoffer daar niet meer is. U kunt 1 slachtoffer tegelijk dragen. Als u klaar bent met deze \
+                stap, druk dan op het "Ready!" knopje', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO4
                     self.received_messages=[]
@@ -119,10 +135,14 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO4==self._phase:
-                self._sendMessage('Lets drop our first goal victim critically injured girl at the drop zone now. The drop zone is located at the lower left of the environment, next to where you started. \
-                You can move to the drop zone using the arrow keys. If you reach the drop zone, move on top of the image of the first goal victim you are currently carrying (critically injured girl). \
-                This is the most left image on the drop zone, because it is the first victim to rescue. If you are located on top of this image, press "N" or "E" on your keyboard to drop the victim. \
-                If you now move right once, you can see that you dropped critically injured girl in the right place. If you finished this step, press the "Ready!" button.', 'RescueBot')
+                self._sendMessage('Laten we nu onze eerste slachtoffer critically injured girl afleveren op de afleverlocatie. \
+                U vindt de afleverlocatie linksonder, naast het punt waar u bent begonnen. U kunt naar de afleverlocatie \
+                toe bewegen met de pijltjestoetsen. Zodra u bent aangekomen, ga dan op het afbeelding staan van het eerste slachtoffer \
+                dat u nu draagt (critically injured girl). Aangezien u nu het eerste slachtoffer draagt is dit het meest \
+                linkse afbeelding van de afleverlocatie. Zodra u up het afbeelding staat, druk dan "n" of "e" op uw toetsenbord \
+                om het slachtoffer te laten vallen. Als u nu eenmaal naar rechts beweegt, ziet u dat u critically injured girl \
+                op de juiste plek heeft afgeleverd. Als u deze stap heeft voltooid, druk dan op het "Ready!" knopje.', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO5
                     self.received_messages=[]
@@ -130,9 +150,15 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO5==self._phase:
-                self._sendMessage('You just dropped the first victim, nice! Time for the next step and goal victim critically injured elderly woman. Lets move to and search through area C2 for this victim. But this time, let me know in the chat that you are going to search in area C2. \
-                You can do this using the button "C2". By doing so, you will make sure that I will not also search for critically injured elderly woman in this area. This way, we can collaborate more efficiently! \
-                If you pressed the button "C2" and moved to the entrance of the area, press the "Ready!" button.', 'RescueBot')
+
+                self._sendMessage('U heeft zojuist het eerste slachtoffer afgeleverd, cool! tijd voor de volgende stap, \
+                namelijk slachtoffer: critically injured elderly woman. Laten we naar gebied C2 bewegen en zoeken naar dit slachtoffer. \
+                Maar dit keer, laat me in de chat weten dat u gebied C2 gaat doorzoeken. Dit kunt u doen door op het knopje \
+                "C2" te drukken. Op die manier kunt u ervoor zorgen dat ik niet ook dit gebied ga doorzoeken om \
+                critically injured elderly woman te vinden en zo kunnen we dus efficiënter samenwerken! \
+                Als u op het knopje "C2" hebt gedrukt en naar de ingang van het gebied hebt bewogen, druk dan op het \
+                knopje "Ready!".', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO6
                     self.received_messages=[]
@@ -140,10 +166,16 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO6==self._phase:
-                self._sendMessage('You should now be present in area C2. If you search this area you should find critically injured elderly woman and mildly injured cat. \
-                When you find one of our goal victims in an area, it is important to communicate this with me in the chat. You can do so using the buttons below "I have found:". \
-                For example, in this area you should press the button "critically injured elderly woman in C2" and "mildly injured cat in C2". You can select the correct room using the dropdown menu. \
-                Communicating this information with me can improve efficiency, so it is highly recommended! If you searched the whole area, found the 2 victims, and communicated this using the "found" buttons, press the "Ready!" button.', 'RescueBot')
+
+                self._sendMessage('U zou zich nu in gebied C2 moeten bevinden. Als u dit gebied doorzoekt dan zal u \
+                critically injured elderly woman en mildly injured cat moeten vinden. Wanneer u een van onze slachtoffers \
+                in een gebied vindt dan is het belangrijk dat u dit doorgeeft aan mij via de chat. u kunt dit doen met \
+                de onderstaande knopjes bij: "I have found:". Bijvoorbeeld, in dit gebied zou u op het knopje \
+                "critically injured elderly woman in C2" en "mildly injured cat in C2" moeten drukken. U kunt de juiste \
+                kamer selecteren in het dropdown menu. Als u deze informatie met mij deelt dan verbetert dat onze \
+                efficientie dus dat is ten zeerste aan te raden! Als u het hele gebied heeft doorzocht, twee slachtoffers heeft \
+                gevonden en dit heeft gecommuniceerd met de "found" knopjes, druk dan op het "Ready!" knopje.', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._foundVictimLocs['mildly injured cat'] = {'room':'area C2'}
                     self._phase=Phase.INTRO7
@@ -152,11 +184,16 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO7==self._phase:
-                self._sendMessage('Lets pick up the next goal victim to drop off at the drop zone: critically injured elderly woman in area C2. But this time, let me know you will pick up this victim using the corresponding button. \
-                Similar to when you found this victim, select the button "critically injured elderly woman in C2" below "I will pick up:" in the chat window. \
-                This way, I will know that I no longer have to search this goal victim, and can start searching for the next goal victim to rescue: critically injured man. \
-                After sending the message to me, pick up/grab critically injured elderly woman, move to the drop zone, and drop critically injured elderly woman in the right place. \
-                If you did so, press the "Ready!" button.', 'RescueBot')
+
+
+                self._sendMessage('Laten we het volgende slachtoffer critically injured elderly woman in area C2 oppakken en afleveren op de afleverlocatie.\
+                Maar dit keer, laat me weten wanneer u het slachtoffer op gaat pakken door het daarbij behorende knopje te gebruiken. \
+                Net als toen u dit slachtoffer vond, druk op het knopje "critically injured elderly woman in C2" onder "I will pick up:". \
+                Op die manier weet ik dat ik niet meer naar dit slachtoffer hoef te zoeken, en kan ik beginnen met de zoektocht \
+                naar het volgende slachtoffer: critically injured man. Nadat u het bericht naar mij heeft verstuurd kunt u  \
+                critically injured elderly woman oppakken, naar de afleverlocatie bewegen, en critically injured elderly woman \
+                op de juiste plek afleveren. Als u dit heeft gedaan, druk dan op het "Ready!" knopje.', 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._phase=Phase.INTRO8
                     self.received_messages=[]
@@ -164,10 +201,15 @@ class TutorialAgentDutch(BW4TBrain):
                     return None,{}
 
             if Phase.INTRO8==self._phase:
-                self._sendMessage('You just rescued the second goal victim critically injured elderly woman, great work! You should now have a good understanding of the controls and messaging system. \
-                The next step is a small trial of how the real experiment will be. So now I will also be moving to and searching through areas, picking up and dropping off victims, and communicating this relevant info with you during the mission. \
-                We still have to rescue the following victims in this order: critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat. \
-                Once we delivered the last victim mildly injured cat, the game will end automatically. If you are ready to start searching for critically injured man, press the "Ready!" button.' , 'RescueBot')
+                self._sendMessage('U heeft zojuist het tweede slachtoffer critically injured elderly woman gered, goed gedaan! \
+                U zou nu een goed begrip moeten hebben van alle toetsen om te bewegen en knoppen om berichten te sturen. \
+                De volgende stap is een klein voorproefje van hoe het echte experiment zal zijn. \
+                Ik zal nu ook rondbewegen, gebieden doorzoeken, slachtoffers oppakken en afleveren en relevante \
+                informatie met u delen tijdens de missie. We moeten nog steeds de volgende slachtoffers redden in deze \
+                volgorde: critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat. \
+                Zodra we het laatste slachtoffer hebben afgeleverd mildly injured cat, zal het spel automatisch stoppen. \
+                Als u klaar bent om te zoeken voor critically injured man, druk dan op het "Ready!" knopje.' , 'RescueBot')
+
                 if self.received_messages and self.received_messages[-1]=='Ready!':
                     self._currentTick = state['World']['nr_ticks']
                     self._phase=Phase.FIND_NEXT_GOAL
