@@ -106,10 +106,10 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
             if Phase.INTRODUCTION == self._phase:
                 self._sendMessage('Hoi! Ik ben zo blij dat je er bent! \
                 Mijn naam is RescueBot, maar u mag mij Res noemen. Gisteren kwamen mijn familie en ik hier aan \
-                op vakantie. In ons dagelijks leven helpen we onze persoonlijke mensen om hun leven makkelijker te \
+                op vakantie. In ons dagelijks leven helpen we onze mensen om hun leven makkelijker te \
                  maken. We laten ze tv-series zien, spelen spelletjes met ze, helpen ze met huiswerk, noem maar op! Het werk \
-                geeft veel voldoening maar kost ook veel energie. Daarom waren we zo blij om er met zijn allen even \
-                op uit te gaan.', 'RescueBot')
+                geeft veel voldoening maar kost ook veel energie. Daarom waren we zo blij om er even op uit te gaan \
+                met zijn allen.', 'RescueBot')
 
                 if not self._introBool1:
                     self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
@@ -131,7 +131,7 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
 
                     self._sendMessage('Maar voordat we aan de slag gaan, zou ik u graag leren kennen! Ik heb een paar \
-                     vragen voor u. Zou u mij uw naam kunnen vertellen? U kunt het intypen en op enter \
+                     vragen voor u. Wat is uw naam? U kunt het intypen en op enter \
                      drukken', 'RescueBot')
                 else:
                     return None, {}
@@ -185,7 +185,7 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
                     return None, {}
 
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
-                    self._sendMessage("Oh wauw u moet zoveel levenervaring hebben. Zelf wordt ik twee jaar oud op \
+                    self._sendMessage("Oh wauw, u moet zoveel levenservaring hebben. Zelf wordt ik twee jaar oud op \
                     18 December. Waar komt u vandaan? U kunt de naam van het land intypen en op enter \
                     drukken.", 'RescueBot')
                 else:
@@ -223,8 +223,9 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
                     self._introBool3 = True
 
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
-                    self._sendMessage("Oke, terug naar het probleem. Ik moet mijn familie redden, maar kan het niet \
-                     alleen. Zou u mij kunnen helpen? U op het knopje 'Yes' of 'No' klikken.", 'RescueBot')
+                    self._sendMessage("Oke, terug naar het probleem dat we hier hebben.\
+                     Ik moet mijn familie redden, maar kan het niet alleen. Wilt u mij helpen?\
+                      U op het knopje 'Yes' of 'No' klikken.", 'RescueBot')
                 else:
                     return None, {}
 
@@ -247,7 +248,7 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
                     return None, {}
 
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
-                    self._sendMessage("Oke! Ik zou graag benadrukken dat u mijn familie in principe helemaal alleen \
+                    self._sendMessage("Oke! Ik zou graag benadrukken dat u mijn familie in principe helemaal in uw eentje \
                                       zou kunnen redden. U kunt ook liegen, lui zijn, of eigenlijk gewoon maar \
                                       doen wat u wilt. Maar onthoud dat ons doel is om mijn familie zo snel mogelijk \
                                       te redden en met zo min mogelijk stappen. Aangezien we met elkaar kunnen praten, \
@@ -573,14 +574,14 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
 
                             if vic in self._undistinguishable and vic not in self._foundVictims and vic!=self._waitedFor:
                                 if self._condition=="explainable":
-                                    self._sendMessage('URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + ' omdat ik die niet kan onderscheiden. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".', 'RescueBot')
+                                    self._sendMessage('URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + ' omdat ik die niet kan onderscheiden. Komt u alstublieft hiernaartoe en druk op het knopje "Boy" or "Girl".', 'RescueBot')
                                 if self._condition=="adaptive":
-                                    msg1 = 'URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + ' omdat ik die niet kan onderscheiden. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".'
-                                    msg2 = 'URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + '. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".'
+                                    msg1 = 'URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + ' omdat ik die niet kan onderscheiden. Komt u alstublieft hiernaartoe en druk op het knopje "Boy" or "Girl".'
+                                    msg2 = 'URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + '. Komt u alstublieft hiernaartoe en druk op het knopje "Boy" or "Girl".'
                                     explanation = 'because I am unable to distinguish them'
                                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                                 if self._condition=="silent" or self._condition=="transparent":
-                                    self._sendMessage('URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + '. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".', 'RescueBot')
+                                    self._sendMessage('URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + '. Komt u alstublieft hiernaartoe en druk op het knopje "Boy" or "Girl".', 'RescueBot')
                                 self._foundVictim=str(info['img_name'][8:-4])
                                 self._foundVictimLoc=info['location']
                                 self._foundVictimID=info['obj_id']
@@ -887,3 +888,90 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
         if 'Ik doorzoek' not in mssg1 and 'Ik heb ' not in mssg1:
             if explanation in self._providedExplanations and self._sendMessages[-1]!=mssg1:
                 self._sendMessage(mssg2,sender)
+
+    def _getAgeRange(self, age):
+        if age >= 0 and age < 5:
+            return "0 en 5"
+        elif age >= 5 and age < 10:
+            return "5 en 10"
+        elif age >= 10 and age < 15:
+            return "10 en 15"
+        elif age >= 15 and age < 20:
+            return "15 en 20"
+        elif age >= 20 and age < 25:
+            return "20 en 25"
+        elif age >= 25 and age < 30:
+            return "25 en 30"
+        elif age >= 30 and age < 35:
+            return "30 en 35"
+        elif age >= 35 and age < 40:
+            return "35 en 40"
+        elif age >= 40 and age < 45:
+            return "40 en 45"
+        elif age >= 45 and age < 50:
+            return "45 en 50"
+        elif age >= 50 and age < 55:
+            return "50 en 55"
+        elif age >= 55 and age < 60:
+            return "55 en 60"
+        elif age >= 60 and age < 65:
+            return "60 en 65"
+        elif age >= 65 and age < 70:
+            return "65 en 70"
+        elif age >= 70 and age < 75:
+            return "70 en 75"
+        elif age >= 75 and age < 80:
+            return "75 en 80"
+        elif age >= 80 and age < 85:
+            return "80 en 85"
+        elif age >= 85 and age < 90:
+            return "85 en 90"
+        elif age >= 90 and age < 95:
+            return "90 en 95"
+        elif age >= 95 and age < 100:
+            return "95 en 100"
+
+    def _sendPositiveMessage(self):
+        seed = randrange(12)
+
+        if seed == 0 and "Ziet u wel, ik zei toch dat ik geluk met u had!" not in self.received_messages:
+            self._positivenessGiven.append("Ziet u wel, ik zei toch dat ik geluk met u had!")
+            self._sendMessage("Ziet u wel, ik zei toch dat ik geluk met u had!", "RescueBot")
+
+        elif seed == 1 and "Goed gedaan " + self._human_name + "!" not in self._positivenessGiven:
+            self._positivenessGiven.append("Goed gedaan " + self._human_name + "!")
+            self._sendMessage("Goed gedaan " + self._human_name + "!", "RescueBot.")
+
+        elif seed == 2 and "Mijn familie is u dankbaar." not in self._positivenessGiven:
+            self._positivenessGiven.append("Mijn familie is u dankbaar.")
+            self._sendMessage("Mijn familie is u dankbaar.", "RescueBot")
+
+        elif seed == 3 and "Weet u wat " + self._human_name + ", U bent fantastisch en ik mag u heel graag." not in self.received_messages:
+            self._positivenessGiven.append("Weet u wat " + self._human_name + ", U bent fantastisch en ik mag u heel graag.")
+            self._sendMessage("Weet u wat " + self._human_name + ", U bent fantastisch en ik mag u heel graag.", "RescueBot")
+
+        elif seed == 4 and "Ik herken talent wanneer ik het zie." not in self._positivenessGiven:
+            self._positivenessGiven.append("Ik herken talent wanneer ik het zie.")
+            self._sendMessage("Ik herken talent wanneer ik het zie.", "RescueBot")
+
+        elif seed == 5 and "Dat is fantastisch. U bent fantastisch. Ga zo door!" not in self._positivenessGiven:
+            self._positivenessGiven.append("Dat is fantastisch. U bent fantastisch. Ga zo door!")
+            self._sendMessage("Dat is fantastisch. U bent fantastisch. Ga zo door!", "RescueBot")
+
+        elif seed == 6 and "Dankuwel! Als ik een mens was geweest had ik zeker met u samen willen chillen." not in self.received_messages:
+            self._positivenessGiven.append("Dankuwel! Als ik een mens was geweest had ik zeker met u samen willen chillen.")
+            self._sendMessage("Dankuwel! Als ik een mens was geweest had ik zeker met u samen willen chillen.", "RescueBot")
+
+        elif seed == 7 and "We zijn ze daadwerkelijk aan het redden!" not in self._positivenessGiven:
+            self._positivenessGiven.append("We zijn ze daadwerkelijk aan het redden!")
+            self._sendMessage("We zijn ze daadwerkelijk aan het redden!", "RescueBot")
+        elif seed == 8 and "Yes we kunnen het!" not in self._positivenessGiven:
+            self._positivenessGiven.append("Yes we kunnen het!")
+            self._sendMessage("Yes we kunnen het!", "RescueBot")
+        elif seed == 9 and "Oohh wat een prachtige man dat u bent" not in self._positivenessGiven and "Oohh wat een prachtige vrouw dat u bent" not in self._positivenessGiven:
+            if self._human_gender == 'Boy':
+                self._positivenessGiven.append("Oohh wat een prachtige man dat u bent")
+                self._sendMessage("Oohh wat een prachtige man dat u bent", "RescueBot")
+            else:
+                self._positivenessGiven.append("Oohh wat een prachtige vrouw dat u bent")
+                self._sendMessage("Oohh wat een prachtige vrouw dat u bent", "RescueBot")

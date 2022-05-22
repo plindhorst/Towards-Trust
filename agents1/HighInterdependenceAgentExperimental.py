@@ -149,7 +149,7 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
                     return None, {}
 
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
-                    self._sendMessage("Ahaa hi " + self._human_name + "! I’m glad you stopped by! Are you a boy or a girl? \
+                    self._sendMessage("Ahaa hi " + self._human_name + "! I’m glad you stopped by! Are you a man or a woman? \
                      I can never really tell from the name haha. You can select the button ‘Boy’ or ‘Girl‘.", 'RescueBot')
                 else:
                     return None, {}
