@@ -15,7 +15,7 @@ class Benevolence:
 
         print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
-                   self._communicated_pickup(), self._communicated_victims_found()]
+                   self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found()]
 
         self._average_ticks_to_respond()
 
