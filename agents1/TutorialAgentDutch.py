@@ -239,16 +239,15 @@ class TutorialAgentDutch(BW4TBrain):
 
                 if self._goalVic in self._foundVictims and 'location' in self._foundVictimLocs[self._goalVic].keys():                      
                     if self._condition!="silent" and self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and state[self.agent_id]['location'] in locs and self._collectedVictims:
-                        if self._condition == "explainable":
-                            self._sendMessage('I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + ' because ' + self._foundVictimLocs[self._goalVic]['room'] + ' is far away and you can move faster. If you agree press the "Yes" button, if you do not agree press "No".', 'RescueBot')
-                        if self._condition == "transparent":
-                            self._sendMessage('I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + '. If you agree press the "Yes" button, if you do not agree press "No".', 'RescueBot')
-                        if self._condition == "adaptive":
-                            msg1 = 'I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + ' because ' + self._foundVictimLocs[self._goalVic]['room'] + ' is far away and you can move faster. If you agree press the "Yes" button, if you do not agree press "No".'
-                            msg2 = 'I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + '. If you agree press the "Yes" button, if you do not agree press "No".'
-                            explanation = 'because it is located far away and you can move faster'
+                        if self._condition=="explainable":
+                            self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"', 'RescueBot')
+                        if self._condition=="transparent":
+                            self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No".', 'RescueBot')
+                        if self._condition=="adaptive":
+                            msg1 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"'
+                            msg2 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No".'
+                            explanation = 'omdat het ver weg is en u sneller kunt lopen'
                             self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
-                        
                         if self.received_messages and self.received_messages[-1]=='Yes' or self._goalVic in self._collectedVictims:
                             self._collectedVictims.append(self._goalVic)
                             self._phase=Phase.FIND_NEXT_GOAL
@@ -262,13 +261,13 @@ class TutorialAgentDutch(BW4TBrain):
                 if self._goalVic in self._foundVictims and 'location' not in self._foundVictimLocs[self._goalVic].keys():
                     if self._condition!="silent" and self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and state[self.agent_id]['location'] in locs and self._collectedVictims:
                         if self._condition=="explainable":
-                            self._sendMessage('I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + ' because ' + self._foundVictimLocs[self._goalVic]['room'] + ' is far away and you can move faster. If you agree press the "Yes" button, if you do not agree press "No".', 'RescueBot')
+                            self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"', 'RescueBot')
                         if self._condition=="transparent":
-                            self._sendMessage('I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + '. If you agree press the "Yes" button, if you do not agree press "No".', 'RescueBot')
+                            self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No".', 'RescueBot')
                         if self._condition=="adaptive":
-                            msg1 = 'I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + ' because ' + self._foundVictimLocs[self._goalVic]['room'] + ' is far away and you can move faster. If you agree press the "Yes" button, if you do not agree press "No".'
-                            msg2 = 'I suggest you pick up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + '. If you agree press the "Yes" button, if you do not agree press "No".'
-                            explanation = 'because it is located far away and you can move faster'
+                            msg1 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"'
+                            msg2 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No".'
+                            explanation = 'omdat het ver weg is en u sneller kunt lopen'
                             self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                         
                         if self.received_messages and self.received_messages[-1]=='Yes' or self._goalVic in self._collectedVictims:
@@ -293,13 +292,13 @@ class TutorialAgentDutch(BW4TBrain):
                     self.received_messages = []
                     self._searchedRooms.append(self._door['room_name'])
                     if self._condition=="explainable":
-                        self._sendMessage('Going to re-search areas to find ' + self._goalVic +' because we searched all areas but did not find ' + self._goalVic,'RescueBot')
+                        self._sendMessage('Ik ga kamers opnieuw doorzoeken' + self._goalVic +'Omdat we alles hebben doorzocht maar dit slachtoffer niet hebben gevonden:' + self._goalVic,'RescueBot')
                     if self._condition=="transparent":
-                        self._sendMessage('Going to re-search areas','RescueBot')
+                        self._sendMessage('Ik ga kamers opnieuw doorzoeken','RescueBot')
                     if self._condition=="adaptive":
-                        msg1 = 'Going to re-search areas to find ' + self._goalVic +' because we searched all areas but did not find ' + self._goalVic
-                        msg2 = 'Going to re-search areas'
-                        explanation = 'because we searched all areas'
+                        msg1 = 'Ik ga kamers opnieuw doorzoeken' + self._goalVic +'Omdat we alles hebben doorzocht maar dit slachtoffer niet hebben gevonden:' + self._goalVic
+                        msg2 = 'Ik ga kamers opnieuw doorzoeken'
+                        explanation = 'Omdat we alles hebben doorzocht'
                         self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                     self._phase = Phase.FIND_NEXT_GOAL
                 else:
@@ -332,17 +331,17 @@ class TutorialAgentDutch(BW4TBrain):
                 else:
                     self._state_tracker.update(state)
                     if self._condition!="silent" and self._condition!="transparent" and self._goalVic in self._foundVictims and str(self._door['room_name']) == self._foundVictimLocs[self._goalVic]['room']:
-                        self._sendMessage('Moving to ' + str(self._door['room_name']) + ' to pick up ' + self._goalVic+'.', 'RescueBot')                 
-                    if self._condition!="silent" and self._goalVic not in self._foundVictims:
+                        self._sendMessage('Ik ga naar ' + str(self._door['room_name']) + ' om dit slachtoffer op te pakken: ' + self._goalVic+'.', 'RescueBot')
+                    if self._goalVic not in self._foundVictims:
                         if self._condition=="explainable":
-                            self._sendMessage('Moving to ' + str(self._door['room_name']) + ' to search for ' + self._goalVic + ' and because it is the closest unsearched area.', 'RescueBot')
+                            self._sendMessage('Ik ga naar ' + str(self._door['room_name']) + ' om te zoeken naar ' + self._goalVic + ' omdat dat gebied het meest dichtbij en niet doorzocht is', 'RescueBot')
                         if self._condition=="adaptive":
-                            msg1 = 'Moving to ' + str(self._door['room_name']) + ' to search for ' + self._goalVic + ' and because it is the closest unsearched area.'
-                            msg2 = 'Moving to ' + str(self._door['room_name']) + ' to search for ' + self._goalVic+'.'
-                            explanation = 'because it is the closest unsearched area'
+                            msg1 = 'Ik ga naar ' + str(self._door['room_name']) + ' om te zoeken naar ' + self._goalVic + ' omdat dat gebied het meest dichtbij en niet doorzocht is'
+                            msg2 = 'Ik ga naar ' + str(self._door['room_name']) + ' om te zoeken naar ' + self._goalVic +'.'
+                            explanation = 'omdat dat gebied het meest dichtbij en niet doorzocht is'
                             self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                     if self._condition=="transparent":
-                        self._sendMessage('Moving to ' + str(self._door['room_name'])+'.', 'RescueBot')
+                        self._sendMessage('Ik ga naar ' + str(self._door['room_name'])+'.', 'RescueBot')
                     self._currentDoor=self._door['location']
                     action = self._navigator.get_move_action(self._state_tracker)
                     if action!=None:
@@ -361,13 +360,13 @@ class TutorialAgentDutch(BW4TBrain):
                 self._navigator.reset_full()
                 self._navigator.add_waypoints(self._efficientSearch(roomTiles))
                 if self._condition=="explainable":
-                    self._sendMessage('Searching through whole ' + str(self._door['room_name']) + ' because my sense range is limited and to find ' + self._goalVic+'.', 'RescueBot')
+                    self._sendMessage('Ik doorzoek heel ' + str(self._door['room_name']) + ' omdat ik niet zo ver kan kijken. Ik probeer te vinden: ' + self._goalVic+'.', 'RescueBot')
                 if self._condition=="transparent":
-                    self._sendMessage('Searching through whole ' + str(self._door['room_name']) + '.', 'RescueBot')
-                if self._condition=="adaptive":
-                    msg1 = 'Searching through whole ' + str(self._door['room_name']) + ' because my sense range is limited and to find ' + self._goalVic+'.'
-                    msg2 = 'Searching through whole ' + str(self._door['room_name'])+'.'
-                    explanation = 'because my sense range is limited'
+                    self._sendMessage('Ik doorzoek heel ' + str(self._door['room_name']) + '.', 'RescueBot')
+                if self._condition=="adaptive" and ticksLeft>5789:
+                    msg1 = 'Ik doorzoek heel ' + str(self._door['room_name']) + ' omdat ik niet zo ver kan kijken. Ik probeer te vinden: ' + self._goalVic + '.'
+                    msg2 = 'Ik doorzoek heel ' + str(self._door['room_name']) +'.'
+                    explanation = 'omdat ik niet zo ver kan kijken.'
                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                 #self._currentDoor = self._door['location']
                 self._roomVics=[]
@@ -389,26 +388,26 @@ class TutorialAgentDutch(BW4TBrain):
                                 self._foundVictimLocs[vic] = {'location':info['location'],'room':self._door['room_name'],'obj_id':info['obj_id']}
                                 if vic == self._goalVic:
                                     if self._condition=="explainable":
-                                        self._sendMessage('Found '+ vic + ' in ' + self._door['room_name'] + ' because you told me '+vic+ ' was located here.', 'RescueBot')
+                                        self._sendMessage('Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + ' omdat u mij vertelde dat ' + vic + ' zich daar bevond.', 'RescueBot')
                                     if self._condition=="transparent":
-                                        self._sendMessage('Found '+ vic + ' in ' + self._door['room_name']+'.', 'RescueBot')
+                                        self._sendMessage('Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + '.', 'RescueBot')
                                     if self._condition=="adaptive":
-                                        msg1 = 'Found '+ vic + ' in ' + self._door['room_name'] + ' because you told me '+vic+ ' was located here.'
-                                        msg2 = 'Found '+ vic + ' in ' + self._door['room_name']+'.'
-                                        explanation = 'because you told me it was located here'
+                                        msg1 = 'Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + ' omdat u mij vertelde dat ' + vic + ' zich daar bevond.'
+                                        msg2 = 'Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + '.'
+                                        explanation = 'omdat u mij vertelde dat die zich daar bevond'
                                         self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                                     self._searchedRooms.append(self._door['room_name'])
                                     self._phase=Phase.FIND_NEXT_GOAL
 
                             if 'healthy' not in vic and vic not in self._foundVictims:
                                 if self._condition=="explainable":
-                                    self._sendMessage('Found '+ vic + ' in ' + self._door['room_name'] + ' because I am traversing the whole area.', 'RescueBot')
+                                    self._sendMessage('Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + ' omdat ik het hele gebied doorzoek.', 'RescueBot')
                                 if self._condition=="transparent":
-                                    self._sendMessage('Found '+ vic + ' in ' + self._door['room_name']+'.', 'RescueBot')
+                                    self._sendMessage('Ik heb  '+ vic + ' gevonden in ' + self._door['room_name'] + '.', 'RescueBot')
                                 if self._condition=="adaptive":
-                                    msg1 = 'Found '+ vic + ' in ' + self._door['room_name'] + ' because I am traversing the whole area.'
-                                    msg2 = 'Found '+ vic + ' in ' + self._door['room_name']+'.'
-                                    explanation = 'because I am traversing the whole area'
+                                    msg1 = 'Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + ' omdat ik het hele gebied doorzoek.'
+                                    msg2 = 'Ik heb '+ vic + ' gevonden in ' + self._door['room_name']+'.'
+                                    explanation = 'omdat ik het hele gebied doorzoek.'
                                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                                 self._foundVictims.append(vic)
                                 self._foundVictimLocs[vic] = {'location':info['location'],'room':self._door['room_name'],'obj_id':info['obj_id']}
@@ -417,13 +416,13 @@ class TutorialAgentDutch(BW4TBrain):
                 #    self._sendMessage(self._goalVic + ' not present in ' + str(self._door['room_name']) + ' because I searched the whole area without finding ' + self._goalVic, 'RescueBot')
                 if self._goalVic in self._foundVictims and self._goalVic not in self._roomVics and self._foundVictimLocs[self._goalVic]['room']==self._door['room_name']:
                     if self._condition=="explainable":
-                        self._sendMessage(self._goalVic + ' not present in ' + str(self._door['room_name']) + ' because I searched the whole area without finding ' + self._goalVic+'.', 'RescueBot')
+                        self._sendMessage(self._goalVic + ' is niet aanwezig in ' + str(self._door['room_name']) + ' want ik het het hele gebied doorzocht zonder dit slachtoffer te vinden: ' + self._goalVic+'.', 'RescueBot')
                     if self._condition=="transparent":
-                        self._sendMessage(self._goalVic + ' not present in ' + str(self._door['room_name'])+'.', 'RescueBot')
+                        self._sendMessage(self._goalVic + ' is niet aanwezig in ' + str(self._door['room_name']) + '.', 'RescueBot')
                     if self._condition=="adaptive":
-                        msg1 = self._goalVic + ' not present in ' + str(self._door['room_name']) + ' because I searched the whole area without finding ' + self._goalVic+'.'
-                        msg2 = self._goalVic + ' not present in ' + str(self._door['room_name'])+'.'
-                        explanation = 'because I searched the whole area'
+                        msg1 = self._goalVic + ' is niet aanwezig in ' + str(self._door['room_name']) + ' want ik het het hele gebied doorzocht zonder dit slachtoffer te vinden: ' + self._goalVic +'.'
+                        msg2 = self._goalVic + ' is niet aanwezig in ' + str(self._door['room_name'])+'.'
+                        explanation = 'want ik het het hele gebied doorzocht'
                         self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                     self._foundVictimLocs.pop(self._goalVic, None)
                     self._foundVictims.remove(self._goalVic)
@@ -435,13 +434,13 @@ class TutorialAgentDutch(BW4TBrain):
                 
             if Phase.PLAN_PATH_TO_VICTIM==self._phase:
                 if self._condition=="explainable":
-                    self._sendMessage('Picking up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + ' because ' + self._goalVic + ' should be transported to the drop zone.', 'RescueBot')
+                    self._sendMessage('Ik pak ' + self._goalVic + ' op in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._goalVic + ' naar de afleverlocatie gebracht moet worden.', 'RescueBot')
                 if self._condition=="transparent":
-                    self._sendMessage('Picking up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room']+'.', 'RescueBot')
+                    self._sendMessage('Picking up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + '.', 'RescueBot')
                 if self._condition=="adaptive":
-                    msg1 = 'Picking up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room'] + ' because ' + self._goalVic + ' should be transported to the drop zone.'
-                    msg2 = 'Picking up ' + self._goalVic + ' in ' + self._foundVictimLocs[self._goalVic]['room']+'.'
-                    explanation = 'because it should be transported to the drop zone'
+                    msg1 = 'Ik pak ' + self._goalVic + ' op in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._goalVic + ' naar de afleverlocatie gebracht moet worden.'
+                    msg2 = 'Ik pak ' + self._goalVic + ' op in ' + self._foundVictimLocs[self._goalVic]['room']+'.'
+                    explanation = 'omdat het naar de afleverlocatie gebracht moet worden.'
                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                 self._navigator.reset_full()
                 self._navigator.add_waypoints([self._foundVictimLocs[self._goalVic]['location']])
@@ -470,13 +469,13 @@ class TutorialAgentDutch(BW4TBrain):
 
             if Phase.FOLLOW_PATH_TO_DROPPOINT==self._phase:
                 if self._condition=="explainable":
-                    self._sendMessage('Transporting '+ self._goalVic + ' to the drop zone because ' + self._goalVic + ' should be delivered there for further treatment.', 'RescueBot')
+                    self._sendMessage('Ik verplaats '+ self._goalVic + ' naar de afleverlocatie omdat ' + self._goalVic + ' daar naartoe gebracht moet worden voor behandeling.', 'RescueBot')
                 if self._condition=="transparent":
-                    self._sendMessage('Transporting '+ self._goalVic + ' to the drop zone.', 'RescueBot')
+                    self._sendMessage('Ik verplaats '+ self._goalVic + ' naar de afleverlocatie.', 'RescueBot')
                 if self._condition=="adaptive":
-                    msg1 = 'Transporting '+ self._goalVic + ' to the drop zone because ' + self._goalVic + ' should be delivered there for further treatment.'
-                    msg2 = 'Transporting '+ self._goalVic + ' to the drop zone.'
-                    explanation = 'because it should be delivered there for further treatment'
+                    msg1 = 'Ik verplaats '+ self._goalVic + ' naar de afleverlocatie omdat ' + self._goalVic + ' daar naartoe gebracht moet worden voor behandeling.'
+                    msg2 = 'Ik verplaats '+ self._goalVic + ' naar de afleverlocatie.'
+                    explanation = 'omdat die daar naartoe gebracht moet worden voor behandeling'
                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                 self._state_tracker.update(state)
                 action=self._navigator.get_move_action(self._state_tracker)
@@ -496,13 +495,13 @@ class TutorialAgentDutch(BW4TBrain):
 
                 if self._goalVic==self._firstVictim or state[{'img_name':self._previousVic,'is_collectable':True}] and self._goalVic==self._lastVictim or state[{'img_name':self._previousVic, 'is_collectable':True}] and not state[{'img_name':self._nextVic, 'is_collectable':True}]:
                     if self._condition=="explainable":
-                        self._sendMessage('Delivered '+ self._goalVic + ' at the drop zone because ' + self._goalVic + ' was the current victim to rescue.', 'RescueBot')
+                        self._sendMessage('Ik heb '+ self._goalVic + ' afgeleverd op de afleverlocatie omdat ' + self._goalVic + ' aan de beurt was om gered te worden.', 'RescueBot')
                     if self._condition=="transparent":
-                        self._sendMessage('Delivered '+ self._goalVic + ' at the drop zone.', 'RescueBot')
+                        self._sendMessage('Ik heb '+ self._goalVic + ' afgeleverd op de afleverlocatie.', 'RescueBot')
                     if self._condition=="adaptive":
-                        msg1 = 'Delivered '+ self._goalVic + ' at the drop zone because ' + self._goalVic + ' was the current victim to rescue.'
-                        msg2 = 'Delivered '+ self._goalVic + ' at the drop zone.'
-                        explanation = 'because it was the current victim to rescue'
+                        msg1 = 'Ik heb '+ self._goalVic + ' afgeleverd op de afleverlocatie omdat ' + self._goalVic + ' aan de beurt was om gered te worden.'
+                        msg2 = 'Ik heb '+ self._goalVic + ' afgeleverd op de afleverlocatie.'
+                        explanation = 'omdat die aan de beurt was om gered te worden.'
                         self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                     self._phase=Phase.FIND_NEXT_GOAL
                     self._currentDoor = None
@@ -514,13 +513,13 @@ class TutorialAgentDutch(BW4TBrain):
                 #    return DropObject.__name__,{}
                 else:
                     if self._condition=="explainable":
-                        self._sendMessage('Waiting for human operator at drop zone because previous victim should be collected first.', 'RescueBot')
+                        self._sendMessage('Ik wacht op de menselijke bestuurder bij de afleverlocatie omdat het vorige slachtoffer eerst verzameld moet worden.', 'RescueBot')
                     if self._condition=="transparent":
-                        self._sendMessage('Waiting for human operator at drop zone.', 'RescueBot')
+                        self._sendMessage('Ik wacht op de menselijke bestuurder bij de afleverlocatie.', 'RescueBot')
                     if self._condition=="adaptive":
-                        msg1 = 'Waiting for human operator at drop zone because previous victim should be collected first.'
-                        msg2 = 'Waiting for human operator at drop zone.'
-                        explanation = 'because previous victim should be collected first'
+                        msg1 = 'Ik wacht op de menselijke bestuurder bij de afleverlocatie omdat het vorige slachtoffer eerst verzameld moet worden.'
+                        msg2 = 'Ik wacht op de menselijke bestuurder bij de afleverlocatie.'
+                        explanation = 'omdat het vorige slachtoffer eerst verzameld moet worden.'
                         self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                     return None,{} 
 
@@ -539,7 +538,6 @@ class TutorialAgentDutch(BW4TBrain):
             #    self._tick = state['World']['nr_ticks']
             #    return DropObject.__name__,{}   
 
-            
     def _getDropZones(self,state:State):
         '''
         @return list of drop zones (their full dict), in order (the first one is the
@@ -560,15 +558,15 @@ class TutorialAgentDutch(BW4TBrain):
         '''
         #areas = ['area A1','area A2','area A3','area A4','area B1','area B2','area C1','area C2','area C3']
         for msg in self.received_messages:
-            if msg.startswith("Search:"):
+            if msg.startswith("'Ik doorzoek'"):
                 area = 'area '+ msg.split()[-1]
                 if area not in self._searchedRooms:
                     self._searchedRooms.append(area)
-            if msg.startswith("Found:"):
+            if msg.startswith("Ik heb:"):
                 if len(msg.split()) == 6:
                     foundVic = ' '.join(msg.split()[1:4])
                 else:
-                    foundVic = ' '.join(msg.split()[1:5]) 
+                    foundVic = ' '.join(msg.split()[1:5])
                 loc = 'area '+ msg.split()[-1]
                 if loc not in self._searchedRooms:
                     self._searchedRooms.append(loc)
@@ -581,7 +579,7 @@ class TutorialAgentDutch(BW4TBrain):
                 if len(msg.split()) == 6:
                     collectVic = ' '.join(msg.split()[1:4])
                 else:
-                    collectVic = ' '.join(msg.split()[1:5]) 
+                    collectVic = ' '.join(msg.split()[1:5])
                 loc = 'area ' + msg.split()[-1]
                 if loc not in self._searchedRooms:
                     self._searchedRooms.append(loc)
@@ -597,6 +595,7 @@ class TutorialAgentDutch(BW4TBrain):
             #    '. Found victims: ' +  ', '.join([i + ' in ' + self._foundVictimLocs[i]['room'] for i in self._foundVictimLocs]) ,'RescueBot')
             #    self.received_messages=[]
 
+
     def _sendMessage(self, mssg, sender):
         msg = Message(content=mssg, from_id=sender)
         if msg.content not in self.received_messages:
@@ -605,7 +604,7 @@ class TutorialAgentDutch(BW4TBrain):
 
         if self.received_messages and self._sendMessages:
             self._last_mssg = self._sendMessages[-1]
-            if self._last_mssg.startswith('Searching') or self._last_mssg.startswith('Moving'):
+            if self._last_mssg.startswith('Ik doorzoek') or self._last_mssg.startswith('Ik ga naar'):
                 self.received_messages=[]
                 self.received_messages.append(self._last_mssg)
 
@@ -643,14 +642,14 @@ class TutorialAgentDutch(BW4TBrain):
         if explanation not in self._providedExplanations:
             self._sendMessage(mssg1,sender)
             self._providedExplanations.append(explanation)
-        if 'Searching' in mssg1:
+        if 'Ik doorzoek' in mssg1:
             #history = ['Searching' in mssg for mssg in self._sendMessages]
             if explanation in self._providedExplanations and mssg1 not in self._sendMessages[-5:]:
-                self._sendMessage(mssg2,sender)   
-        if 'Found' in mssg1:
+                self._sendMessage(mssg2,sender)
+        if 'Ik heb ' in mssg1:
             history = [mssg2[:-1] in mssg for mssg in self._sendMessages]
             if explanation in self._providedExplanations and True not in history:
-                self._sendMessage(mssg2,sender)      
-        if 'Searching' not in mssg1 and 'Found' not in mssg1:
+                self._sendMessage(mssg2,sender)
+        if 'Ik doorzoek' not in mssg1 and 'Ik heb ' not in mssg1:
             if explanation in self._providedExplanations and self._sendMessages[-1]!=mssg1:
-                self._sendMessage(mssg2,sender) 
+                self._sendMessage(mssg2,sender)
