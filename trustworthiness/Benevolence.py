@@ -135,6 +135,8 @@ class Benevolence:
             if type(action) is FoundVictim:
                 count += 1
 
+        print("Communicated victims found: ", count, "/", total)
+
         if count > total:
             return 1
         elif total == 0:
