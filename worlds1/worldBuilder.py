@@ -10,7 +10,7 @@ from matrx.goals import WorldGoal
 
 from agents1.Spy import Spy
 from agents1.TutorialAgent import TutorialAgent
-from agents1.LowInterdependenceAgent import LowInterdependenceAgent
+from agents1.AssistingAgent import AssistingAgent
 from agents1.HighInterdependenceAgent import HighInterdependenceAgent
 from brains1.HumanBrain import HumanBrain
 from loggers.action_logger import ActionLogger
