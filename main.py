@@ -9,7 +9,7 @@ from datetime import datetime
 from SaR_gui import visualization_server
 from trustworthiness.Trustworthiness import Trustworthiness
 from worlds1.worldBuilder import create_builder
-from agents1 import HighInterdependenceAgent
+from agents1 import HighInterdependenceAgentControl, HighInterdependenceAgentExperimental
 
 if __name__ == "__main__":
 
@@ -52,3 +52,4 @@ if __name__ == "__main__":
         requests.get("http://localhost:" + str(visualization_server.port) + "/shutdown_visualizer")
         vis_thread.join()
         builder.stop()
+

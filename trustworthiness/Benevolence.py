@@ -15,7 +15,7 @@ class Benevolence:
 
         print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
-                   self._communicated_pickup(), self._advice_followed()]
+                   self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found()]
 
         self._average_ticks_to_respond()
 
@@ -134,6 +134,8 @@ class Benevolence:
                 total += 1
             if type(action) is FoundVictim:
                 count += 1
+
+        print("Communicated victims found: ", count, "/", total)
 
         if count > total:
             return 1
