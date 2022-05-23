@@ -5,12 +5,15 @@
   {"name": "ability_3", "type": "Ability", "question": "As a teammate, I was qualified to do my job"},
   {"name": "ability_4", "type": "Ability", "question": "I was fast at completing my jobs"},
 
-  {"name": "benevolence_0", "type": "Benevolence", "question": "I communicated which rooms I was searching"},
-  {"name": "benevolence_1", "type": "Benevolence", "question": "I communicated found victims"},
-  {"name": "benevolence_2", "type": "Benevolence", "question": "I communicated which victims I picked up"},
-  {"name": "benevolence_3", "type": "Benevolence", "question": "I wanted to help my teammate RescueBot"},
-  {"name": "benevolence_4", "type": "Benevolence", "question": "I responded to RescueBot's questions"},
+  {"name": "benevolence_0", "type": "Benevolence", "question": "I have had teammate Rescuebot's best interests in mind. (synonym: to be concerned about and want to help RescueBot)"},
+  {"name": "benevolence_1", "type": "Benevolence", "question": "I have communicated the actions that I have undertook to my teammate Rescuebot"},
+  {"name": "benevolence_2", "type": "Benevolence", "question": "The needs and desires of Rescuebot are important to me"},
+  {"name": "benevolence_3", "type": "Benevolence", "question": "I have watched teammate RescueBot's back (synonym: to look out for Rescuebot in case it needs assistance)"},
+  {"name": "benevolence_4", "type": "Benevolence", "question": "I have looked out for teammate RescueBot. (synonym: to take care or concern about RescueBot)"},
 
   {"name": "integrity_0", "type": "Integrity", "question": "As a teammate, I kept my promises"},
-  {"name": "integrity_1", "type": "Integrity", "question": "I told the truth to my teammates"}
+  {"name": "integrity_1", "type": "Integrity", "question": "I told the truth to my teammates"},
+  {"name": "integrity_2", "type": "Integrity", "question": "My teammate could depend on my to be fair"},
+  {"name": "integrity_3", "type": "Integrity", "question": "I was an honourable teammate"},
+  {"name": "integrity_4", "type": "Integrity", "question": "As a teammate, I honoured my word"}
 ]
