@@ -1,9 +1,7 @@
-import numpy as np
-
-from actions1.AgentAction import MessageAskGender, MessageSuggestPickup
-from actions1.HumanAction import MessageBoy, MessageYes, MessageNo, MessageSearch, PickUp, MessagePickUp, \
+from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
+from world.actions.HumanAction import MessageBoy, MessageYes, MessageNo, MessageSearch, PickUp, MessagePickUp, \
     MessageFound, MessageGirl, FoundVictim, EnterUnvisitedRoom
-from actions1.util import is_in_room
+from world.actions.util import is_in_room
 
 
 class Benevolence:

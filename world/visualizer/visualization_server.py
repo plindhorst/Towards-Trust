@@ -33,7 +33,11 @@ def human_agent_view():
 
     global running
     running = True
-    return render_template('human_agent.html', id="human_0_in_team_0")
+    return render_template('human_agent.html', id="human_in_team")
+
+@app.route('/god')
+def god():  # TODO: remove this
+    return render_template('god.html')
 
 
 @app.route('/results')
