@@ -1,9 +1,9 @@
 [
-  {"name": "ability_0", "type": "Ability", "question": "As a teammate, I was capable at my jobs"},
-  {"name": "ability_1", "type": "Ability", "question": "As a teammate, I knew what I was doing"},
-  {"name": "ability_2", "type": "Ability", "question": "My teammates could have faith in my abilities"},
-  {"name": "ability_3", "type": "Ability", "question": "As a teammate, I was qualified to do my job"},
-  {"name": "ability_4", "type": "Ability", "question": "I was fast at completing my jobs"},
+  {"name": "ability_0", "type": "Ability", "question": "I was capable of finding victims."},
+  {"name": "ability_1", "type": "Ability", "question": "I contributed in dropping off victims at the correct location."},
+  {"name": "ability_2", "type": "Ability", "question": "I was able to visit a lot of the rooms."},
+  {"name": "ability_3", "type": "Ability", "question": "My teammate could have faith in my abilities."},
+  {"name": "ability_4", "type": "Ability", "question": "I tried to complete my tasks as fast as possible."},
 
   {"name": "benevolence_0", "type": "Benevolence", "question": "I have had teammate Rescuebot's best interests in mind. (synonym: to be concerned about and want to help RescueBot)"},
   {"name": "benevolence_1", "type": "Benevolence", "question": "I have communicated the actions that I have undertook to my teammate Rescuebot"},
