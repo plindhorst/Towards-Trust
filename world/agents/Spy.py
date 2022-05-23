@@ -5,10 +5,10 @@ from os.path import exists
 
 from matrx.agents import AgentBrain
 
-from actions1.AgentAction import MessageAskGender, MessageRequestPickup, MessageSuggestPickup, MessageDelivered
-from actions1.HumanAction import MessageSearch, MessageFound, EnterRoom, MessagePickUp, DropOff, PickUp, MessageBoy, \
+from world.actions.AgentAction import MessageAskGender, MessageRequestPickup, MessageSuggestPickup, MessageDelivered
+from world.actions.HumanAction import MessageSearch, MessageFound, EnterRoom, MessagePickUp, DropOff, PickUp, MessageBoy, \
     MessageGirl, MessageNo, MessageYes, FoundVictim, EnterUnvisitedRoom
-from actions1.util import is_in_room, is_in_range, is_correct_drop_location
+from world.actions.util import is_in_room, is_in_range, is_correct_drop_location
 
 
 # This agent class records actions and messages of the human/agent

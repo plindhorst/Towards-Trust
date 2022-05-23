@@ -1,7 +1,5 @@
-import numpy as np
 from matrx.actions.action import Action, ActionResult
-from matrx.actions.object_actions import _is_drop_poss, _act_drop, _possible_drop, _find_drop_loc, GrabObject, GrabObjectResult
-import random
+
 
 class Idle(Action):
     def __init__(self, duration_in_ticks=1):

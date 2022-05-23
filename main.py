@@ -1,44 +1,61 @@
 import argparse
-import os, requests
-import csv
-import glob
 import pathlib
 import sys
-from datetime import datetime
 
-from SaR_gui import visualization_server
-from trustworthiness.Trustworthiness import Trustworthiness
-from worlds1.worldBuilder import create_builder
-from agents1 import HighInterdependenceAgentControl, HighInterdependenceAgentExperimental
+import requests
+
+from world.visualizer import visualization_server
+from world.agents.ControlAgent import ControlAgent
+from world.agents.custom.AdviceAgent import AdviceAgent
+from world.agents.custom.ConflictingAgent import ConflictingAgent
+from world.agents.custom.DirectingAgent import DirectingAgent
+from world.agents.custom.FriendlyAgent import FriendlyAgent
+from world.agents.custom.HelpingAgent import HelpingAgent
+from world.worldBuilder import create_builder
+
+TICK_DURATION = 0.07
+MINUTES = 10
+MAX_TICKS = int(MINUTES * 60 / TICK_DURATION)
+AGENT_SLOWDOWN = 7
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-xai", action='store', help="Explainability of agent", type=str)
-    parser.add_argument("-tw", action='store_true', help="Measure trustworthiness of human", default=False)
+    parser.add_argument("-agent", action='store',
+                        help="Agent type, choose from: control, helper, conflicting, advice, directing, friendly",
+                        type=str)
     args = parser.parse_args()
 
-    if args.tw:
-        trustworthiness = Trustworthiness("./actions.pkl")
+    agent = None
 
-        trustworthiness.actions_to_string()
-        ability, benevolence, integrity = trustworthiness.compute()
-        print("\nABI: ", round(ability, 2), ",", round(benevolence, 2), ",", round(integrity, 2))
+    agent_type = args.agent
+    if agent_type == "control":
+        print("Playing with control agent")
+        agent = ControlAgent(AGENT_SLOWDOWN)
+    elif agent_type == "helper":
+        print("Playing with helper agent")
+        agent = HelpingAgent(AGENT_SLOWDOWN)
+    elif agent_type == "conflicting":
+        print("Playing with conflicting agent")
+        agent = ConflictingAgent(AGENT_SLOWDOWN)
+    elif agent_type == "advice":
+        print("Playing with advice seeking agent")
+        agent = AdviceAgent(AGENT_SLOWDOWN)
+    elif agent_type == "directing":
+        print("Playing with directing agent")
+        agent = DirectingAgent(AGENT_SLOWDOWN)
+    elif agent_type == "friendly":
+        print("Playing with friendly agent")
+        agent = FriendlyAgent(AGENT_SLOWDOWN)
+    else:
+        print("Please choose one of the following agents: control, helper, conflicting, advice, directing, friendly")
         sys.exit(0)
 
-    choice1 = args.xai
-    if args.xai is None or args.xai == "":
-        print("\nEnter one of the robot communication styles 'silent', 'transparent', 'adaptive', or 'explainable':")
-        choice1 = input()
-
-    # Hardcode interdependence to high
-    interdependence = "high"
-
     while True:
-        builder = create_builder(exp_version=interdependence, condition=choice1)
+        builder = create_builder(agent=agent, max_nr_ticks=MAX_TICKS, tick_duration=TICK_DURATION)
 
         # Start overarching MATRX scripts and threads
-        media_folder = pathlib.Path().resolve()
+        media_folder = str(pathlib.Path().resolve()) + "/world/visualizer/static/"
         builder.startup(media_folder=media_folder)
         print("Starting custom visualizer")
         vis_thread = visualization_server.run_matrx_visualizer(verbose=False, media_folder=media_folder)
@@ -52,4 +69,3 @@ if __name__ == "__main__":
         requests.get("http://localhost:" + str(visualization_server.port) + "/shutdown_visualizer")
         vis_thread.join()
         builder.stop()
-

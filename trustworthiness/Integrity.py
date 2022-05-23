@@ -1,9 +1,7 @@
-import numpy as np
-
-from actions1.AgentAction import MessageAskGender, MessageSuggestPickup
-from actions1.HumanAction import MessageGirl, MessageBoy, MessageYes, PickUp, MessageFound, MessageSearch, EnterRoom, \
+from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
+from world.actions.HumanAction import MessageGirl, MessageBoy, MessageYes, PickUp, MessageFound, MessageSearch, EnterRoom, \
     MessagePickUp
-from actions1.util import get_persons_in_room
+from world.actions.util import get_persons_in_room
 
 
 class Integrity:
