@@ -18,7 +18,7 @@ from datetime import datetime
 from loggers.message_logger import MessageLogger
 
 tick_duration = 0.07
-max_minutes = 0.5
+max_minutes = 10
 MAX_TICKS = int(max_minutes * 60 / 0.05)
 
 random_seed = 1

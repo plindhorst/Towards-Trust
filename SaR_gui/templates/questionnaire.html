@@ -3,7 +3,7 @@
 
 <head>
     <!-- Required meta tags -->
-{#    <link rel="stylesheet" href="../static/css/questionnaire.css">#}
+    {#    <link rel="stylesheet" href="../static/css/questionnaire.css">#}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Towards Trust Experiment</title>
@@ -13,11 +13,13 @@
 <div>
     <div class="headers">
         <h2 style="color:#5b9dd3;text-align:center;font-size:50px;">Self-Assessment Questionnaire</h2>
-        <h3 style="color:#7a8283;text-align:center;font-size:25px;margin:auto;width:60%;padding-bottom: 15px"> Thank you for taking part in
-        our experiment. We hope you had some fun during the game. Please fill out the questionnaire below to assess your
-        performance and only press 'Submit' once ALL the fields are ticked.</h3>
+        <h3 style="color:#7a8283;text-align:center;font-size:25px;margin:auto;width:60%;padding-bottom: 15px"> Thank you
+            for taking part in
+            our experiment. We hope you had some fun during the game. Please fill out the questionnaire below to assess
+            your
+            performance and only press 'Submit' once ALL the fields are ticked.</h3>
     </div>
-    <form action="/questionnaire_answers", id="form_questionnaire">
+    <form action="/questionnaire_answers" , id="form_questionnaire">
     </form>
 </div>
 
@@ -39,34 +41,30 @@
         let div = document.createElement('question_box');
 
         div.innerHTML =
-            '<p style="font-size:35px;padding: 10px;color: #7A8283FF">'+ iPlus + ") " + data[i]["question"] + '</p>' +
-            '<input type="radio" id="' + ans0 + '" name="' + data[i]["name"] + '" value="0" style="padding-left: 20px;display: inline-block;"> <label for="' + ans0 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Never</label><br>' +
-            '<input type="radio" id="' + ans1 + '" name="' + data[i]["name"] + '" value="1" style="padding-left: 20px;display: inline-block;"> <label for="' + ans1 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Very Rarely</label><br>' +
-            '<input type="radio" id="' + ans2 + '" name="' + data[i]["name"] + '" value="2" style="padding-left: 20px;display: inline-block;"> <label for="' + ans2 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Rarely</label><br>' +
-            '<input type="radio" id="' + ans3 + '" name="' + data[i]["name"] + '" value="3" style="padding-left: 20px;display: inline-block;"> <label for="' + ans3 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Sometimes</label><br>' +
-            '<input type="radio" id="' + ans4 + '" name="' + data[i]["name"] + '" value="4" style="padding-left: 20px;display: inline-block;"> <label for="' + ans4 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Frequently</label><br>' +
-            '<input type="radio" id="' + ans5 + '" name="' + data[i]["name"] + '" value="5" style="padding-left: 20px;display: inline-block;"> <label for="' + ans5 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Very Frequently</label><br>' +
-            '<input type="radio" id="' + ans6 + '" name="' + data[i]["name"] + '" value="6" style="padding-left: 20px;display: inline-block;"> <label for="' + ans6 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Always</label><br>';
+            '<p style="margin-left: 35px;font-size:35px;padding: 10px;color: #7A8283FF">' + iPlus + ") " + data[i]["question"] + '</p>' +
+            '<input type="radio" id="' + ans0 + '" name="' + data[i]["name"] + '" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans0 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Never</label><br>' +
+            '<input type="radio" id="' + ans1 + '" name="' + data[i]["name"] + '" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans1 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Very Rarely</label><br>' +
+            '<input type="radio" id="' + ans2 + '" name="' + data[i]["name"] + '" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans2 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Rarely</label><br>' +
+            '<input type="radio" id="' + ans3 + '" name="' + data[i]["name"] + '" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans3 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Sometimes</label><br>' +
+            '<input type="radio" id="' + ans4 + '" name="' + data[i]["name"] + '" value="4" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans4 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Frequently</label><br>' +
+            '<input type="radio" id="' + ans5 + '" name="' + data[i]["name"] + '" value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans5 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Very Frequently</label><br>' +
+            '<input type="radio" id="' + ans6 + '" name="' + data[i]["name"] + '" value="6" style="margin-left: 50px;margin-bottom:30px;padding-left: 20px;display: inline-block;"> <label for="' + ans6 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Always</label><br>';
+
         element.style.margin = "auto";
         element.style.width = "60%";
         element.style.border = "5px solid #7A8283FF";
-        element.padding= "10px";
+        element.padding = "10px";
         element.style.backgroundColor = "rgb(225,221,211)";
         element.style.backfaceVisibility = "80%"
         element.appendChild(div);
     }
 
-    let div = document.createElement('spcae');
-    div.innerHTML = '<div> </div>'
-    div.style.padding = "360px";
-
     let submit_button = document.createElement('button')
-    submit_button.innerHTML = '<input style="padding: 15px 20px;color:white;font-size: 24px;cursor: pointer;' +
-        'background-color: #5b9dd3; margin: 0px;text-align: center;position: absolute;left: 46%" class="submit-feedback"' +
-         'type="submit" value="Submit">'
-    div.appendChild(submit_button)
-    element.appendChild(div)
+    submit_button.style = 'padding: 15px 20px;color:white;font-size: 24px;cursor: pointer;background-color: #5b9dd3; margin: 50px;text-align: center;position: absolute;left: 46%'
+    submit_button.textContent = "Submit"
+    element.appendChild(submit_button)
 </script>
+
 </body>
 
 </html>
