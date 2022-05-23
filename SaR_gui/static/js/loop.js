@@ -55,7 +55,7 @@ console.log("lv_send_userinput_url:", lv_send_userinput_url);
 /*
  * Once the page has loaded, call the initialization functions
  */
-$(document).ready(function() {
+$(document).ready(function () {
     world_manager_loop();
 });
 
@@ -64,7 +64,7 @@ function world_manager_loop() {
     init();
 
     // if the previous world ended or we had issues in initializing the world, reinitialize
-    setInterval(function() {
+    setInterval(function () {
         if (lv_reinitialize_vis) {
             init();
         }
@@ -77,6 +77,8 @@ function world_manager_loop() {
 function init() {
     console.log("Initializing..");
 
+    send_api_message("start");
+
     // init a number of vis variables
     lv_reinitialize_vis = false;
     lv_open_update_request = false;
@@ -88,7 +90,7 @@ function init() {
     var resp = initial_connect();
 
     // if we succesfully connected to MATRX, parse the general MATRX info, preload the images and start the visualization
-    resp.done(function(data) {
+    resp.done(function (data) {
         // check if the init data actually contains anything, if not MATRX may still be starting up and we need to retry
         if (Object.entries(data).length === 0 && data.constructor === Object) {
             lv_reinitialize_vis = true;
@@ -107,7 +109,7 @@ function init() {
     });
 
     // if the request gave an error, print to console and try again
-    resp.fail(function(data) {
+    resp.fail(function (data) {
         console.log("Could not connect to MATRX API, retrying in 0.5s");
         lv_reinitialize_vis = true;
         return;
@@ -127,11 +129,12 @@ function initial_connect() {
     lv_agent_type = lv_path.substring(0, lv_path.lastIndexOf('/'));
     if (lv_agent_type != "") {
         lv_agent_type = lv_agent_type.substring(1)
-    };
+    }
+    ;
     // Get the agent ID from the url (e.g. "god", "agent_0123", etc.)
     var lv_ID = lv_path.substring(lv_path.lastIndexOf('/') + 1).toLowerCase();
     // decode the URL (e.g. spaces are encoding in urls as %20), and set the agent ID
-    lv_agent_id = decodeURI(lv_ID);
+    lv_agent_id = "human_0_in_team_0"; //decodeURI(lv_ID);
 
 
     // check if this view is for the god view, agent, or human-agent, and get the correct urls
@@ -169,16 +172,29 @@ function parse_initial_state(data) {
 }
 
 
+function is_done() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "/is_done", false); // false for synchronous request
+    xmlHttp.send(null);
+    return xmlHttp.responseText;
+}
+
 /*
  * The visualization loop for a MATRX world
  */
 function world_loop() {
+    let done = (is_done() === 'true\n');
+
+    if (done) {
+        window.location.href = '/questionnaire';
+    }
+
     lv_timestamp = Date.now();
 
     // keep track of number of frames per second
     if (lv_this_second == null) {
         lv_this_second = Date.now();
-    } else if( (Date.now() - lv_this_second) > 1000) {
+    } else if ((Date.now() - lv_this_second) > 1000) {
         lv_fps = lv_frames_this_second;
 //        console.log("Fps: ", lv_fps);
         lv_frames_this_second = 0;
@@ -211,10 +227,10 @@ function world_loop() {
     if (!lv_to_update_or_not_to_update) {
         request_new_frame();
 
-    // if we requested an update check if it was successful
+        // if we requested an update check if it was successful
     } else {
         // after a successful update redraw the screen and go to the next frame
-        lv_update_request.done(function(data) {
+        lv_update_request.done(function (data) {
 
             // the first tick, initialize the visualization with state information, and synch the timing between
             // the visualization and MATRX
@@ -229,7 +245,7 @@ function world_loop() {
         })
 
         // if the request gave an error, print to console and try to reinitialize
-        lv_update_request.fail(function(data) {
+        lv_update_request.fail(function (data) {
             //        lv_update_request.fail(function(jqxhr, textStatus, error) {
             //            var err = textStatus + ", " + error;
             //            console.log( "Error: " + err );
@@ -277,13 +293,13 @@ function get_MATRX_update() {
         contentType: "application/json; charset=utf-8",
         dataType: 'json',
         data: JSON.stringify(data),
-        success: function(data) {
+        success: function (data) {
             //        console.log("Received update request:", lv_update_request);
             lv_messages = data.messages;
             lv_chatrooms = data.chatrooms;
 
             // view is disconnected
-            if (!Object.keys(data['states'][data['states'].length - 1]).includes(lv_agent_id)){
+            if (!Object.keys(data['states'][data['states'].length - 1]).includes(lv_agent_id)) {
                 $("body").append(`<div class="disconnected_notification">View Disconnected - <span>Agent doesn't exist (anymore)</span></div>`)
             }
 
@@ -334,7 +350,7 @@ function send_userinput_to_MATRX(data) {
         contentType: "application/json; charset=utf-8",
         dataType: 'json',
         data: JSON.stringify(data),
-        success: function() {
+        success: function () {
             //console.log("Data sent to MATRX");
         },
     });
