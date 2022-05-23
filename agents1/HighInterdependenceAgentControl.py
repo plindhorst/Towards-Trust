@@ -81,7 +81,11 @@ class HighInterdependenceAgentControl(BW4TBrain):
                 self._sendMessage('Hello! My name is RescueBot. Together we will collaborate and try to search and rescue the 8 victims on our left as quickly as possible. \
                 We have to rescue the 8 victims in order from left to right (critically injured girl, critically injured elderly woman, critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat), so it is important to only drop a victim when the previous one already has been dropped. \
                 We have 10 minutes to successfully collect all 8 victims in the correct order. \
-                If you understood everything I just told you, please press the "Ready!" button. We will then start our mission!', 'RescueBot')
+                Throughout the mission, I will give you tips that may help you to finish faster. \
+                I would like to emphasize that in practice, you could save the victims all by yourself. \
+                 You could lie to me, be lazy or do whatever you want. However, our aim is to save the victims as \
+                 quickly as possible and with as few moves as possible. If you understood everything I just told you,\
+                  please press the "Ready!" button. We will then start our mission!', 'RescueBot')
                 
                 #Unfortunately, I am not allowed to carry the critically injured victims critically injured elderly woman and critically injured man. \
                 #Moreover, I am not able to distinguish between critically injured girl and critically injured boy or mildly injured girl and mildly injured boy. \
