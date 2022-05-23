@@ -84,7 +84,7 @@ def add_agents(builder, condition, exp_version):
             if exp_version=="trial":
                 brain = TutorialAgent(condition, slowdown=25)
             if exp_version=="low":
-                brain = LowInterdependenceAgent(condition, slowdown=25)
+                brain = AssistingAgent(condition, slowdown=7)
             if exp_version=="high":
                 brain = HighInterdependenceAgent(condition, slowdown=7)
             loc = (9,23)

@@ -32,7 +32,7 @@ if __name__ == "__main__":
         choice1 = input()
 
     # Hardcode interdependence to high
-    interdependence = "high"
+    interdependence = "low"
 
     while True:
         builder = create_builder(exp_version=interdependence, condition=choice1)
