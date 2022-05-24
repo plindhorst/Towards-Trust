@@ -4,6 +4,7 @@ import os
 import shutil
 import threading
 from datetime import datetime
+import glob
 
 import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, send_file
@@ -34,6 +35,7 @@ def human_agent_view():
     global running
     running = True
     return render_template('human_agent.html', id="human_in_team")
+
 
 @app.route('/god')
 def god():  # TODO: remove this
@@ -86,7 +88,15 @@ def questionnaire_answers():
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
-    result_file = result_folder + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+    list_of_files = glob.glob('./results/actions/*.pkl')  # * means all if need specific format then *.csv
+
+    if len(list_of_files) > 0:
+        latest_file = max(list_of_files, key=os.path.getctime)
+        file_name = latest_file.split("\\")[-1].replace(".pkl", ".json")
+    else:
+        file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+
+    result_file = result_folder + file_name
     with open(result_file, 'w+') as outfile:
         outfile.write(json.dumps(answers))
 
