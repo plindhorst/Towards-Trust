@@ -24,7 +24,7 @@ class Spy(AgentBrain):
         self._visited_rooms = []
         self._file_created = False
 
-        result_folder = os.getcwd() + "\\results\\" + "\\actions\\"
+        result_folder = os.getcwd() + "\\data\\" + "\\actions\\"
         if not os.path.exists(result_folder):
             os.makedirs(result_folder)
 
