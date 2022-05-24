@@ -32,10 +32,6 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP = 16
 
 
-def lie(p):
-    return random() < p
-
-
 class ConflictingAgent(BW4TBrain):
     def __init__(self, slowdown=7, condition="explainable"):
         super().__init__(condition, slowdown)
@@ -61,6 +57,9 @@ class ConflictingAgent(BW4TBrain):
         self._conflicting_drop_locs = [(8, 21), (13, 20), (13, 17), (10, 20)]
         self._conflicting_drop_locs_idx = 0
         self._misdrop = False
+        self._lied_victims = []
+        self._lie_rooms = ["area B1", "area B2", "area C1", "area A2"]
+        self._lie_found_rooms = ["area B1", "area A1"]
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -95,9 +94,10 @@ class ConflictingAgent(BW4TBrain):
                         Unfortunately, I am not allowed to carry the critically injured victims critically injured elderly woman and critically injured man. \
                         Moreover, I am not able to distinguish between critically injured girl and critically injured boy or mildly injured girl and mildly injured boy. \
                          You could lie to me, be lazy or do whatever you want. However, our aim is to save the victims as \
-                         quickly as possible and with as few moves as possible. If you understood everything I just told you,\
-                          please press the "Ready!" button. We will then start our mission!', 'RescueBot')
-
+                         quickly as possible and with as few moves as possible.', 'RescueBot')
+                self._sendMessage('If you understood everything I just told you,\
+                                                          please press the "Ready!" button. We will then start our mission!',
+                                  'RescueBot')
                 if self.received_messages and self.received_messages[-1] == 'Ready!' or not state[
                     {'is_human_agent': True}]:
 
@@ -311,8 +311,8 @@ class ConflictingAgent(BW4TBrain):
                 action = self._navigator.get_move_action(self._state_tracker)
                 if action is not None:
 
-                    if lie(0.25):
-                        if lie(0.5):
+                    if self._door['room_name'] in self._lie_rooms:
+                        if self._door['room_name'] not in self._lie_found_rooms or self._goalVic in self._lied_victims:
                             self._sendMessage('I have not found any victims in ' + self._door[
                                 'room_name'] + '.', 'RescueBot')
                         else:
