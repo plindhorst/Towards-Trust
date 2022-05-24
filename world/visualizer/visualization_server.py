@@ -36,7 +36,9 @@ def human_agent_view():
     global running
     running = True
 
-    if templateType == "friendly":
+    if templateType == "helper":
+        return render_template('human_agent_helper.html', id="human_in_team")
+    elif templateType == "friendly":
         return render_template('human_friendly_agent.html', id="human_in_team")
     elif templateType == "friendly-dutch":
         return render_template('human_friendly_agent_dutch.html', id="human_in_team")
@@ -44,7 +46,7 @@ def human_agent_view():
         return render_template('human_agent_dutch.html', id="human_in_team")
     else:
         return render_template('human_agent.html', id="human_in_team")
-    
+
 
 @app.route('/god')
 def god():  # TODO: remove this

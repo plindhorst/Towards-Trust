@@ -40,7 +40,7 @@ if __name__ == "__main__":
         print("Playing with control-dutch agent")
     elif agent_type == "helper":
         print("Playing with helper agent")
-        agent = HelpingAgent(AGENT_SLOWDOWN)
+        agent = HelpingAgent(AGENT_SLOWDOWN, "explainable")
     elif agent_type == "conflicting":
         print("Playing with conflicting agent")
         agent = ConflictingAgent(AGENT_SLOWDOWN)
@@ -70,6 +70,7 @@ if __name__ == "__main__":
         builder = create_builder(agent_type=agent_type, agent=agent, max_nr_ticks=MAX_TICKS,
                                  tick_duration=TICK_DURATION)
 
+        is_helper = agent_type == "helper"
         # Start overarching MATRX scripts and threads
         media_folder = str(pathlib.Path().resolve()) + "/world/visualizer/static/"
         builder.startup(media_folder=media_folder)
