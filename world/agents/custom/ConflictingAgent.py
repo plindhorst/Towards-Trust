@@ -1,4 +1,5 @@
 import enum
+from random import random
 
 from matrx import utils
 from matrx.actions.object_actions import GrabObject, DropObject
@@ -31,6 +32,10 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP = 16
 
 
+def lie():
+    return random() < 0.5
+
+
 class ConflictingAgent(BW4TBrain):
     def __init__(self, slowdown=7, condition="explainable"):
         super().__init__(condition, slowdown)
@@ -52,6 +57,10 @@ class ConflictingAgent(BW4TBrain):
         self._waitedFor = None
         self._providedExplanations = []
         self._condition = condition
+
+        self._conflicting_drop_locs = [(8, 21), (13, 20), (13, 17), (10, 20)]
+        self._conflicting_drop_locs_idx = 0
+        self._misdrop = False
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -443,7 +452,13 @@ class ConflictingAgent(BW4TBrain):
 
             if Phase.PLAN_PATH_TO_DROPPOINT == self._phase:
                 self._navigator.reset_full()
-                self._navigator.add_waypoints([self._goalLoc])
+                loc = self._goalLoc
+                if "girl" in self._collectedVictims[-1] or "boy" in self._collectedVictims[-1] or "dog" in self._collectedVictims[-1] or "cat" in self._collectedVictims[-1] and self._conflicting_drop_locs_idx < len(self._conflicting_drop_locs):
+                    loc = self._conflicting_drop_locs[self._conflicting_drop_locs_idx]
+                    self._conflicting_drop_locs_idx += 1
+                    self._misdrop = True
+
+                self._navigator.add_waypoints([loc])
                 self._phase = Phase.FOLLOW_PATH_TO_DROPPOINT
 
             if Phase.FOLLOW_PATH_TO_DROPPOINT == self._phase:
@@ -452,15 +467,22 @@ class ConflictingAgent(BW4TBrain):
                     'RescueBot')
                 self._state_tracker.update(state)
                 action = self._navigator.get_move_action(self._state_tracker)
-                if action != None:
+                if action is not None:
                     return action, {}
                 self._phase = Phase.DROP_VICTIM
-                # if self._mode=='normal':
-                #    return Idle.__name__,{'duration_in_ticks':50}
-                # if self._mode=='quick':
-                #    return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.DROP_VICTIM == self._phase:
+                if self._misdrop:
+                    self._misdrop = False
+                    self._currentDoor = None
+
+                    self._sendMessage(
+                        'CRITICAL ERROR: I Accidentally dropped ' + self._goalVic + ' outside dropoff zone.',
+                        'RescueBot')
+
+                    self._phase = Phase.FIND_NEXT_GOAL
+                    return DropObject.__name__, {}
+
                 zones = self._getDropZones(state)
                 for i in range(len(zones)):
                     if zones[i]['img_name'][8:-4] == self._goalVic:
