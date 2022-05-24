@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <b style="color:white" >WASD - Move, Q - Grab Object, E - Drop Object</b>
+        <b style="color:white" >WASD - Bewegen, Q - Object oppakken, E - Object laten vallen</b>
 
     </div>
     <div class="col-sm" align="right" style="display:none;">
@@ -67,17 +67,17 @@
                 <div class="col-md-9">
                     <div id="messages">
                     </div>
-                    <input class="form-control" id="chat_form_input" placeholder="Open a chatroom first.." style="display:none;">
-                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="send_message(event)" disabled style="display:none;">Send</button>
-                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Ready!')">Ready!</button>
-                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Boy')">Boy</button>
-                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Girl')">Girl</button>
-                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Yes')">Yes</button>
-                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('No')">No</button>
+                    <input class="form-control" id="chat_form_input" placeholder="U kunt hier een bericht typen..">
+                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="send_message(event)" style="display:none;">Send</button>
+                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Ready!')">Klaar!</button>
+                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Boy')">Jongen</button>
+                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Girl')">Meisje</button>
+                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Yes')">Ja</button>
+                    <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('No')">Nee</button>
                     </br>
 
                     <!--button type="button" class="btn btn-primary" style="margin-bottom: .2em" id="search_button">Search:</button-->
-                    I will search in area:
+                    Ik ga zoeken in gebied:
                     <div>
                         <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: A1')">A1</button>
                         <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: A2')">A2</button>
@@ -90,7 +90,7 @@
                         <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: C3')">C3</button>
                     </div>
                     <!--button type="button" id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em">Found:</button-->
-                    I have found:
+                    Ik heb gevonden:
                     <div>
                         <div class="dropdown">
                             <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured girl.svg' height=25 width=25/></button>
@@ -229,7 +229,7 @@
                         </div>
                         </br>
 
-                        I will pick up:
+                        Ik ga oppakken:
                         <div>
                             <div class="dropdown">
                                 <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured girl.svg' height=25 width=25/></button>
@@ -369,7 +369,7 @@
 
 
                         </div>
-                        <!--button type="button" id="collect_button" class="btn btn-primary" style="margin-bottom: .2em">Collected:</button-->
+                        <!--button type="button" id="Collect_button" class="btn btn-primary" style="margin-bottom: .2em">Collected:</button-->
                     </div>
                 </div>
             </div>

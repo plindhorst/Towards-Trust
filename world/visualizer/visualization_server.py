@@ -41,6 +41,8 @@ def human_agent_view():
     elif templateType == "friendly-dutch":
         return render_template('human_friendly_agent_dutch.html', id="human_in_team")
     elif templateType == "tutorial-dutch":
+        return render_template('human_agent_dutch.html', id="human_in_team")
+    else:
         return render_template('human_agent.html', id="human_in_team")
     
 
