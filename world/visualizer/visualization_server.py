@@ -1,12 +1,11 @@
-import glob
 import json
 import logging
 import os
 import shutil
 import threading
 from datetime import datetime
+import glob
 
-import numpy as np
 import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, send_file
 
@@ -18,12 +17,12 @@ userinput or other information to MATRX. The api is a Flask (Python) webserver.
 For visualization, see the seperate MATRX visualization folder / package.
 '''
 debug = True
+templateType = ""
 port = 3000
 app = Flask(__name__, template_folder='templates')
 running = False
 # the path to the media folder of the user (outside of the MATRX package)
 ext_media_folder = ""
-helperAgent = False
 
 
 #########################################################################
@@ -36,9 +35,17 @@ def human_agent_view():
 
     global running
     running = True
-    if helperAgent:
+
+    if templateType == "helper":
         return render_template('human_agent_helper.html', id="human_in_team")
-    return render_template('human_agent.html', id="human_in_team")
+    elif templateType == "friendly":
+        return render_template('human_friendly_agent.html', id="human_in_team")
+    elif templateType == "friendly-dutch":
+        return render_template('human_friendly_agent_dutch.html', id="human_in_team")
+    elif templateType == "tutorial-dutch":
+        return render_template('human_agent_dutch.html', id="human_in_team")
+    else:
+        return render_template('human_agent.html', id="human_in_team")
 
 
 @app.route('/god')
@@ -95,22 +102,11 @@ def questionnaire_answers():
     list_of_files = glob.glob('./data/actions/*.pkl')  # * means all if need specific format then *.csv
 
     if len(list_of_files) > 0:
-        file_dates = []
-
-        for file in list_of_files:
-            file_date = file[file.find("\\") + 1:].replace(".pkl", "")
-            file_date = file_date[file_date.find("_") + 1:].replace("-", "")
-            file_dates.append(int(file_date))
-        latest_file = list_of_files[np.argmin(file_dates)]
-
+        latest_file = max(list_of_files, key=os.path.getctime)
         file_name = latest_file.split("\\")[-1].replace(".pkl", ".json")
     else:
         file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
 
-    if os.path.isfile(result_folder + file_name):
-        file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
-
-    print("Saved questionnaire:" + file_name)
     result_file = result_folder + file_name
     with open(result_file, 'w+') as outfile:
         outfile.write(json.dumps(answers))
@@ -183,15 +179,16 @@ def _flask_thread():
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 
-def run_matrx_visualizer(is_helper, verbose, media_folder):
+def run_matrx_visualizer(template, verbose, media_folder):
     """
     Creates a seperate Python thread in which the visualization server (Flask) is started, serving the JS visualization
     :return: MATRX visualization Python thread
     """
-    global debug, ext_media_folder, helperAgent
+    global debug, ext_media_folder, templateType
+    templateType = template
+
     debug = verbose
     ext_media_folder = media_folder
-    helperAgent = is_helper
 
     print("Starting visualization server")
     print("Initialized app:", app)
