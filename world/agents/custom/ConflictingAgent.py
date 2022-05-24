@@ -32,8 +32,8 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP = 16
 
 
-def lie():
-    return random() < 0.5
+def lie(p):
+    return random() < p
 
 
 class ConflictingAgent(BW4TBrain):
@@ -309,54 +309,66 @@ class ConflictingAgent(BW4TBrain):
             if Phase.FOLLOW_ROOM_SEARCH_PATH == self._phase:
                 self._state_tracker.update(state)
                 action = self._navigator.get_move_action(self._state_tracker)
-                if action != None:
+                if action is not None:
 
-                    for info in state.values():
-                        if 'class_inheritance' in info and 'CollectableBlock' in info['class_inheritance']:
-                            vic = str(info['img_name'][8:-4])
-                            if vic not in self._roomVics:
-                                self._roomVics.append(vic)
+                    if lie(0.25):
+                        if lie(0.5):
+                            self._sendMessage('I have not found any victims in ' + self._door[
+                                'room_name'] + '.', 'RescueBot')
+                        else:
+                            self._sendMessage('I Found ' + self._goalVic + ' in ' + self._door[
+                                'room_name'] + ', but you should pick ' + self._goalVic + ' up.', 'RescueBot')
+                        self._searchedRooms.append(self._door['room_name'])
+                        self._phase = Phase.FIND_NEXT_GOAL
+                        return action, {}
+                    else:
 
-                            if vic in self._foundVictims and 'location' not in self._foundVictimLocs[vic].keys():
-                                self._foundVictimLocs[vic] = {'location': info['location'],
-                                                              'room': self._door['room_name'],
-                                                              'obj_id': info['obj_id']}
-                                if vic == self._goalVic:
+                        for info in state.values():
+                            if 'class_inheritance' in info and 'CollectableBlock' in info['class_inheritance']:
+                                vic = str(info['img_name'][8:-4])
+                                if vic not in self._roomVics:
+                                    self._roomVics.append(vic)
+
+                                if vic in self._foundVictims and 'location' not in self._foundVictimLocs[vic].keys():
+                                    self._foundVictimLocs[vic] = {'location': info['location'],
+                                                                  'room': self._door['room_name'],
+                                                                  'obj_id': info['obj_id']}
+                                    if vic == self._goalVic:
+                                        self._sendMessage('Found ' + vic + ' in ' + self._door[
+                                            'room_name'] + ' because you told me ' + vic + ' was located here.',
+                                                          'RescueBot')
+                                        self._searchedRooms.append(self._door['room_name'])
+                                        self._phase = Phase.FIND_NEXT_GOAL
+
+                                if 'healthy' not in vic and vic not in self._foundVictims and 'boy' not in vic and 'girl' not in vic:
                                     self._sendMessage('Found ' + vic + ' in ' + self._door[
-                                        'room_name'] + ' because you told me ' + vic + ' was located here.',
-                                                      'RescueBot')
-                                    self._searchedRooms.append(self._door['room_name'])
-                                    self._phase = Phase.FIND_NEXT_GOAL
+                                        'room_name'] + ' because I am traversing the whole area.', 'RescueBot')
+                                    if vic == self._goalVic and vic in self._uncarryable:
+                                        self._sendMessage('URGENT: You should pick up ' + vic + ' in ' + self._door[
+                                            'room_name'] + ' because I am not allowed to carry critically injured adults.',
+                                                          'RescueBot')
+                                        self._foundVictim = str(info['img_name'][8:-4])
+                                        self._phase = Phase.WAIT_FOR_HUMAN
+                                        self._tick = state['World']['nr_ticks']
+                                        self._mode = 'quick'
+                                    self._foundVictims.append(vic)
+                                    self._foundVictimLocs[vic] = {'location': info['location'],
+                                                                  'room': self._door['room_name'],
+                                                                  'obj_id': info['obj_id']}
 
-                            if 'healthy' not in vic and vic not in self._foundVictims and 'boy' not in vic and 'girl' not in vic:
-                                self._sendMessage('Found ' + vic + ' in ' + self._door[
-                                    'room_name'] + ' because I am traversing the whole area.', 'RescueBot')
-                                if vic == self._goalVic and vic in self._uncarryable:
-                                    self._sendMessage('URGENT: You should pick up ' + vic + ' in ' + self._door[
-                                        'room_name'] + ' because I am not allowed to carry critically injured adults.',
-                                                      'RescueBot')
+                                if vic in self._undistinguishable and vic not in self._foundVictims and vic != self._waitedFor:
+                                    self._sendMessage(
+                                        'URGENT: You should clarify the gender of the injured baby in ' +
+                                        self._door[
+                                            'room_name'] + ' because I am unable to distinguish them. Please come here and press button "Boy" or "Girl".',
+                                        'RescueBot')
                                     self._foundVictim = str(info['img_name'][8:-4])
-                                    self._phase = Phase.WAIT_FOR_HUMAN
+                                    self._foundVictimLoc = info['location']
+                                    self._foundVictimID = info['obj_id']
                                     self._tick = state['World']['nr_ticks']
                                     self._mode = 'quick'
-                                self._foundVictims.append(vic)
-                                self._foundVictimLocs[vic] = {'location': info['location'],
-                                                              'room': self._door['room_name'],
-                                                              'obj_id': info['obj_id']}
-
-                            if vic in self._undistinguishable and vic not in self._foundVictims and vic != self._waitedFor:
-                                self._sendMessage(
-                                    'URGENT: You should clarify the gender of the injured baby in ' +
-                                    self._door[
-                                        'room_name'] + ' because I am unable to distinguish them. Please come here and press button "Boy" or "Girl".',
-                                    'RescueBot')
-                                self._foundVictim = str(info['img_name'][8:-4])
-                                self._foundVictimLoc = info['location']
-                                self._foundVictimID = info['obj_id']
-                                self._tick = state['World']['nr_ticks']
-                                self._mode = 'quick'
-                                self._phase = Phase.WAIT_FOR_HUMAN
-                    return action, {}
+                                    self._phase = Phase.WAIT_FOR_HUMAN
+                        return action, {}
                 # if self._goalVic not in self._foundVictims:
                 #    self._sendMessage(self._goalVic + ' not present in ' + str(self._door['room_name']) + ' because I searched the whole area without finding ' + self._goalVic, 'RescueBot')
                 if self._goalVic in self._foundVictims and self._goalVic not in self._roomVics and \
@@ -453,7 +465,9 @@ class ConflictingAgent(BW4TBrain):
             if Phase.PLAN_PATH_TO_DROPPOINT == self._phase:
                 self._navigator.reset_full()
                 loc = self._goalLoc
-                if "girl" in self._collectedVictims[-1] or "boy" in self._collectedVictims[-1] or "dog" in self._collectedVictims[-1] or "cat" in self._collectedVictims[-1] and self._conflicting_drop_locs_idx < len(self._conflicting_drop_locs):
+                if "girl" in self._collectedVictims[-1] or "boy" in self._collectedVictims[-1] or "dog" in \
+                        self._collectedVictims[-1] or "cat" in self._collectedVictims[
+                    -1] and self._conflicting_drop_locs_idx < len(self._conflicting_drop_locs):
                     loc = self._conflicting_drop_locs[self._conflicting_drop_locs_idx]
                     self._conflicting_drop_locs_idx += 1
                     self._misdrop = True
