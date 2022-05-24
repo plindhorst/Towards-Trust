@@ -44,7 +44,7 @@ agent_memory_decay = 5  # we want to memorize states for seconds / tick_duration
 fov_occlusion = False
 
 
-def create_builder(agent, max_nr_ticks, tick_duration):
+def create_builder(agent_type, agent, max_nr_ticks, tick_duration):
     np.random.seed(random_seed)
 
     goal = CollectionGoal(max_nr_ticks=max_nr_ticks)
@@ -54,7 +54,7 @@ def create_builder(agent, max_nr_ticks, tick_duration):
 
     create_world(builder)
     add_drop_off_zones(builder)
-    add_agents(builder, agent)
+    add_agents(builder, agent_type, agent)
 
     return builder
 
@@ -65,7 +65,7 @@ def add_drop_off_zones(builder):
                      is_drop_zone=True, is_goal_block=False, is_collectable=False)
 
 
-def add_agents(builder, agent):
+def add_agents(builder, agent_type, agent):
     sense_capability = SenseCapability({AgentBody: agent_sense_range,
                                         CollectableBlock: block_sense_range,
                                         None: other_sense_range})
@@ -82,7 +82,7 @@ def add_agents(builder, agent):
                             key_action_map=key_action_map, sense_capability=sense_capability,
                             is_traversable=True, img_name="/images/first-responder6.svg")
 
-    builder.add_agent((0, 1), Spy(), team="Team 0", name="spy", sense_capability=spy_sense_capability,
+    builder.add_agent((0, 1), Spy(agent_type=agent_type), team="Team 0", name="spy", sense_capability=spy_sense_capability,
                       is_traversable=True, img_name="/images/transparent.png")
 
 

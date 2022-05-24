@@ -52,7 +52,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     while True:
-        builder = create_builder(agent=agent, max_nr_ticks=MAX_TICKS, tick_duration=TICK_DURATION)
+        builder = create_builder(agent_type=agent_type, agent=agent, max_nr_ticks=MAX_TICKS,
+                                 tick_duration=TICK_DURATION)
 
         # Start overarching MATRX scripts and threads
         media_folder = str(pathlib.Path().resolve()) + "/world/visualizer/static/"
