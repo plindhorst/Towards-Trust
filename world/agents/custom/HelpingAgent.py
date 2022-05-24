@@ -37,7 +37,7 @@ class Phase(enum.Enum):
 class HelpingAgent(BW4TBrain):
     numberOfTicksWhenReady = None
 
-    def __init__(self, condition, slowdown: int):
+    def __init__(self, slowdown, condition):
         super().__init__(condition, slowdown)
         self._phase = Phase.INTRODUCTION
         self._uncarryable = ['critically injured elderly man', 'critically injured elderly woman',

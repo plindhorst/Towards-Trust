@@ -22,7 +22,7 @@ app = Flask(__name__, template_folder='templates')
 running = False
 # the path to the media folder of the user (outside of the MATRX package)
 ext_media_folder = ""
-
+helperAgent = False
 
 #########################################################################
 # Visualization server routes
@@ -34,6 +34,8 @@ def human_agent_view():
 
     global running
     running = True
+    if helperAgent:
+        return render_template('human_agent_helper.html', id="human_in_team")
     return render_template('human_agent.html', id="human_in_team")
 
 
@@ -168,14 +170,15 @@ def _flask_thread():
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 
-def run_matrx_visualizer(verbose, media_folder):
+def run_matrx_visualizer(is_helper, verbose, media_folder):
     """
     Creates a seperate Python thread in which the visualization server (Flask) is started, serving the JS visualization
     :return: MATRX visualization Python thread
     """
-    global debug, ext_media_folder
+    global debug, ext_media_folder, helperAgent
     debug = verbose
     ext_media_folder = media_folder
+    helperAgent = is_helper
 
     print("Starting visualization server")
     print("Initialized app:", app)
