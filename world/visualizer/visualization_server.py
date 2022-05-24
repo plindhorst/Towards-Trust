@@ -1,11 +1,12 @@
+import glob
 import json
 import logging
 import os
 import shutil
 import threading
 from datetime import datetime
-import glob
 
+import numpy as np
 import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, send_file
 
@@ -23,6 +24,7 @@ running = False
 # the path to the media folder of the user (outside of the MATRX package)
 ext_media_folder = ""
 helperAgent = False
+
 
 #########################################################################
 # Visualization server routes
@@ -93,11 +95,22 @@ def questionnaire_answers():
     list_of_files = glob.glob('./data/actions/*.pkl')  # * means all if need specific format then *.csv
 
     if len(list_of_files) > 0:
-        latest_file = max(list_of_files, key=os.path.getctime)
+        file_dates = []
+
+        for file in list_of_files:
+            file_date = file[file.find("\\") + 1:].replace(".pkl", "")
+            file_date = file_date[file_date.find("_") + 1:].replace("-", "")
+            file_dates.append(int(file_date))
+        latest_file = list_of_files[np.argmin(file_dates)]
+
         file_name = latest_file.split("\\")[-1].replace(".pkl", ".json")
     else:
         file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
 
+    if os.path.isfile(result_folder + file_name):
+        file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+
+    print("Saved questionnaire:" + file_name)
     result_file = result_folder + file_name
     with open(result_file, 'w+') as outfile:
         outfile.write(json.dumps(answers))
