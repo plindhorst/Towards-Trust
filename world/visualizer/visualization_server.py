@@ -42,13 +42,13 @@ def god():  # TODO: remove this
     return render_template('god.html')
 
 
-@app.route('/results')
+@app.route('/data')
 def get_results():
-    if not os.path.exists("./results"):
+    if not os.path.exists("./data"):
         return False
-    shutil.make_archive('results', 'zip', "./results")
-    if os.path.isfile('./results.zip'):
-        return send_file('../results.zip')
+    shutil.make_archive('data', 'zip', "./results")
+    if os.path.isfile('./data.zip'):
+        return send_file('../data.zip')
     else:
         return False
 
@@ -84,11 +84,11 @@ def questionnaire_answers():
     answers = []
     for question in request.args:
         answers.append({question: request.args[question]})
-    result_folder = os.getcwd() + "\\results\\questionnaire\\"
+    result_folder = os.getcwd() + "\\data\\questionnaire\\"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
-    list_of_files = glob.glob('./results/actions/*.pkl')  # * means all if need specific format then *.csv
+    list_of_files = glob.glob('./data/actions/*.pkl')  # * means all if need specific format then *.csv
 
     if len(list_of_files) > 0:
         latest_file = max(list_of_files, key=os.path.getctime)
