@@ -4,6 +4,9 @@ import sys
 
 import requests
 
+from world.agents.custom.FriendlyAgentDutch import FriendlyAgentDutch
+from world.agents.custom.TutorialAgent import TutorialAgent
+from world.agents.custom.TutorialAgentDutch import TutorialAgentDutch
 from world.visualizer import visualization_server
 from world.agents.ControlAgent import ControlAgent
 from world.agents.custom.AdviceAgent import AdviceAgent
@@ -22,7 +25,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-agent", action='store',
-                        help="Agent type, choose from: control, helper, conflicting, advice, directing, friendly",
+                        help="Agent type, choose from: control, control-dutch, helper, conflicting, advice, directing,\
+                         friendly, friendly-dutch, tutorial, tutorial-dutch",
                         type=str)
     args = parser.parse_args()
 
@@ -32,6 +36,8 @@ if __name__ == "__main__":
     if agent_type == "control":
         print("Playing with control agent")
         agent = ControlAgent(AGENT_SLOWDOWN)
+    elif agent_type == "control-dutch":
+        print("Playing with control-dutch agent")
     elif agent_type == "helper":
         print("Playing with helper agent")
         agent = HelpingAgent(AGENT_SLOWDOWN)
@@ -47,8 +53,17 @@ if __name__ == "__main__":
     elif agent_type == "friendly":
         print("Playing with friendly agent")
         agent = FriendlyAgent(AGENT_SLOWDOWN)
+    elif agent_type == "friendly-dutch":
+        print("Playing with friendly-dutch agent")
+        agent = FriendlyAgentDutch(AGENT_SLOWDOWN)
+    elif agent_type == "tutorial":
+        agent = TutorialAgent(AGENT_SLOWDOWN)
+    elif agent_type == "tutorial-dutch":
+        agent = TutorialAgentDutch(AGENT_SLOWDOWN)
+
     else:
-        print("Please choose one of the following agents: control, helper, conflicting, advice, directing, friendly")
+        print("Please choose one of the following agents: control, control-dutch, helper, conflicting, advice, \
+        directing, friendly, friendly-dutch, tutorial, tutorial-dutch")
         sys.exit(0)
 
     while True:
@@ -59,7 +74,7 @@ if __name__ == "__main__":
         media_folder = str(pathlib.Path().resolve()) + "/world/visualizer/static/"
         builder.startup(media_folder=media_folder)
         print("Starting custom visualizer")
-        vis_thread = visualization_server.run_matrx_visualizer(verbose=False, media_folder=media_folder)
+        vis_thread = visualization_server.run_matrx_visualizer(agent_type, verbose=False, media_folder=media_folder)
         world = builder.get_world()
         print("Started world...")
 

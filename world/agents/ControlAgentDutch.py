@@ -1,4 +1,4 @@
-import sys, random, enum, ast, time
+import sys, random, enum, ast
 from matrx import grid_world
 from world.actions.customActions import *
 from world.agents.BW4TBrain import BW4TBrain
@@ -13,49 +13,45 @@ from matrx.messages.message import Message
 from matrx.messages.message_manager import MessageManager
 
 class Phase(enum.Enum):
-    INTRO0=0,
-    INTRO1=1,
-    INTRO2=2,
-    INTRO3=3,
-    INTRO4=4,
-    INTRO5=5,
-    INTRO6=6,
-    INTRO7=7,
-    INTRO8=8,
-    INTRO9=9,
-    INTRO10=10,
-    INTRO11=11,
-    FIND_NEXT_GOAL=12,
-    PICK_UNSEARCHED_ROOM=13,
-    PLAN_PATH_TO_ROOM=14,
-    FOLLOW_PATH_TO_ROOM=15,
-    PLAN_ROOM_SEARCH_PATH=16,
-    FOLLOW_ROOM_SEARCH_PATH=17,
-    PLAN_PATH_TO_VICTIM=18,
-    FOLLOW_PATH_TO_VICTIM=19,
-    TAKE_VICTIM=20,
-    PLAN_PATH_TO_DROPPOINT=21,
-    FOLLOW_PATH_TO_DROPPOINT=22,
-    DROP_VICTIM=23,
-    WAIT_FOR_HUMAN=24,
-    WAIT_AT_ZONE=25,
-    FIX_ORDER_GRAB=26,
-    FIX_ORDER_DROP=27
+    INTRODUCTION=0,
+    FIND_NEXT_GOAL=1,
+    PICK_UNSEARCHED_ROOM=2,
+    PLAN_PATH_TO_ROOM=3,
+    FOLLOW_PATH_TO_ROOM=4,
+    PLAN_ROOM_SEARCH_PATH=5,
+    FOLLOW_ROOM_SEARCH_PATH=6,
+    PLAN_PATH_TO_VICTIM=7,
+    FOLLOW_PATH_TO_VICTIM=8,
+    TAKE_VICTIM=9,
+    PLAN_PATH_TO_DROPPOINT=10,
+    FOLLOW_PATH_TO_DROPPOINT=11,
+    DROP_VICTIM=12,
+    WAIT_FOR_HUMAN=13,
+    WAIT_AT_ZONE=14,
+    FIX_ORDER_GRAB=15,
+    FIX_ORDER_DROP=16
 
-class TutorialAgentDutch(BW4TBrain):
-    def __init__(self, slowdown, condition="explainable"):
+class HighInterdependenceAgentControlDutch(BW4TBrain):
+    numberOfTicksWhenReady = None
+
+    def __init__(self, slowdown=7, condition="explainable"):
         super().__init__(condition, slowdown)
-        self._phase=Phase.INTRO0
+        self._phase=Phase.INTRODUCTION
+        self._uncarryable = ['critically injured elderly man', 'critically injured elderly woman', 'critically injured man', 'critically injured woman']
+        self._undistinguishable = ['critically injured girl', 'critically injured boy', 'mildly injured boy', 'mildly injured girl']
         self._roomVics = []
-        self._searchedRooms = ['area C3', 'area C2']
+        self._searchedRooms = []
         self._foundVictims = []
-        self._collectedVictims = ['critically injured girl']
+        self._collectedVictims = []
         self._foundVictimLocs = {}
-        self._maxTicks = 100000
+        self._maxTicks = 11577
+        HighInterdependenceAgentControlDutch.numberOfTicksWhenReady = self._maxTicks
         self._sendMessages = []
+        self._mode = 'normal'
         self._currentDoor=None
-        self._condition = condition
+        self._waitedFor = None
         self._providedExplanations = []
+        self._condition = condition
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -67,153 +63,39 @@ class TutorialAgentDutch(BW4TBrain):
         return state
 
     def decide_on_bw4t_action(self, state:State):
+        ticksLeft = self._maxTicks - state['World']['nr_ticks']
+
+        if ticksLeft <= 5789 and ticksLeft > 4631 and 'U heeft nog  5 minuten om de taak te voltooien.' not in self._sendMessages:
+            self._sendMessage('U heeft nog  5 minuten om de taak te voltooien.', 'RescueBot')
+        if ticksLeft <= 4631 and ticksLeft > 3473 and 'U heeft nog  4 minuten om de taak te voltooien.' not in self._sendMessages:
+            self._sendMessage('U heeft nog  4 minuten om de taak te voltooien.', 'RescueBot')
+        if ticksLeft <= 3473 and ticksLeft > 2315 and 'U heeft nog  3 minuten om de taak te voltooien.' not in self._sendMessages:
+            self._sendMessage('U heeft nog  3 minuten om de taak te voltooien.', 'RescueBot')
+        if ticksLeft <= 2315 and ticksLeft > 1158 and 'U heeft nog  2 minuten om de taak te voltooien.' not in self._sendMessages:
+            self._sendMessage('U heeft nog  2 minuten om de taak te voltooien.', 'RescueBot')
+        if ticksLeft <= 1158 and 'U heeft nog  1 minuut om de taak te voltooien.' not in self._sendMessages:
+            self._sendMessage('U heeft nog  1 minuut om de taak te voltooien.', 'RescueBot')
 
         while True:
-            if Phase.INTRO0==self._phase:
+            if Phase.INTRODUCTION==self._phase:
+                self._sendMessage('Hoi! Mijn naam is RescueBot. Wij zullen straks samen proberen om de volgende \
+                 8 slachtoffers zo snel mogelijk te vinden en te redden. We moeten de slachtoffers redden in volgorde \
+                  van links naar rechts (critically injured girl, critically injured elderly woman, critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat). Dus het is belangrijk om een slachtoffer pas af te leveren wanneer \
+                   de vorige eerst afgeleverd is. We hebben 10 minuten om alle 8 slachtoffers in de juiste \
+                   volgorde te verzamelen. Als je alles hebt begrepen, dan kun je op het "Ready!" knopje drukken en dan \
+                    starten we onze missie!', 'RescueBot')
 
-                self._sendMessage('Hoi! Mijn naam is RescueBot. Tijdens dit experiment zullen wij met elkaar \
-                samenwerken en communiceren. Ons doel is om de slachtoffers die je op de afleverlocatie links van \
-                ons ziet zo snel mogelijk te zoeken en te redden. We moeten de slachtoffers redden in volgorde \
-                van links naar rechts, dus het is belangrijk om een slachtoffer pas af te leveren als de vorige \
-                al afgeleverd is. U zal berichten ontvangen in de chatbox. U kunt zelf berichten sturen door op de \
-                knopjes te drukken. Het advies is om berichten te sturen wanneer u een gebied gaat doorzoeken, \
-                wanneer u een van de slachtoffers vindt en wanneer u een slachtoffer gaat oppakken. Er zijn 8 \
-                typen slachtoffers die zich in 3 verschillende staten van gezondheid kunnen bevinden. de rode kleur \
-                betekent dat het slachtoffer zwaar gewond is. Geel betekent licht gewond en groen betekent dat ze \
-                gezond zijn. De acht slachtoffers zijn een meisje (critically injured girl/mildly injured girl/healthy girl), \
-                een jongen (critically injured boy/mildly injured boy/healthy boy), een vrouw (critically injured woman/mildly injured woman/healthy woman), \
-                een man (critically injured man/mildly injured man/healthy man), een bejaarde vrouw (critically injured elderly woman/mildly injured elderly woman/healthy elderly woman), \
-                een bejaarde man (critically injured elderly man/mildly injured elderly man/healthy elderly man), \
-                een hond (critically injured dog/mildly injured dog/healthy dog) en een kat (critically injured cat/mildly injured cat/healthy cat). \
-                Aan de top van het scherm ziet u de lettertoetsen om het spel te spelen. Om te bewegen kunt u ook \
-                simpelweg de pijltjestoetsen gebruiken. U kunt slechts 1 blokje naast u zien, dus het is belangrijk om de verschillende gebieden te doorzoeken. \
-                We gaan nu alles wat hierboven genoemd is oefenen en eigen maken, totdat u zich comfortabel genoeg \
-                voelt om het echte experiment te beginnen. Als u alles heeft gelezen, druk dan op het "Ready!" knopje.', 'RescueBot')
+                if self.received_messages and self.received_messages[-1]=='Ready!' or not state[{'is_human_agent':True}]:
 
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO1
-                    self.received_messages=[]
-                else:
-                    return None,{}
+                    # # Added by Justin: for testing/debugging purposes
+                    # print("amount of ticks when ready was pressed: ")
+                    # print(state['World']['nr_ticks'])
 
-            if Phase.INTRO1==self._phase:
-                self._sendMessage('Laten we eerst met de toetsen beginnen. U kunt bewegen met de pijltjestoetsen. \
-                Als u twee keer omhoog beweegt, zult u zien dat u mij nu niet langer meer kunt zien. \
-                Dit komt doordat u maar 1 vakje naast uzelf kunt zien. Daarom is het belangrijk om de gebieden te doorzoeken. \
-                Als u twee keer omhoog heeft bewogen kunt u op het knopje "Ready!" drukken.', 'RescueBot')
+                    #Added by Justin: Store the amount of ticks when pressed 'ready' in a static variable
+                    if HighInterdependenceAgentControlDutch.numberOfTicksWhenReady == self._maxTicks:
+                        HighInterdependenceAgentControlDutch.numberOfTicksWhenReady = state['World']['nr_ticks']
 
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO2
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO2==self._phase:
-                self._sendMessage('Laten we nu naar gebied C3 bewegen en het volledig doorzoeken. In dit gebied zal\
-                u 4 slachtoffers moeten vinden. Een van hen is het eerste slachtoffer dat we naar de afleverlocatie \
-                moeten brengen: critically injured girl. De andere drie zijn gezond. Als u het hele gebied heeft \
-                doorzocht en de 4 slachtoffers heeft gevonden, druk dan op het "Ready!" knopje.', 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO3
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO3==self._phase:
-
-                self._sendMessage('Laten we nu onze eerste slachtoffer oppakken: critically injured girl. Om een \
-                slachtoffer op te pakken, gaat u eerst op het slachtoffer staan. Vervolgens kunt u "b" of "q" op uw toetsenbord \
-                indrukken om het slachtoffer op te pakken. Als u nu naar links, rechts, boven of onder beweegt ziet u \
-                dat het slachtoffer daar niet meer is. U kunt 1 slachtoffer tegelijk dragen. Als u klaar bent met deze \
-                stap, druk dan op het "Ready!" knopje', 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO4
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO4==self._phase:
-                self._sendMessage('Laten we nu onze eerste slachtoffer critically injured girl afleveren op de afleverlocatie. \
-                U vindt de afleverlocatie linksonder, naast het punt waar u bent begonnen. U kunt naar de afleverlocatie \
-                toe bewegen met de pijltjestoetsen. Zodra u bent aangekomen, ga dan op het afbeelding staan van het eerste slachtoffer \
-                dat u nu draagt (critically injured girl). Aangezien u nu het eerste slachtoffer draagt is dit het meest \
-                linkse afbeelding van de afleverlocatie. Zodra u up het afbeelding staat, druk dan "n" of "e" op uw toetsenbord \
-                om het slachtoffer te laten vallen. Als u nu eenmaal naar rechts beweegt, ziet u dat u critically injured girl \
-                op de juiste plek heeft afgeleverd. Als u deze stap heeft voltooid, druk dan op het "Ready!" knopje.', 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO5
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO5==self._phase:
-
-                self._sendMessage('U heeft zojuist het eerste slachtoffer afgeleverd, cool! tijd voor de volgende stap, \
-                namelijk slachtoffer: critically injured elderly woman. Laten we naar gebied C2 bewegen en zoeken naar dit slachtoffer. \
-                Maar dit keer, laat me in de chat weten dat u gebied C2 gaat doorzoeken. Dit kunt u doen door op het knopje \
-                "C2" te drukken. Op die manier kunt u ervoor zorgen dat ik niet ook dit gebied ga doorzoeken om \
-                critically injured elderly woman te vinden en zo kunnen we dus efficiënter samenwerken! \
-                Als u op het knopje "C2" hebt gedrukt en naar de ingang van het gebied hebt bewogen, druk dan op het \
-                knopje "Ready!".', 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO6
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO6==self._phase:
-
-                self._sendMessage('U zou zich nu in gebied C2 moeten bevinden. Als u dit gebied doorzoekt dan zal u \
-                critically injured elderly woman en mildly injured cat moeten vinden. Wanneer u een van onze slachtoffers \
-                in een gebied vindt dan is het belangrijk dat u dit doorgeeft aan mij via de chat. u kunt dit doen met \
-                de onderstaande knopjes bij: "I have found:". Bijvoorbeeld, in dit gebied zou u op het knopje \
-                "critically injured elderly woman in C2" en "mildly injured cat in C2" moeten drukken. U kunt de juiste \
-                kamer selecteren in het dropdown menu. Als u deze informatie met mij deelt dan verbetert dat onze \
-                efficientie dus dat is ten zeerste aan te raden! Als u het hele gebied heeft doorzocht, twee slachtoffers heeft \
-                gevonden en dit heeft gecommuniceerd met de "found" knopjes, druk dan op het "Ready!" knopje.', 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._foundVictimLocs['mildly injured cat'] = {'room':'area C2'}
-                    self._phase=Phase.INTRO7
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO7==self._phase:
-
-
-                self._sendMessage('Laten we het volgende slachtoffer critically injured elderly woman in area C2 oppakken en afleveren op de afleverlocatie.\
-                Maar dit keer, laat me weten wanneer u het slachtoffer op gaat pakken door het daarbij behorende knopje te gebruiken. \
-                Net als toen u dit slachtoffer vond, druk op het knopje "critically injured elderly woman in C2" onder "I will pick up:". \
-                Op die manier weet ik dat ik niet meer naar dit slachtoffer hoef te zoeken, en kan ik beginnen met de zoektocht \
-                naar het volgende slachtoffer: critically injured man. Nadat u het bericht naar mij heeft verstuurd kunt u  \
-                critically injured elderly woman oppakken, naar de afleverlocatie bewegen, en critically injured elderly woman \
-                op de juiste plek afleveren. Als u dit heeft gedaan, druk dan op het "Ready!" knopje.', 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._phase=Phase.INTRO8
-                    self.received_messages=[]
-                else:
-                    return None,{}
-
-            if Phase.INTRO8==self._phase:
-                self._sendMessage('U heeft zojuist het tweede slachtoffer critically injured elderly woman gered, goed gedaan! \
-                U zou nu een goed begrip moeten hebben van alle toetsen om te bewegen en knoppen om berichten te sturen. \
-                De volgende stap is een klein voorproefje van hoe het echte experiment zal zijn. \
-                Ik zal nu ook rondbewegen, gebieden doorzoeken, slachtoffers oppakken en afleveren en relevante \
-                informatie met u delen tijdens de missie. We moeten nog steeds de volgende slachtoffers redden in deze \
-                volgorde: critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat. \
-                Zodra we het laatste slachtoffer hebben afgeleverd mildly injured cat, zal het spel automatisch stoppen. \
-                Als u klaar bent om te zoeken voor critically injured man, druk dan op het "Ready!" knopje.' , 'RescueBot')
-
-                if self.received_messages and self.received_messages[-1]=='Ready!':
-                    self._currentTick = state['World']['nr_ticks']
                     self._phase=Phase.FIND_NEXT_GOAL
-                    self.received_messages=[]
                 else:
                     return None,{}
 
@@ -235,10 +117,13 @@ class TutorialAgentDutch(BW4TBrain):
 
                 if self._goalVic not in self._foundVictims:
                     self._phase=Phase.PICK_UNSEARCHED_ROOM
-                    return Idle.__name__,{'duration_in_ticks':25}
+                    if self._mode=='normal':
+                        return Idle.__name__,{'duration_in_ticks':25}
+                    if self._mode=='quick':
+                        return Idle.__name__,{'duration_in_ticks':10}
 
                 if self._goalVic in self._foundVictims and 'location' in self._foundVictimLocs[self._goalVic].keys():
-                    if self._condition!="silent" and self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and state[self.agent_id]['location'] in locs and self._collectedVictims:
+                    if self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and state[self.agent_id]['location'] in locs and self._collectedVictims and self._goalVic not in self._uncarryable:
                         if self._condition=="explainable":
                             self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"', 'RescueBot')
                         if self._condition=="transparent":
@@ -253,32 +138,75 @@ class TutorialAgentDutch(BW4TBrain):
                             self._phase=Phase.FIND_NEXT_GOAL
                         if self.received_messages and self.received_messages[-1]=='No' or state['World']['nr_ticks'] > self._tick + 579:
                             self._phase=Phase.PLAN_PATH_TO_VICTIM
-                        return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
+                    if self._goalVic in self._uncarryable:
+                        if self._condition=="explainable":
+                            self._sendMessage('U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room'] + ' want ik mag geen kritiek gewonde volwassenen tillen.', 'RescueBot')
+                        if self._condition=="adaptive":
+                            msg1 = 'U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room'] + ' want ik mag geen kritiek gewonde volwassenen tillen.'
+                            msg2 = 'U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room']
+                            explanation = 'want ik mag geen kritiek gewonde volwassenen tillen.'
+                            self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
+                        if self._condition=="transparent" or self._condition=="silent":
+                            self._sendMessage('U zal ' + self._goalVic + ' moeten oppaken in ' + self._foundVictimLocs[self._goalVic]['room'], 'RescueBot')
+                        self._collectedVictims.append(self._goalVic)
+                        self._phase=Phase.FIND_NEXT_GOAL
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
                     else:
                         self._phase=Phase.PLAN_PATH_TO_VICTIM
-                        return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
 
                 if self._goalVic in self._foundVictims and 'location' not in self._foundVictimLocs[self._goalVic].keys():
-                    if self._condition!="silent" and self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and state[self.agent_id]['location'] in locs and self._collectedVictims:
+                    if self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and state[self.agent_id]['location'] in locs and self._collectedVictims and self._goalVic not in self._uncarryable:
                         if self._condition=="explainable":
                             self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"', 'RescueBot')
                         if self._condition=="transparent":
-                            self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No".', 'RescueBot')
+                            self._sendMessage('Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"', 'RescueBot')
                         if self._condition=="adaptive":
                             msg1 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + ' omdat ' + self._foundVictimLocs[self._goalVic]['room'] + ' ver weg is en u sneller kunt lopen. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"'
-                            msg2 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No".'
-                            explanation = 'omdat het ver weg is en u sneller kunt lopen'
+                            msg2 = 'Ik stel voor dat u ' + self._goalVic + ' oppakt in ' + self._foundVictimLocs[self._goalVic]['room'] + '. Als u het ermee eens bent, druk dan het "Yes" knopje. Zo niet, druk dan op "No"'
+                            explanation = 'omdat het ver weg is en u sneller kunt lopen.'
                             self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
-
                         if self.received_messages and self.received_messages[-1]=='Yes' or self._goalVic in self._collectedVictims:
                             self._collectedVictims.append(self._goalVic)
                             self._phase=Phase.FIND_NEXT_GOAL
                         if self.received_messages and self.received_messages[-1]=='No' or state['World']['nr_ticks'] > self._tick + 579:
                             self._phase=Phase.PLAN_PATH_TO_ROOM
-                        return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
+                    if self._goalVic in self._uncarryable:
+                        if self._condition=="explainable":
+                            self._sendMessage('U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room'] + ' want ik mag geen kritiek gewonde volwassenen tillen.', 'RescueBot')
+                        if self._condition=="adaptive":
+                            msg1 = 'U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room'] + ' want ik mag geen kritiek gewonde volwassenen tillen.'
+                            msg2 = 'U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room']
+                            explanation = ' want ik mag geen kritiek gewonde volwassenen tillen.'
+                            self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
+                        if self._condition=="transparent" or self._condition=="silent":
+                            self._sendMessage('U zal ' + self._goalVic + ' moeten oppakken in ' + self._foundVictimLocs[self._goalVic]['room']+'.','RescueBot')
+                        self._collectedVictims.append(self._goalVic)
+                        self._phase=Phase.FIND_NEXT_GOAL
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
                     else:
                         self._phase=Phase.PLAN_PATH_TO_ROOM
-                        return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.PICK_UNSEARCHED_ROOM==self._phase:
                 agent_location = state[self.agent_id]['location']
@@ -317,8 +245,11 @@ class TutorialAgentDutch(BW4TBrain):
                     doorLoc = self._door['location']
                 self._navigator.add_waypoints([doorLoc])
                 self._phase=Phase.FOLLOW_PATH_TO_ROOM
+                if self._mode=='quick':
+                    return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.FOLLOW_PATH_TO_ROOM==self._phase:
+                self._mode='normal'
                 if self._goalVic in self._collectedVictims:
                     self._currentDoor=None
                     self._phase=Phase.FIND_NEXT_GOAL
@@ -347,7 +278,10 @@ class TutorialAgentDutch(BW4TBrain):
                     if action!=None:
                         return action,{}
                     self._phase=Phase.PLAN_ROOM_SEARCH_PATH
-                    return Idle.__name__,{'duration_in_ticks':50}
+                    if self._mode=='normal':
+                        return Idle.__name__,{'duration_in_ticks':50}
+                    if self._mode=='quick':
+                        return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.PLAN_ROOM_SEARCH_PATH==self._phase:
                 roomTiles = [info['location'] for info in state.values()
@@ -363,15 +297,17 @@ class TutorialAgentDutch(BW4TBrain):
                     self._sendMessage('Ik doorzoek heel ' + str(self._door['room_name']) + ' omdat ik niet zo ver kan kijken. Ik probeer te vinden: ' + self._goalVic+'.', 'RescueBot')
                 if self._condition=="transparent":
                     self._sendMessage('Ik doorzoek heel ' + str(self._door['room_name']) + '.', 'RescueBot')
-                if self._condition=="adaptive":
+                if self._condition=="adaptive" and ticksLeft>5789:
                     msg1 = 'Ik doorzoek heel ' + str(self._door['room_name']) + ' omdat ik niet zo ver kan kijken. Ik probeer te vinden: ' + self._goalVic + '.'
                     msg2 = 'Ik doorzoek heel ' + str(self._door['room_name']) +'.'
                     explanation = 'omdat ik niet zo ver kan kijken.'
                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
-                #self._currentDoor = self._door['location']
                 self._roomVics=[]
                 self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
-                return Idle.__name__,{'duration_in_ticks':50}
+                if self._mode=='normal':
+                    return Idle.__name__,{'duration_in_ticks':50}
+                if self._mode=='quick':
+                    return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.FOLLOW_ROOM_SEARCH_PATH==self._phase:
                 self._state_tracker.update(state)
@@ -399,7 +335,7 @@ class TutorialAgentDutch(BW4TBrain):
                                     self._searchedRooms.append(self._door['room_name'])
                                     self._phase=Phase.FIND_NEXT_GOAL
 
-                            if 'healthy' not in vic and vic not in self._foundVictims:
+                            if 'healthy' not in vic and vic not in self._foundVictims and 'boy' not in vic and 'girl' not in vic:
                                 if self._condition=="explainable":
                                     self._sendMessage('Ik heb '+ vic + ' gevonden in ' + self._door['room_name'] + ' omdat ik het hele gebied doorzoek.', 'RescueBot')
                                 if self._condition=="transparent":
@@ -409,8 +345,39 @@ class TutorialAgentDutch(BW4TBrain):
                                     msg2 = 'Ik heb '+ vic + ' gevonden in ' + self._door['room_name']+'.'
                                     explanation = 'omdat ik het hele gebied doorzoek.'
                                     self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
+                                if vic==self._goalVic and vic in self._uncarryable:
+                                    if self._condition=="explainable":
+                                        self._sendMessage('URGENT: U zal ' + vic + ' moeten oppakken in ' + self._door['room_name'] + ' want ik mag geen kritiek gewonde volwassenen tillen.', 'RescueBot')
+                                    if self._condition=="adaptive":
+                                        msg1 = 'URGENT: U zal ' + vic + ' moeten oppakken in ' + self._door['room_name'] + ' want ik mag geen kritiek gewonde volwassenen tillen.'
+                                        msg2 = 'URGENT: U zal ' + vic + ' moeten oppakken in ' + self._door['room_name'] +'.'
+                                        explanation = 'want ik mag geen kritiek gewonde volwassenen tillen.'
+                                        self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
+                                    if self._condition=="silent" or self._condition=="transparent":
+                                        self._sendMessage('URGENT: U zal ' + vic + ' moeten oppakken in ' + self._door['room_name']+'.', 'RescueBot')
+                                    self._foundVictim=str(info['img_name'][8:-4])
+                                    self._phase=Phase.WAIT_FOR_HUMAN
+                                    self._tick = state['World']['nr_ticks']
+                                    self._mode='quick'
                                 self._foundVictims.append(vic)
                                 self._foundVictimLocs[vic] = {'location':info['location'],'room':self._door['room_name'],'obj_id':info['obj_id']}
+
+                            if vic in self._undistinguishable and vic not in self._foundVictims and vic!=self._waitedFor:
+                                if self._condition=="explainable":
+                                    self._sendMessage('URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + ' omdat ik die niet kan onderscheiden. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".', 'RescueBot')
+                                if self._condition=="adaptive":
+                                    msg1 = 'URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + ' omdat ik die niet kan onderscheiden. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".'
+                                    msg2 = 'URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + '. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".'
+                                    explanation = 'because I am unable to distinguish them'
+                                    self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
+                                if self._condition=="silent" or self._condition=="transparent":
+                                    self._sendMessage('URGENT: U zal mij moeten vertellen of de gewonde baby een jongen of meisje is ' + self._door['room_name'] + '. Kom alstublieft hier en druk op het knopje "Boy" or "Girl".', 'RescueBot')
+                                self._foundVictim=str(info['img_name'][8:-4])
+                                self._foundVictimLoc=info['location']
+                                self._foundVictimID=info['obj_id']
+                                self._tick = state['World']['nr_ticks']
+                                self._mode='quick'
+                                self._phase=Phase.WAIT_FOR_HUMAN
                     return action,{}
                 #if self._goalVic not in self._foundVictims:
                 #    self._sendMessage(self._goalVic + ' not present in ' + str(self._door['room_name']) + ' because I searched the whole area without finding ' + self._goalVic, 'RescueBot')
@@ -427,10 +394,60 @@ class TutorialAgentDutch(BW4TBrain):
                     self._foundVictimLocs.pop(self._goalVic, None)
                     self._foundVictims.remove(self._goalVic)
                     self._roomVics = []
-                    self.received_messages = []
+                    self.received_messages=[]
                 self._searchedRooms.append(self._door['room_name'])
                 self._phase=Phase.FIND_NEXT_GOAL
-                return Idle.__name__,{'duration_in_ticks':50}
+                if self._mode=='normal':
+                    return Idle.__name__,{'duration_in_ticks':50}
+                if self._mode=='quick':
+                    return Idle.__name__,{'duration_in_ticks':10}
+
+            if Phase.WAIT_FOR_HUMAN==self._phase:
+                self._state_tracker.update(state)
+                if state[{'is_human_agent':True}]:
+                    if self._foundVictim in self._undistinguishable and self.received_messages[-1].lower()==self._foundVictim.split()[-1]:
+                        if self._condition=="explainable":
+                            self._sendMessage('Ik heb '+self._foundVictim + ' gevonden in ' + self._door['room_name'] + ' want ik doorzoek het hele gebied.', 'RescueBot')
+                        if self._condition=="transparent":
+                            self._sendMessage('Ik heb  '+self._foundVictim + ' gevonden in ' + self._door['room_name'] + '.', 'RescueBot')
+                        if self._condition=="adaptive":
+                            msg1 = 'Ik heb '+ self._foundVictim + ' gevonden in ' + self._door['room_name'] + ' want ik doorzoek het hele gebied.'
+                            msg2 = 'Ik heb '+ self._foundVictim + ' gevonden in ' + self._door['room_name']+'.'
+                            explanation = 'want ik doorzoek het hele gebied.'
+                            self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
+                        self._foundVictims.append(self._foundVictim)
+                        self._foundVictimLocs[self._foundVictim] = {'location':self._foundVictimLoc,'room':self._door['room_name'],'obj_id':self._foundVictimID}
+                        self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
+                        if self._mode=='normal':
+                            return Idle.__name__,{'duration_in_ticks':50}
+                        if self._mode=='quick':
+                            return Idle.__name__,{'duration_in_ticks':10}
+                    if self._foundVictim in self._uncarryable:
+                        self._collectedVictims.append(self._goalVic)
+                        self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
+                    if self._foundVictim in self._undistinguishable and self.received_messages[-1].lower()=='boy' and self._foundVictim.split()[-1]=='girl' or self.received_messages[-1].lower()=='girl' and self._foundVictim.split()[-1]=='boy':
+                        self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
+                        self._waitedFor=self._foundVictim
+                    else:
+                        return None,{}
+                else:
+                    if self._foundVictim in self._undistinguishable:
+                        #self._sendMessage('Waiting for human in ' + str(self._door['room_name']), 'RescueBot')
+                        ## TO FIX
+                        if state['World']['nr_ticks'] > self._tick + 1158:
+                            self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
+                            self._waitedFor=self._foundVictim
+                        if self._foundVictim not in self._foundVictims or self._foundVictim in self._uncarryable:
+                            return None,{}
+                        if self._foundVictim in self._foundVictims and self._foundVictim not in self._uncarryable:
+                            self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
+                    if self._foundVictim in self._uncarryable:
+                        if state['World']['nr_ticks'] > self._tick + 1158:
+                            self._phase=Phase.FOLLOW_ROOM_SEARCH_PATH
+                            self._waitedFor=self._foundVictim
+                            self._collectedVictims.append(self._foundVictim)
+                        else:
+                            return None,{}
 
             if Phase.PLAN_PATH_TO_VICTIM==self._phase:
                 if self._condition=="explainable":
@@ -445,9 +462,13 @@ class TutorialAgentDutch(BW4TBrain):
                 self._navigator.reset_full()
                 self._navigator.add_waypoints([self._foundVictimLocs[self._goalVic]['location']])
                 self._phase=Phase.FOLLOW_PATH_TO_VICTIM
-                return Idle.__name__,{'duration_in_ticks':50}
+                if self._mode=='normal':
+                    return Idle.__name__,{'duration_in_ticks':50}
+                if self._mode=='quick':
+                    return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.FOLLOW_PATH_TO_VICTIM==self._phase:
+                self._mode='normal'
                 if self._goalVic in self._collectedVictims:
                     self._phase=Phase.FIND_NEXT_GOAL
                 else:
@@ -472,7 +493,7 @@ class TutorialAgentDutch(BW4TBrain):
                     self._sendMessage('Ik verplaats '+ self._goalVic + ' naar de afleverlocatie omdat ' + self._goalVic + ' daar naartoe gebracht moet worden voor behandeling.', 'RescueBot')
                 if self._condition=="transparent":
                     self._sendMessage('Ik verplaats '+ self._goalVic + ' naar de afleverlocatie.', 'RescueBot')
-                if self._condition=="adaptive":
+                if self._condition=="adaptive" and ticksLeft>5789:
                     msg1 = 'Ik verplaats '+ self._goalVic + ' naar de afleverlocatie omdat ' + self._goalVic + ' daar naartoe gebracht moet worden voor behandeling.'
                     msg2 = 'Ik verplaats '+ self._goalVic + ' naar de afleverlocatie.'
                     explanation = 'omdat die daar naartoe gebracht moet worden voor behandeling'
@@ -482,7 +503,10 @@ class TutorialAgentDutch(BW4TBrain):
                 if action!=None:
                     return action,{}
                 self._phase=Phase.DROP_VICTIM
-                #return Idle.__name__,{'duration_in_ticks':50}
+                #if self._mode=='normal':
+                #    return Idle.__name__,{'duration_in_ticks':50}
+                #if self._mode=='quick':
+                #    return Idle.__name__,{'duration_in_ticks':10}
 
             if Phase.DROP_VICTIM == self._phase:
                 zones = self._getDropZones(state)
@@ -523,7 +547,7 @@ class TutorialAgentDutch(BW4TBrain):
                         self._dynamicMessage(msg1,msg2,explanation,'RescueBot')
                     return None,{}
 
-                    #if Phase.FIX_ORDER_GRAB == self._phase:
+            #if Phase.FIX_ORDER_GRAB == self._phase:
             #    self._navigator.reset_full()
             #    self._navigator.add_waypoints([state[{'img_name':self._nextVic, 'is_collectable':True}]['location']])
             #    self._state_tracker.update(state)
@@ -537,6 +561,7 @@ class TutorialAgentDutch(BW4TBrain):
             #    self._phase=Phase.FIND_NEXT_GOAL
             #    self._tick = state['World']['nr_ticks']
             #    return DropObject.__name__,{}
+
 
     def _getDropZones(self,state:State):
         '''

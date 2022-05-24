@@ -17,6 +17,7 @@ userinput or other information to MATRX. The api is a Flask (Python) webserver.
 For visualization, see the seperate MATRX visualization folder / package.
 '''
 debug = True
+templateType = ""
 port = 3000
 app = Flask(__name__, template_folder='templates')
 running = False
@@ -34,8 +35,14 @@ def human_agent_view():
 
     global running
     running = True
-    return render_template('human_agent.html', id="human_in_team")
 
+    if templateType == "friendly":
+        return render_template('human_friendly_agent.html', id="human_in_team")
+    elif templateType == "friendly-dutch":
+        return render_template('human_friendly_agent_dutch.html', id="human_in_team")
+    elif templateType == "tutorial-dutch":
+        return render_template('human_agent.html', id="human_in_team")
+    
 
 @app.route('/god')
 def god():  # TODO: remove this
@@ -168,12 +175,14 @@ def _flask_thread():
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 
-def run_matrx_visualizer(verbose, media_folder):
+def run_matrx_visualizer(template, verbose, media_folder):
     """
     Creates a seperate Python thread in which the visualization server (Flask) is started, serving the JS visualization
     :return: MATRX visualization Python thread
     """
-    global debug, ext_media_folder
+    global debug, ext_media_folder, templateType
+    templateType = template
+
     debug = verbose
     ext_media_folder = media_folder
 

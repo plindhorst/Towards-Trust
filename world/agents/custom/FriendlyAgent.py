@@ -8,8 +8,8 @@ from matrx.agents.agent_utils.state import State
 from matrx.agents.agent_utils.state_tracker import StateTracker
 from matrx.messages.message import Message
 
-from actions1.customActions import *
-from brains1.BW4TBrain import BW4TBrain
+from world.actions.customActions import Idle
+from world.agents.BW4TBrain import BW4TBrain
 
 
 class Phase(enum.Enum):
@@ -32,10 +32,10 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP = 16
 
 
-class HighInterdependenceAgentExperimental(BW4TBrain):
+class FriendlyAgent(BW4TBrain):
     numberOfTicksWhenReady = None
 
-    def __init__(self, condition, slowdown: int):
+    def __init__(self, slowdown, condition="explainable"):
         super().__init__(condition, slowdown)
         self._phase = Phase.INTRODUCTION
         self._uncarryable = ['critically injured elderly man', 'critically injured elderly woman',
@@ -48,7 +48,7 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
         self._collectedVictims = []
         self._foundVictimLocs = {}
         self._maxTicks = 11577 * 1.2 # Twelve minutes because they are also reading the story
-        HighInterdependenceAgentExperimental.numberOfTicksWhenReady = self._maxTicks
+        FriendlyAgent.numberOfTicksWhenReady = self._maxTicks
         self._sendMessages = []
         self._mode = 'normal'
         self._currentDoor = None
@@ -296,8 +296,8 @@ class HighInterdependenceAgentExperimental(BW4TBrain):
                     # print(state['World']['nr_ticks'])
 
                     # Added by Justin: Store the amount of ticks when pressed 'ready' in a static variable
-                    if HighInterdependenceAgentExperimental.numberOfTicksWhenReady == self._maxTicks:
-                        HighInterdependenceAgentExperimental.numberOfTicksWhenReady = state['World']['nr_ticks']
+                    if FriendlyAgent.numberOfTicksWhenReady == self._maxTicks:
+                        FriendlyAgent.numberOfTicksWhenReady = state['World']['nr_ticks']
 
                     self._phase = Phase.FIND_NEXT_GOAL
                 else:

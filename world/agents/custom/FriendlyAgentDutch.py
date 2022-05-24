@@ -8,9 +8,8 @@ from matrx.agents.agent_utils.state import State
 from matrx.agents.agent_utils.state_tracker import StateTracker
 from matrx.messages.message import Message
 
-from actions1.customActions import *
-from brains1.BW4TBrain import BW4TBrain
-
+from world.actions.customActions import *
+from world.agents.BW4TBrain import BW4TBrain
 
 class Phase(enum.Enum):
     INTRODUCTION = 0,
@@ -32,10 +31,10 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP = 16
 
 
-class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
+class FriendlyAgentDutch(BW4TBrain):
     numberOfTicksWhenReady = None
 
-    def __init__(self, condition, slowdown: int):
+    def __init__(self, slowdown, condition="explainable"):
         super().__init__(condition, slowdown)
         self._phase = Phase.INTRODUCTION
         self._uncarryable = ['critically injured elderly man', 'critically injured elderly woman',
@@ -48,7 +47,7 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
         self._collectedVictims = []
         self._foundVictimLocs = {}
         self._maxTicks = 11577 * 1.2 # Twelve minutes because they are also reading the story
-        HighInterdependenceAgentExperimentalDutch.numberOfTicksWhenReady = self._maxTicks
+        FriendlyAgentDutch.numberOfTicksWhenReady = self._maxTicks
         self._sendMessages = []
         self._mode = 'normal'
         self._currentDoor = None
@@ -302,8 +301,8 @@ class HighInterdependenceAgentExperimentalDutch(BW4TBrain):
                     # print(state['World']['nr_ticks'])
 
                     # Added by Justin: Store the amount of ticks when pressed 'ready' in a static variable
-                    if HighInterdependenceAgentExperimentalDutch.numberOfTicksWhenReady == self._maxTicks:
-                        HighInterdependenceAgentExperimentalDutch.numberOfTicksWhenReady = state['World']['nr_ticks']
+                    if FriendlyAgentDutch.numberOfTicksWhenReady == self._maxTicks:
+                        FriendlyAgentDutch.numberOfTicksWhenReady = state['World']['nr_ticks']
 
                     self._phase = Phase.FIND_NEXT_GOAL
                 else:

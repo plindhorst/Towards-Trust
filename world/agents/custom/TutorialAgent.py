@@ -1,7 +1,7 @@
 import sys, random, enum, ast, time
 from matrx import grid_world
-from brains1.BW4TBrain import BW4TBrain
-from actions1.customActions import *
+# from brains1.BW4TBrain import BW4TBrain
+# from actions1.customActions import *
 from matrx import utils
 from matrx.grid_world import GridWorld
 from matrx.agents.agent_utils.state import State
@@ -11,6 +11,10 @@ from matrx.actions.door_actions import OpenDoorAction
 from matrx.actions.object_actions import GrabObject, DropObject
 from matrx.messages.message import Message
 from matrx.messages.message_manager import MessageManager
+
+from world.actions.customActions import Idle
+from world.agents.BW4TBrain import BW4TBrain
+
 
 class Phase(enum.Enum):
     INTRO0=0,
@@ -43,7 +47,7 @@ class Phase(enum.Enum):
     FIX_ORDER_DROP=27
 
 class TutorialAgent(BW4TBrain):
-    def __init__(self, condition, slowdown:int):
+    def __init__(self, slowdown, condition="explainable"):
         super().__init__(condition, slowdown)
         self._phase=Phase.INTRO0
         self._roomVics = []
