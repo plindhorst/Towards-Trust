@@ -56,12 +56,21 @@ def god():  # TODO: remove this
 @app.route('/data')
 def get_results():
     if not os.path.exists("./data"):
-        return False
-    shutil.make_archive('data', 'zip', "./results")
+        return jsonify(False)
+    shutil.make_archive('data', 'zip', "./data")
     if os.path.isfile('./data.zip'):
         return send_file('../data.zip')
     else:
-        return False
+        return jsonify(False)
+
+
+@app.route('/consent_form')
+def consent_form():
+    file_name = "./world/visualizer/static/consent_form.pdf"
+    if os.path.isfile(file_name):
+        return send_file("static/consent_form.pdf")
+    else:
+        return jsonify(False)
 
 
 @app.route('/')
