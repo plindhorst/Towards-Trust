@@ -4,6 +4,7 @@ import os
 import shutil
 import threading
 from datetime import datetime
+import glob
 
 import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, send_file
@@ -16,6 +17,7 @@ userinput or other information to MATRX. The api is a Flask (Python) webserver.
 For visualization, see the seperate MATRX visualization folder / package.
 '''
 debug = True
+templateType = ""
 port = 3000
 app = Flask(__name__, template_folder='templates')
 running = False
@@ -33,20 +35,31 @@ def human_agent_view():
 
     global running
     running = True
-    return render_template('human_agent.html', id="human_in_team")
+
+    if templateType == "helper":
+        return render_template('human_agent_helper.html', id="human_in_team")
+    elif templateType == "friendly":
+        return render_template('human_friendly_agent.html', id="human_in_team")
+    elif templateType == "friendly-dutch":
+        return render_template('human_friendly_agent_dutch.html', id="human_in_team")
+    elif templateType == "tutorial-dutch":
+        return render_template('human_agent_dutch.html', id="human_in_team")
+    else:
+        return render_template('human_agent.html', id="human_in_team")
+
 
 @app.route('/god')
 def god():  # TODO: remove this
     return render_template('god.html')
 
 
-@app.route('/results')
+@app.route('/data')
 def get_results():
-    if not os.path.exists("./results"):
+    if not os.path.exists("./data"):
         return False
-    shutil.make_archive('results', 'zip', "./results")
-    if os.path.isfile('./results.zip'):
-        return send_file('../results.zip')
+    shutil.make_archive('data', 'zip', "./results")
+    if os.path.isfile('./data.zip'):
+        return send_file('../data.zip')
     else:
         return False
 
@@ -82,11 +95,19 @@ def questionnaire_answers():
     answers = []
     for question in request.args:
         answers.append({question: request.args[question]})
-    result_folder = os.getcwd() + "\\results\\questionnaire\\"
+    result_folder = os.getcwd() + "\\data\\questionnaire\\"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
-    result_file = result_folder + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+    list_of_files = glob.glob('./data/actions/*.pkl')  # * means all if need specific format then *.csv
+
+    if len(list_of_files) > 0:
+        latest_file = max(list_of_files, key=os.path.getctime)
+        file_name = latest_file.split("\\")[-1].replace(".pkl", ".json")
+    else:
+        file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+
+    result_file = result_folder + file_name
     with open(result_file, 'w+') as outfile:
         outfile.write(json.dumps(answers))
 
@@ -158,12 +179,14 @@ def _flask_thread():
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
 
-def run_matrx_visualizer(verbose, media_folder):
+def run_matrx_visualizer(template, verbose, media_folder):
     """
     Creates a seperate Python thread in which the visualization server (Flask) is started, serving the JS visualization
     :return: MATRX visualization Python thread
     """
-    global debug, ext_media_folder
+    global debug, ext_media_folder, templateType
+    templateType = template
+
     debug = verbose
     ext_media_folder = media_folder
 

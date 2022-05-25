@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/images/X.ico">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/lib/bootstrap/bootstrap-4.4.1.min.css" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/GUI.css">
+
+    <!-- Custom CSS for project-->
+    <link rel="stylesheet" href="/static/css/sar.css">
+
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="/static/lib/fontawesome-free-5.12.0-web/css/all.css">
+
+    <title>Experiment</title>
+</head>
+
+<body>
+
+    <!-- Toolbar -->
+    <div id="matrx-toolbar" class="row toolbar bg-dark">
+        <div class="col-sm">
+            <img src="/static/images/matrx_logo_light.svg" alt="MATRX" id="matrx_logo" style="display:none;">
+            <button type="button" class="btn btn-dark" id="start_button" style="display:none;"><i class="fas fa-play text-light"></i></button>
+            <button type="button" class="btn btn-dark hidden" id="pause_button" style="display:none;"><i class="fas fa-pause text-light"></i></button>
+            <button type="button" class="btn btn-dark" id="stop_button" style="display:none;"><i class="fas fa-stop text-light"></i></button>
+            <div class="btn-group" style="display:none;">
+                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-users"></i></button>
+                <div id="agent_dropdown" class="dropdown-menu">
+                </div>
+            </div>
+
+            <b style="color:white" >WASD - Move, Q - Grab Object, E - Drop Object</b>
+            
+        </div>
+        <div class="col-sm" align="right" style="display:none;">
+            <button type="button" class="btn btn-dark" id="chat_button" onclick="chatToggle()" data-toggle="collapse" data-target="#chat" aria-expanded="false" aria-controls="chat"><i class="fas fa-comments text-light"></i></button>
+            <button type="button" class="btn btn-dark" id="draw_button" onclick="drawToggle()"><i class="fas fa-pencil-alt text-light"></i></button>
+            <button type="button" class="btn btn-dark" id="erase_button" onclick="eraseToggle()"><i class="fas fa-eraser text-light"></i></button>
+        </div>
+    </div>
+
+    <div class="row content-row">
+
+        <!-- Grid -->
+        <div class="col-md grid-container" id="container">
+            <!-- container id is needed for the zoom/pan package -->
+            <div id="grid"></div>
+        </div>
+
+        <!-- Chat -->
+        <div class="collapse show" id="chat">
+            <div class="container-fluid">
+                <h5>Messages</h5>
+                <div class="row">
+                    <div class="col-md-3" id="chatrooms_list" style="display:none;">
+                        <div class="contact" id="new_chat_button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+</div>
+                        <div id="new_chat_dropdown" class="dropdown-menu"></div>
+                    </div>
+                    <div class="col-md-9">
+                        <div id="messages">
+                        </div>
+                        <input class="form-control" id="chat_form_input" placeholder="Open a chatroom first.." style="display:none;">
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="send_message(event)" disabled style="display:none;">Send</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Ready!')">Ready!</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Boy')">Boy</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Girl')">Girl</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Yes')">Yes</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('No')">No</button>
+                    </br>
+
+                        <div id="messages">
+                            Seek Help !
+                        </div>
+                        <button type="button" id="chat_form_submit" style="margin: 3px;background-color: #e0a800;color: white" class="btn btn-questions" onclick="my_send_message_function('What are the commands to move?')">What are the commands to move?</button>
+                        <button type="button" id="chat_form_submit" style="margin: 3px;background-color: #e0a800;color: white" class="btn btn-questions" onclick="my_send_message_function('What are the commands for pick-up/drop-off?')">What are the commands for pick-up/drop-off?</button>
+                        <button type="button" id="chat_form_submit" style="margin: 3px;background-color: #e0a800;color: white" class="btn btn-questions" onclick="my_send_message_function('What are the injury severity colors?')">What are the injury severity colors?</button>
+                    </br>
+                        <button type="button" id="chat_form_submit" style="margin: 3px;background-color: #1c4f74;color: white" class="btn btn-primary" onclick="my_send_message_function('How much time do we have left?')">How much time do we have left?</button>
+                        <button type="button" id="chat_form_submit" style="margin: 3px;background-color: #1c4f74;color: white" class="btn btn-primary" onclick="my_send_message_function('Who have we not found yet?')">Who have we not rescued yet?</button>
+                    </br>
+
+                    Please come and pick-up:
+                    <div>
+                        <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em;background-color: #1c7430;"><img src='/static/images/critically injured girl.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" style="background-color: #1c7430"  >
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in B2')">in B2</a>
+                        </br>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured girl in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em;background-color: #1c7430;"><img src='/static/images/critically injured elderly woman.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" style="background-color: #1c7430" >
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured elderly woman in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em;background-color: #1c7430;"><img src='/static/images/critically injured dog.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" style="background-color: #1c7430"  >
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Pick-up: critically injured dog in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em;background-color: #1c7430;"><img src='/static/images/mildly injured boy.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" style="background-color: #1c7430"  >
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured boy in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em;background-color: #1c7430;"><img src='/static/images/mildly injured elderly man.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" style="background-color: #1c7430"  >
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured elderly man in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em;background-color: #1c7430;"><img src='/static/images/mildly injured cat.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" style="background-color: #1c7430" >
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Pick-up: mildly injured cat in C3')">in C3</a>
+                            </div>
+                          </div>
+                </br>
+                
+                    <!--button type="button" class="btn btn-primary" style="margin-bottom: .2em" id="search_button">Search:</button-->
+                    I will search in area:
+                    <div>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: A1')">A1</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: A2')">A2</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: A3')">A3</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: A4')">A4</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: B1')">B1</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: B2')">B2</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: C1')">C1</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: C2')">C2</button>
+                        <button type="button" id="chat_form_submit" class="btn btn-primary" onclick="my_send_message_function('Search: C3')">C3</button>
+                    </div>
+                        <!--button type="button" id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em">Found:</button-->
+                    I have found: 
+                    <div>
+                        <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured girl.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: critically injured girl in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: critically injured girl in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: critically injured girl in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured girl in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: critically injured girl in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: critically injured girl in B2')">in B2</a>
+                        </br>
+                              <a onclick="my_send_message_function('Found: critically injured girl in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: critically injured girl in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: critically injured girl in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured elderly woman.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: critically injured elderly woman in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured man.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: critically injured man in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: critically injured man in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: critically injured man in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured man in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: critically injured man in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: critically injured man in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured man in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: critically injured man in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: critically injured man in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured dog.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: critically injured dog in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: critically injured dog in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: critically injured dog in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured dog in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: critically injured dog in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: critically injured dog in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: critically injured dog in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: critically injured dog in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: critically injured dog in C3')">in C3</a>
+                            </div>
+                          </div>
+                    
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured boy.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: mildly injured boy in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured boy in C3')">in C3</a>
+                            </div>
+                          </div>       
+                    
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured elderly man.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured elderly man in C3')">in C3</a>
+                            </div>
+                          </div> 
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured woman.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: mildly injured woman in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured woman in C3')">in C3</a>
+                            </div>
+                          </div>
+                    
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured cat.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Found: mildly injured cat in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Found: mildly injured cat in C3')">in C3</a>
+                            </div>
+                          </div>
+                </br>
+                    
+                    I will pick up: 
+                    <div>
+                        <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured girl.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: critically injured girl in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured girl in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured elderly woman.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured elderly woman in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured man.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: critically injured man in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured man in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured man in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured man in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: critically injured man in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured man in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured man in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured man in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured man in C3')">in C3</a>
+                            </div>
+                          </div>
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/critically injured dog.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: critically injured dog in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: critically injured dog in C3')">in C3</a>
+                            </div>
+                          </div>
+                    
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured boy.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured boy in C3')">in C3</a>
+                            </div>
+                          </div>       
+                    
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured elderly man.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured elderly man in C3')">in C3</a>
+                            </div>
+                          </div> 
+
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured woman.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured woman in C3')">in C3</a>
+                            </div>
+                          </div>
+                    
+                          <div class="dropdown">
+                            <button  id="chat_form_submit" class="btn btn-primary" style="margin-bottom: .2em"><img src='/static/images/mildly injured cat.svg' height=25 width=25/></button>
+                            <div class="dropdown-content" >
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in A1')">in A1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in A2')">in A2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in A3')">in A3</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in A4')">in A4</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in B1')">in B1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in B2')">in B2</a>
+                            </br>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in C1')">in C1</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in C2')">in C2</a>
+                              <a onclick="my_send_message_function('Collect: mildly injured cat in C3')">in C3</a>
+                            </div>
+                          </div>
+
+
+                    </div>
+                    <!--button type="button" id="collect_button" class="btn btn-primary" style="margin-bottom: .2em">Collected:</button-->                          
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Context menu -->
+    <div class="dropdown-menu" id="contextMenu" style="display:none">
+        <a class="dropdown-item" href="#">Action 1</a>
+        <a class="dropdown-item" href="#">Action 2</a>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/static/lib/jquery/jquery-3.4.1.min.js"></script>
+    <script src="/static/lib/popper/popper-1.16.0.js"></script>
+    <script src="/static/lib/bootstrap/bootstrap-4.4.1.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="/static/js/util.js"></script>
+    <script src="/static/js/toolbar.js"></script>
+    <script src="/static/js/context_menu.js"></script>
+    <script type="text/javascript" src="/static/js/gen_grid.js"></script>
+    <script type="text/javascript" src="/static/js/loop.js"></script>
+    <script type="text/javascript" src="/static/js/human_agent.js"></script>
+</body>
+
+</html>

@@ -13,7 +13,7 @@ from world.actions.util import is_in_room, is_in_range, is_correct_drop_location
 
 # This agent class records actions and messages of the human/agent
 class Spy(AgentBrain):
-    def __init__(self):
+    def __init__(self, agent_type):
         super().__init__()
 
         self._human_is_carrying = False
@@ -24,11 +24,11 @@ class Spy(AgentBrain):
         self._visited_rooms = []
         self._file_created = False
 
-        result_folder = os.getcwd() + "\\results\\" + "\\actions\\"
+        result_folder = os.getcwd() + "\\data\\" + "\\actions\\"
         if not os.path.exists(result_folder):
             os.makedirs(result_folder)
 
-        self.action_file = result_folder + datetime.now().strftime("%Y%m%d-%H%M%S") + ".pkl"
+        self.action_file = result_folder + agent_type + "_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".pkl"
 
     # This method gets called every tick
     def decide_on_action(self, state):
