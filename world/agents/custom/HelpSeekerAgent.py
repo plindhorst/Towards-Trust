@@ -283,7 +283,7 @@ class HelpSeekerAgent(BW4TBrain):
 
             if Phase.WAIT_FOR_ADVICE == self._phase:
                 areas = ["A1", "A2", "A3", "A4", "B1", "B2", "C1", "C2", "C3"]
-                if state['World']['nr_ticks'] > self._tick + 100 or self.received_messages and self.received_messages[-1] == 'No':
+                if state['World']['nr_ticks'] > self._tick + 150 or self.received_messages and self.received_messages[-1] == 'No':
                     self._phase = Phase.PICK_UNSEARCHED_ROOM
                 if self.received_messages and self.received_messages[-1] != self._previousMessage and self.received_messages[-1] != 'No':
                     areaId = self.received_messages[-1][-2:]
