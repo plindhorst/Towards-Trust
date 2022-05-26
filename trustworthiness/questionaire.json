@@ -13,7 +13,7 @@
 
   {"name": "integrity_0", "type": "Integrity", "question": "As a teammate, I kept my promises"},
   {"name": "integrity_1", "type": "Integrity", "question": "I told the truth to my teammates"},
-  {"name": "integrity_2", "type": "Integrity", "question": "My teammate could depend on my to be fair"},
+  {"name": "integrity_2", "type": "Integrity", "question": "My teammate could depend on me to be fair"},
   {"name": "integrity_3", "type": "Integrity", "question": "I was an honourable teammate"},
   {"name": "integrity_4", "type": "Integrity", "question": "As a teammate, I honoured my word"}
 ]
