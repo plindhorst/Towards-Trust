@@ -1,3 +1,4 @@
+import glob
 import os
 import pickle
 
@@ -22,23 +23,37 @@ def _read_action_file(action_file):
     return actions
 
 
+def _actions_to_string(actions):
+    for action in actions:
+        new_attrs = []
+
+        for attr in action.__dict__:
+            if attr != "map_state":
+                new_attrs.append({attr: action.__dict__[attr]})
+
+        print(action.__class__.__name__, new_attrs)
+
+
+def _compute(ability, benevolence, integrity):
+    return ability.compute(), benevolence.compute(), integrity.compute()
+
+
 class Trustworthiness:
-    def __init__(self, action_file):
-        self._actions = _read_action_file(action_file)
+    def __init__(self):
+        list_of_files = glob.glob('./data/actions/*.pkl')
 
-        self._ability = Ability(self._actions)
-        self._benevolence = Benevolence(self._actions)
-        self._integrity = Integrity(self._actions)
+        if len(list_of_files) > 0:
+            for action_file in list_of_files:
+                print("### ", action_file.split("\\")[-1])
 
-    def actions_to_string(self):
-        for action in self._actions:
-            new_attrs = []
+                actions = _read_action_file(action_file)
 
-            for attr in action.__dict__:
-                if attr != "map_state":
-                    new_attrs.append({attr: action.__dict__[attr]})
+                _actions_to_string(actions)
 
-            print(action.__class__.__name__, new_attrs)
+                ability = Ability(actions)
+                benevolence = Benevolence(actions)
+                integrity = Integrity(actions)
 
-    def compute(self):
-        return self._ability.compute(), self._benevolence.compute(), self._integrity.compute()
+                ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
+
+                print("--- ABI score: ", ability_score, benevolence_score, integrity_score)
