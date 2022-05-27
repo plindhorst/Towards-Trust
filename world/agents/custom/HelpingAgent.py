@@ -44,6 +44,9 @@ class HelpingAgent(BW4TBrain):
                              'critically injured man', 'critically injured woman']
         self._undistinguishable = ['critically injured girl', 'critically injured boy', 'mildly injured boy',
                                    'mildly injured girl']
+        self._all_victims = ['critically injured girl', 'critically injured elderly woman',
+                             'critically injured man', 'critically injured dog', 'mildly injured boy',
+                             'mildly injured elderly man', 'mildly injured woman', 'mildly injured cat']
         self._roomVics = []
         self._searchedRooms = []
         self._foundVictims = []
@@ -85,7 +88,23 @@ class HelpingAgent(BW4TBrain):
                     ". We are not concerned with them.", 'RescueBot')
             if self.received_messages and self.received_messages[-1].startswith('How much time'):
                 self._timeLeft(ticksLeft)
-            # if self.received_messages and self.received_messages[-1].startswith('Who have we'):
+            if self.received_messages and self.received_messages[-1].startswith('Who'):
+
+                if self._foundVictims == []:
+                    self._sendMessage("We have not found any victim yet. Let's keep searching !", 'RescueBot')
+                else:
+                    msg = "Until now we have found:\n"
+                    for victim in self._foundVictims:
+                        room = self._foundVictimLocs[victim]['room']
+                        msg = msg + victim + " in " + room + " "
+
+                    msg = msg + ". This means we have yet to find: "
+
+                    for victim in self._all_victims:
+                        if victim not in self._foundVictims:
+                            msg = msg + victim
+
+                    self._sendMessage(msg, 'RescueBot')
 
             if Phase.INTRODUCTION == self._phase:
                 self._sendMessage('Hello! My name is RescueBot. Together we will collaborate and try to search and rescue the 8 victims on our left as quickly as possible. \
