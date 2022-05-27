@@ -129,9 +129,9 @@ class Benevolence:
 
         for action in self._actions:
             if type(action) is MessageFound:
-                total += 1
-            if type(action) is FoundVictim:
                 count += 1
+            if type(action) is FoundVictim:
+                total += 1
 
         print("Communicated victims found: ", count, "/", total)
 
