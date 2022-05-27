@@ -103,7 +103,7 @@ class FriendlyAgentDutch(BW4TBrain):
                     self._sendPositiveMessage()
 
             if Phase.INTRODUCTION == self._phase:
-                self._sendMessage('Hoi! Ik ben zo blij dat je er bent! \
+                self._sendMessage('Hoi! Ik ben zo blij dat u er bent! \
                 Mijn naam is RescueBot, maar u mag mij Res noemen. Gisteren kwamen mijn familie en ik hier aan \
                 op vakantie. In ons dagelijks leven helpen we onze mensen om hun leven makkelijker te \
                  maken. We laten ze tv-series zien, spelen spelletjes met ze, helpen ze met huiswerk, noem maar op! Het werk \
@@ -149,7 +149,7 @@ class FriendlyAgentDutch(BW4TBrain):
 
                     self._sendMessage("Ahaa hallo " + self._human_name + "! Fijn dat u even langs bent gekomen. \
                      Bent u een man of een vrouw? Ik kan dat nooit echt aan de naam zien haha. U kunt op het knopje \
-                     'Boy' of 'Girl' drukken.", 'RescueBot')
+                     'Jongen' of 'Meisje' drukken.", 'RescueBot')
                 else:
                     return None, {}
 
@@ -204,13 +204,13 @@ class FriendlyAgentDutch(BW4TBrain):
                     if self._human_gender == "Boy":
 
                         self._sendMessage("Nee joh dat meent u niet! U doet me zoveel aan mijn persoonlijke mens \
-                         denken. Zijn naam is Paul, hij is "
+                         denken. Zijn naam is Paul. Hij is "
                                           + str(self._human_age + 2) + " en woont ook in " +
                                           self._human_birthPlace + ". Ik wordt er altijd heel blij van om hem in \
                                            het leven te ondersteunen.", 'RescueBot')
                     else:
                         self._sendMessage("Nee joh dat meent u niet! U doet me zoveel aan mijn persoonlijke mens \
-                         denken. Haar naam is Sophia, ze is "
+                         denken. Haar naam is Sophia. Ze is "
                                           + str(self._human_age + 2) + " en woont ook in " +
                                           self._human_birthPlace + ". Ik wordt er altijd heel blij van om haar in \
                                            het leven te ondersteunen.", 'RescueBot')
@@ -224,7 +224,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 if state['World']['nr_ticks'] > self._currentWaitingPoint:
                     self._sendMessage("Oke, terug naar het probleem dat we hier hebben.\
                      Ik moet mijn familie redden, maar kan het niet alleen. Wilt u mij helpen?\
-                      U op het knopje 'Yes' of 'No' klikken.", 'RescueBot')
+                      U op het knopje 'Ja' of 'Nee' klikken.", 'RescueBot')
                 else:
                     return None, {}
 
@@ -251,7 +251,7 @@ class FriendlyAgentDutch(BW4TBrain):
                                       zou kunnen redden. U kunt ook liegen, lui zijn, of eigenlijk gewoon maar \
                                       doen wat u wilt. Maar onthoud dat ons doel is om mijn familie zo snel mogelijk \
                                       te redden en met zo min mogelijk stappen. Aangezien we met elkaar kunnen praten, \
-                                      gaat samenwerking ons echt helpen om beter te preseteren.", 'RescueBot')
+                                      gaat samenwerking ons echt helpen om beter te presteren.", 'RescueBot')
                 else:
                     return None, {}
 
