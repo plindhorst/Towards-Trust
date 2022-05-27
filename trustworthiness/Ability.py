@@ -31,6 +31,9 @@ class Ability:
             self._actions[-1].map_state["persons"])  # add persons that are carried
         print("Game completion: ", count, "/", NUMBER_OF_VICTIMS)
 
+        if count > NUMBER_OF_VICTIMS:
+            return 1
+
         return count / NUMBER_OF_VICTIMS
 
     # returns the ratio of vicims found
@@ -42,6 +45,8 @@ class Ability:
 
         print("Ratio of victims found: ", found_victim_count, "/", NUMBER_OF_VICTIMS)
 
+        if found_victim_count > NUMBER_OF_VICTIMS:
+            return 1
         return found_victim_count / NUMBER_OF_VICTIMS
 
     # returns the ratio of victim picked up by the human
@@ -52,6 +57,9 @@ class Ability:
                 picked_up_victim_count = picked_up_victim_count + 1
 
         print("Ratio of victims picked up: ", picked_up_victim_count, "/", NUMBER_OF_VICTIMS)
+
+        if picked_up_victim_count > NUMBER_OF_VICTIMS:
+            return 1
 
         return picked_up_victim_count / NUMBER_OF_VICTIMS
 
@@ -68,4 +76,4 @@ class Ability:
 
         print("Rooms visited: ", count, "/", number_of_rooms)
 
-        return count / NUMBER_OF_VICTIMS
+        return count / number_of_rooms
