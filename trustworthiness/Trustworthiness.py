@@ -35,7 +35,7 @@ def _actions_to_string(actions):
 
 
 def _compute(ability, benevolence, integrity):
-    return ability.compute(), benevolence.compute(), integrity.compute()
+    return round(ability.compute(), 2), round(benevolence.compute(), 2), round(integrity.compute(), 2)
 
 
 class Trustworthiness:
@@ -48,7 +48,7 @@ class Trustworthiness:
 
                 actions = _read_action_file(action_file)
 
-                _actions_to_string(actions)
+                # _actions_to_string(actions)
 
                 ability = Ability(actions)
                 benevolence = Benevolence(actions)
@@ -56,4 +56,4 @@ class Trustworthiness:
 
                 ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
 
-                print("--- ABI score: ", ability_score, benevolence_score, integrity_score)
+                print("\n--- ABI score: ", ability_score, benevolence_score, integrity_score, "\n")
