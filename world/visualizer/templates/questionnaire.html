@@ -36,49 +36,49 @@
     let ageElem = document.createElement('info_box');
     ageElem.innerHTML =
         '<p style="margin-left: 35px;font-size:35px;padding: 10px;color: #7A8283FF">What is your age?</p>' +
-        '<input type="radio" id="18-24" name="18-24" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="18-24" style="font-size:25px;color: #7A8283FF;display: inline-block;" >18-24</label><br>' +
-        '<input type="radio" id="25-34" name="25-34" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="25-34" style="font-size:25px;color: #7A8283FF;display: inline-block;">25-34</label><br>' +
-        '<input type="radio" id="35-44" name="35-44" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="35-44" style="font-size:25px;color: #7A8283FF;display: inline-block;">35-44</label><br>' +
-        '<input type="radio" id="45-54" name="45-54" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="45-54" style="font-size:25px;color: #7A8283FF;display: inline-block;">45-54</label><br>' +
-        '<input type="radio" id="55-64" name="55-64" value="4" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="55-64" style="font-size:25px;color: #7A8283FF;display: inline-block;">55-64</label><br>' +
-        '<input type="radio" id="65+"   name="65+"   value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="65+" style="font-size:25px;color: #7A8283FF;display: inline-block;">65+</label><br>';
+        '<input type="radio" id="18-24" name="age" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="18-24" style="font-size:25px;color: #7A8283FF;display: inline-block;" >18-24</label><br>' +
+        '<input type="radio" id="25-34" name="age" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="25-34" style="font-size:25px;color: #7A8283FF;display: inline-block;">25-34</label><br>' +
+        '<input type="radio" id="35-44" name="age" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="35-44" style="font-size:25px;color: #7A8283FF;display: inline-block;">35-44</label><br>' +
+        '<input type="radio" id="45-54" name="age" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="45-54" style="font-size:25px;color: #7A8283FF;display: inline-block;">45-54</label><br>' +
+        '<input type="radio" id="55-64" name="age" value="4" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="55-64" style="font-size:25px;color: #7A8283FF;display: inline-block;">55-64</label><br>' +
+        '<input type="radio" id="65+"   name="age"   value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="65+" style="font-size:25px;color: #7A8283FF;display: inline-block;">65+</label><br>';
     element.appendChild(ageElem);
 
     let genderElem = document.createElement('info_box');
     genderElem.innerHTML =
         '<p style="margin-left: 35px;font-size:35px;padding: 10px;color: #7A8283FF">What gender do you identify with?</p>' +
-        '<input type="radio" id="Male" name="Male" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Male" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Male</label><br>' +
-        '<input type="radio" id="Female" name="Female" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Female" style="font-size:25px;color: #7A8283FF;display: inline-block;">Female</label><br>' +
-        '<input type="radio" id="Other" name="Other" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Other" style="font-size:25px;color: #7A8283FF;display: inline-block;">Other</label><br>' +
-        '<input type="radio" id="I prefer not to sa" name="I prefer not to sa" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="I prefer not to say" style="font-size:25px;color: #7A8283FF;display: inline-block;">I prefer not to say</label><br>';
+        '<input type="radio" id="Male" name="Gender" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Male" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Male</label><br>' +
+        '<input type="radio" id="Female" name="Gender" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Female" style="font-size:25px;color: #7A8283FF;display: inline-block;">Female</label><br>' +
+        '<input type="radio" id="Other" name="Gender" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Other" style="font-size:25px;color: #7A8283FF;display: inline-block;">Other</label><br>' +
+        '<input type="radio" id="I prefer not to say" name="Gender" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="I prefer not to say" style="font-size:25px;color: #7A8283FF;display: inline-block;">I prefer not to say</label><br>';
     element.appendChild(genderElem);
 
         let nationalityElem = document.createElement('info_box');
     nationalityElem.innerHTML =
         '<p style="margin-left: 35px;font-size:35px;padding: 10px;color: #7A8283FF">Where have you spent the most time while growing up?</p>' +
-        '<input type="radio" id="Africa" name="Africa" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Africa" style="font-size:25px;color: #7A8283FF;display: inline-block;">Africa</label><br>' +
-        '<input type="radio" id="Asia" name="Asia" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Asia" style="font-size:25px;color: #7A8283FF;display: inline-block;">Asia</label><br>' +
-        '<input type="radio" id="Australia" name="Australia" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Australia" style="font-size:25px;color: #7A8283FF;display: inline-block;">Australia</label><br>' +
-        '<input type="radio" id="Europe" name="Europe" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Europe" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Europe</label><br>' +
-        '<input type="radio" id="North/Central America" name="North/Central America" value="4" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="North/Central America" style="font-size:25px;color: #7A8283FF;display: inline-block;">North/Central America</label><br>' +
-        '<input type="radio" id="South America" name="South America" value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="South America" style="font-size:25px;color: #7A8283FF;display: inline-block;">South America</label><br>' +
-        '<input type="radio" id="Other"   name="Other" value="6" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Other" style="font-size:25px;color: #7A8283FF;display: inline-block;">Other</label><br>';
+        '<input type="radio" id="Africa" name="Birthplace" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Africa" style="font-size:25px;color: #7A8283FF;display: inline-block;">Africa</label><br>' +
+        '<input type="radio" id="Asia" name="Birthplace" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Asia" style="font-size:25px;color: #7A8283FF;display: inline-block;">Asia</label><br>' +
+        '<input type="radio" id="Australia" name="Birthplace" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Australia" style="font-size:25px;color: #7A8283FF;display: inline-block;">Australia</label><br>' +
+        '<input type="radio" id="Europe" name="Birthplace" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Europe" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Europe</label><br>' +
+        '<input type="radio" id="North/Central America" name="Birthplace" value="4" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="North/Central America" style="font-size:25px;color: #7A8283FF;display: inline-block;">North/Central America</label><br>' +
+        '<input type="radio" id="South America" name="Birthplace" value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="South America" style="font-size:25px;color: #7A8283FF;display: inline-block;">South America</label><br>' +
+        '<input type="radio" id="Other"   name="Birthplace" value="6" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Other" style="font-size:25px;color: #7A8283FF;display: inline-block;">Other</label><br>';
     element.appendChild(nationalityElem);
 
     let gamerElem = document.createElement('info_box');
     gamerElem.innerHTML =
         '<p style="margin-left: 35px;font-size:35px;padding: 10px;color: #7A8283FF">How do you evaluate your expertise in computer games?</p>' +
-        '<input type="radio" id="Low" name="Low" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Low" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Low (I have played few/no computer games in my life)</label><br>' +
-        '<input type="radio" id="Medium" name="Medium" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Medium" style="font-size:25px;color: #7A8283FF;display: inline-block;">Average (I have played some computer games in my life)</label><br>' +
-        '<input type="radio" id="High" name="High" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="High" style="font-size:25px;color: #7A8283FF;display: inline-block;">Advanced (I have played many computer games in my life)</label><br>';
+        '<input type="radio" id="Low" name="GameExperience" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Low" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Low (I have played few/no computer games in my life)</label><br>' +
+        '<input type="radio" id="Medium" name="GameExperience" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Medium" style="font-size:25px;color: #7A8283FF;display: inline-block;">Average (I have played some computer games in my life)</label><br>' +
+        '<input type="radio" id="High" name="GameExperience" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="High" style="font-size:25px;color: #7A8283FF;display: inline-block;">Advanced (I have played many computer games in my life)</label><br>';
     element.appendChild(gamerElem);
 
     let languageElem = document.createElement('info_box');
     languageElem.innerHTML =
         '<p style="margin-left: 35px;font-size:35px;padding: 10px;color: #7A8283FF">How do you evaluate your expertise in the language used in the experiment?</p>' +
-        '<input type="radio" id="Low" name="Low" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Low" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Low (I barely/do not understand the language)</label><br>' +
-        '<input type="radio" id="Medium" name="Medium" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Medium" style="font-size:25px;color: #7A8283FF;display: inline-block;">Medium (I can understand the language with effort)</label><br>' +
-        '<input type="radio" id="High" name="High" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="High" style="font-size:25px;color: #7A8283FF;display: inline-block;">High (I can easily understand the language)</label><br>';
+        '<input type="radio" id="Low_LanguageExperience" name="LanguageExperience" value="0" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Low_LanguageExperience" style="font-size:25px;color: #7A8283FF;display: inline-block;" >Low (I barely/do not understand the language)</label><br>' +
+        '<input type="radio" id="Medium_LanguageExperience" name="LanguageExperience" value="1" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="Medium_LanguageExperience" style="font-size:25px;color: #7A8283FF;display: inline-block;">Medium (I can understand the language with effort)</label><br>' +
+        '<input type="radio" id="High_LanguageExperience" name="LanguageExperience" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="High_LanguageExperience" style="font-size:25px;color: #7A8283FF;display: inline-block;">High (I can easily understand the language)</label><br>';
     element.appendChild(languageElem);
 
     for (let i = 0; i < data.length; i++) {
@@ -102,7 +102,8 @@
             '<input type="radio" id="' + ans2 + '" name="' + data[i]["name"] + '" value="2" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans2 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Rarely</label><br>' +
             '<input type="radio" id="' + ans3 + '" name="' + data[i]["name"] + '" value="3" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans3 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Sometimes</label><br>' +
             '<input type="radio" id="' + ans4 + '" name="' + data[i]["name"] + '" value="4" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans4 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Frequently</label><br>' +
-            '<input type="radio" id="' + ans5 + '" name="' + data[i]["name"] + '" value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans5 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Very Frequently</label><br>';
+            '<input type="radio" id="' + ans5 + '" name="' + data[i]["name"] + '" value="5" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans5 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Very Frequently</label><br>' +
+            '<input type="radio" id="' + ans6 + '" name="' + data[i]["name"] + '" value="6" style="margin-left: 50px;padding-left: 20px;display: inline-block;"> <label for="' + ans6 + '" style="font-size:25px;color: #7A8283FF;display: inline-block;">Always</label><br>';
         element.style.margin = "auto";
         element.style.width = "60%";
         element.style.border = "5px solid #7A8283FF";

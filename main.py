@@ -4,6 +4,7 @@ import sys
 
 import requests
 
+from trustworthiness.Trustworthiness import Trustworthiness
 from world.agents.custom.FriendlyAgentDutch import FriendlyAgentDutch
 from world.agents.custom.TutorialAgent import TutorialAgent
 from world.agents.custom.TutorialAgentDutch import TutorialAgentDutch
@@ -28,7 +29,12 @@ if __name__ == "__main__":
                         help="Agent type, choose from: control, control-dutch, helper, conflicting, advice, directing,\
                          friendly, friendly-dutch, tutorial, tutorial-dutch",
                         type=str)
+    parser.add_argument("-tw", action='store_true', help="Measure trustworthiness of action files", default=False)
     args = parser.parse_args()
+
+    if args.tw:
+        trustworthiness = Trustworthiness()
+        sys.exit(0)
 
     agent = None
 
@@ -82,6 +88,6 @@ if __name__ == "__main__":
         world.run(builder.api_info)
         requests.get("http://localhost:" + str(visualization_server.port) + "/set_done")
         print("DONE!")
-        requests.get("http://localhost:" + str(visualization_server.port) + "/shutdown_visualizer")
+        requests.get("http://localhost:" + str(visualization_server.port) + "/questionnaire")
         vis_thread.join()
         builder.stop()
