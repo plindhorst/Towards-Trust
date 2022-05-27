@@ -109,7 +109,7 @@ def questionnaire_answers():
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
-    list_of_files = glob.glob('./data/actions/*.pkl')  # * means all if need specific format then *.csv
+    list_of_files = glob.glob('./data/actions/*.pkl')
 
     if len(list_of_files) > 0:
         file_dates = []

@@ -22,9 +22,13 @@ class Ability:
         count = 0
         last_map_state = self._actions[-1].map_state
         for person in last_map_state["persons"]:
+            # if "healthy" not in person["name"]:
+            #     print(person)
             if is_correct_drop_location(person["name"], person["location"]):
                 count += 1
 
+        count += len(self._actions[0].map_state["persons"]) - len(
+            self._actions[-1].map_state["persons"])  # add persons that are carried
         print("Game completion: ", count, "/", NUMBER_OF_VICTIMS)
 
         return count / NUMBER_OF_VICTIMS
@@ -35,8 +39,8 @@ class Ability:
         for action in self._actions:
             if type(action) is FoundVictim and found_victim_count != NUMBER_OF_VICTIMS:
                 found_victim_count = found_victim_count + 1
-        found_ratio = found_victim_count / NUMBER_OF_VICTIMS
-        print("Ratio of victims found: ", found_victim_count, "/", NUMBER_OF_VICTIMS, " = ", found_ratio)
+
+        print("Ratio of victims found: ", found_victim_count, "/", NUMBER_OF_VICTIMS)
 
         return found_victim_count / NUMBER_OF_VICTIMS
 
@@ -46,8 +50,8 @@ class Ability:
         for action in self._actions:
             if type(action) is PickUp:
                 picked_up_victim_count = picked_up_victim_count + 1
-        picked_up_ratio = picked_up_victim_count / NUMBER_OF_VICTIMS
-        print("Ratio of victims picked up: ", picked_up_victim_count, "/", NUMBER_OF_VICTIMS, " = ", picked_up_ratio)
+
+        print("Ratio of victims picked up: ", picked_up_victim_count, "/", NUMBER_OF_VICTIMS)
 
         return picked_up_victim_count / NUMBER_OF_VICTIMS
 
