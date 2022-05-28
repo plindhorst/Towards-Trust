@@ -6,6 +6,7 @@ import threading
 from datetime import datetime
 import glob
 
+import numpy as np
 import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, send_file
 
@@ -104,19 +105,31 @@ def questionnaire_answers():
     answers = []
     for question in request.args:
         answers.append({question: request.args[question]})
-    result_folder = os.getcwd() + "\\data\\questionnaire\\"
+    result_folder = os.getcwd() + "/data/questionnaire/"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
-    list_of_files = glob.glob('./data/actions/*.pkl')  # * means all if need specific format then *.csv
-
+    list_of_files = glob.glob('./data/actions/*.pkl')
     if len(list_of_files) > 0:
-        latest_file = max(list_of_files, key=os.path.getctime)
-        file_name = latest_file.split("\\")[-1].replace(".pkl", ".json")
+        file_dates = []
+
+        for file in list_of_files:
+            file = file.replace("\\", "/")
+            file_date = file[file.find("/") + 1:].replace(".pkl", "")
+            file_date = file_date[file_date.find("_") + 1:].replace("-", "")
+            file_dates.append(int(file_date))
+        latest_file = list_of_files[np.argmax(file_dates)]
+
+        file_name = latest_file.replace("\\", "/").split("/")[-1].replace(".pkl", ".json")
     else:
         file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
 
+    if os.path.isfile(result_folder + file_name):
+        file_name = "unknown_" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".json"
+
+    print("Saved questionnaire: " + file_name)
     result_file = result_folder + file_name
+    result_file = result_file.replace("\\", "/")
     with open(result_file, 'w+') as outfile:
         outfile.write(json.dumps(answers))
 
