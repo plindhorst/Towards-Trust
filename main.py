@@ -88,6 +88,6 @@ if __name__ == "__main__":
         world.run(builder.api_info)
         requests.get("http://localhost:" + str(visualization_server.port) + "/set_done")
         print("DONE!")
-        requests.get("http://localhost:" + str(visualization_server.port) + "/questionnaire")
+        requests.get("http://localhost:" + str(visualization_server.port) + "/shutdown_visualizer")
         vis_thread.join()
         builder.stop()
