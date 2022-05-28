@@ -5,12 +5,15 @@ from world.actions.HumanAction import FoundVictim, PickUp, EnterRoom
 
 
 class Ability:
-    def __init__(self, actions):
+    def __init__(self, actions, verbose=False):
         self._actions = actions
+        self.verbose = verbose
 
     # Returns computed ability
     def compute(self):
-        print("\nAbility:")
+
+        if self.verbose:
+            print("\nAbility:")
 
         metrics = [self._game_completion(), self._victim_found_ratios(),
                    self._victim_picked_ratios(), self._rooms_visited()]
@@ -29,7 +32,9 @@ class Ability:
 
         count += len(self._actions[0].map_state["persons"]) - len(
             self._actions[-1].map_state["persons"])  # add persons that are carried
-        print("Game completion: ", count, "/", NUMBER_OF_VICTIMS)
+
+        if self.verbose:
+            print("Game completion: ", count, "/", NUMBER_OF_VICTIMS)
 
         if count > NUMBER_OF_VICTIMS:
             return 1
@@ -43,7 +48,8 @@ class Ability:
             if type(action) is FoundVictim and found_victim_count != NUMBER_OF_VICTIMS:
                 found_victim_count = found_victim_count + 1
 
-        print("Ratio of victims found: ", found_victim_count, "/", NUMBER_OF_VICTIMS)
+        if self.verbose:
+            print("Ratio of victims found: ", found_victim_count, "/", NUMBER_OF_VICTIMS)
 
         if found_victim_count > NUMBER_OF_VICTIMS:
             return 1
@@ -56,7 +62,8 @@ class Ability:
             if type(action) is PickUp:
                 picked_up_victim_count = picked_up_victim_count + 1
 
-        print("Ratio of victims picked up: ", picked_up_victim_count, "/", NUMBER_OF_VICTIMS)
+        if self.verbose:
+            print("Ratio of victims picked up: ", picked_up_victim_count, "/", NUMBER_OF_VICTIMS)
 
         if picked_up_victim_count > NUMBER_OF_VICTIMS:
             return 1
@@ -74,6 +81,7 @@ class Ability:
                     visited_rooms.append(action.room_name)
                     count += 1
 
-        print("Rooms visited: ", count, "/", number_of_rooms)
+        if self.verbose:
+            print("Rooms visited: ", count, "/", number_of_rooms)
 
         return count / number_of_rooms

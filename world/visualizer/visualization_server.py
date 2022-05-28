@@ -94,7 +94,7 @@ def start_view():
 
 @app.route('/questionnaire')
 def questionnaire():
-    f = open('./trustworthiness/questionaire.json')
+    f = open('./trustworthiness/questionnaire.json')
     questionnaire_json = json.load(f)
     f.close()
     return render_template('questionnaire.html', data=questionnaire_json)
