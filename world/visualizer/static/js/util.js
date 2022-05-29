@@ -1,3 +1,17 @@
+
+$(document).ready(function () {
+    auto_pause();
+});
+
+async function auto_pause() {
+    await sleep(1000);
+    console.log("auto pause")
+    send_api_message("pause");
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 /*
  * Convert the path to an image to the correct url. This depends on if it is a local image file in the MATRX package
  * (url starting with '/static/'), or a local file relative from the users folder in which the user imported MATRX (NOT

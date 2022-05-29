@@ -570,6 +570,10 @@ function send_message(event) {
 }
 
 function my_send_message_function(message) {
+    if (message === "Ready!") {
+        console.log("start");
+        send_api_message("start");
+    }
     data = {"content":message, "sender": lv_agent_id, "receiver": null} // setting receiver to null sends the message to all agents
     send_matrx_api_post_message(matrx_send_message_url, data);
 }
