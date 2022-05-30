@@ -73,6 +73,7 @@ class FriendlyAgentDutch(BW4TBrain):
         self._introBool4 = False
         self._introBool5 = False
         self._positivenessGiven = []
+        self._ticksForMessages = 0
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -111,10 +112,10 @@ class FriendlyAgentDutch(BW4TBrain):
                 met zijn allen.', 'RescueBot')
 
                 if not self._introBool1:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool1 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage('Maar vanmorgen was ik onze tent aan het opzetten, toen opeens mijn zus belde. \
                     Ze klonk uitgeput en doodsbang. Ze vertelde dat zij en de baby ziek waren geworden en niet meer \
                     konden bewegen. Een paar minuten later ging het alarm af op de camping. Blijkbaar is het \
@@ -124,10 +125,10 @@ class FriendlyAgentDutch(BW4TBrain):
                     return None, {}
 
                 if not self._introBool2:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool2 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
 
                     self._sendMessage('Maar voordat we aan de slag gaan, zou ik u graag leren kennen! Ik heb een paar \
                      vragen voor u. Wat is uw naam? U kunt het intypen en op enter \
@@ -145,7 +146,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
 
                     self._sendMessage("Ahaa hallo " + self._human_name + "! Fijn dat u even langs bent gekomen. \
                      Bent u een man of een vrouw? Ik kan dat nooit echt aan de naam zien haha. U kunt op het knopje \
@@ -163,7 +164,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     if self._human_gender == "Boy":
                         self._sendMessage('Oké, dag meneer! Hoe oud bent u? U kunt een getal intypen \
                           en op enter drukken.', 'RescueBot')
@@ -183,7 +184,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Oh wauw, u moet zoveel levenservaring hebben. Zelf wordt ik twee jaar oud op \
                     18 December. Waar komt u vandaan? U kunt de naam van het land intypen en op enter \
                     drukken.", 'RescueBot')
@@ -200,7 +201,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     if self._human_gender == "Boy":
 
                         self._sendMessage("Nee joh dat meent u niet! U doet me zoveel aan mijn persoonlijke mens \
@@ -218,10 +219,10 @@ class FriendlyAgentDutch(BW4TBrain):
                     return None, {}
 
                 if not self._introBool3:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool3 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Oke, terug naar het probleem dat we hier hebben.\
                      Ik moet mijn familie redden, maar kan het niet alleen. Wilt u mij helpen?\
                       U op het knopje 'Ja' of 'Nee' klikken.", 'RescueBot')
@@ -238,7 +239,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     if self._human_consent == "No":
                         self._sendMessage("Ohh dat is zo jammer. Maar geen probleem, ik zal proberen om ze zelf te \
                          redden. Bedankt voor het langskomen!", 'RescueBot')
@@ -246,7 +247,7 @@ class FriendlyAgentDutch(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Oke! Ik zou graag benadrukken dat u mijn familie in principe helemaal in uw eentje \
                                       zou kunnen redden. U kunt ook liegen, lui zijn, of eigenlijk gewoon maar \
                                       doen wat u wilt. Maar onthoud dat ons doel is om mijn familie zo snel mogelijk \
@@ -256,10 +257,10 @@ class FriendlyAgentDutch(BW4TBrain):
                     return None, {}
 
                 if not self._introBool4:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool4 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self.confidenceString = "Trouwens, ik heb net wat berekeningen gedaan. Het blijkt dat "
 
                     if self._human_gender == 'Boy':
@@ -277,10 +278,10 @@ class FriendlyAgentDutch(BW4TBrain):
                     return None, {}
 
                 if not self._introBool5:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool5 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
 
                     self._sendMessage('Oke, laten we beginnen. Wij zullen straks samen proberen om de volgende \
                     8 slachtoffers zo snel mogelijk te vinden en te redden. We moeten de slachtoffers redden in volgorde \
