@@ -99,6 +99,7 @@ class FriendlyAgentDutch(BW4TBrain):
             self._sendMessage('U heeft nog  1 minuut om de taak te voltooien.', 'RescueBot')
 
         while True:
+            self._ticksForMessages += 1
             if self.received_messages:
                 if 'Collect' in self.received_messages[-1][0:7]:
                     self._sendPositiveMessage()
