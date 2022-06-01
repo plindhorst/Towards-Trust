@@ -5,6 +5,7 @@ import sys
 import requests
 
 from trustworthiness.Trustworthiness import Trustworthiness
+from world.agents.ControlAgentDutch import HighInterdependenceAgentControlDutch
 from world.agents.custom.FriendlyAgentDutch import FriendlyAgentDutch
 from world.agents.custom.TutorialAgent import TutorialAgent
 from world.agents.custom.TutorialAgentDutch import TutorialAgentDutch
@@ -44,6 +45,7 @@ if __name__ == "__main__":
         agent = ControlAgent(AGENT_SLOWDOWN)
     elif agent_type == "control-dutch":
         print("Playing with control-dutch agent")
+        agent = HighInterdependenceAgentControlDutch(AGENT_SLOWDOWN)
     elif agent_type == "helper":
         print("Playing with helper agent")
         agent = HelpingAgent(AGENT_SLOWDOWN, "explainable")
