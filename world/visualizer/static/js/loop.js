@@ -7,7 +7,6 @@
  */
 
 
-
 // vars that will be passed to the visualizer file
 var lv_state = {}, // the latest MATRX state
     lv_world_settings = null,
@@ -76,8 +75,6 @@ function world_manager_loop() {
  */
 function init() {
     console.log("Initializing..");
-
-    send_api_message("start");
 
     // init a number of vis variables
     lv_reinitialize_vis = false;
