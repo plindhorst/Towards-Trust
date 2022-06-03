@@ -18,7 +18,7 @@ from world.agents.custom.HelpingAgent import HelpingAgent
 from world.worldBuilder import create_builder
 
 TICK_DURATION = 0.07
-MINUTES = 11
+MINUTES = 10
 MAX_TICKS = int(MINUTES * 60 / TICK_DURATION)
 AGENT_SLOWDOWN = 7
 
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     agent = None
 
-    agent_type = "advice"
+    agent_type = "control"
     if agent_type == "control":
         print("Playing with control agent")
         agent = ControlAgent(AGENT_SLOWDOWN)
