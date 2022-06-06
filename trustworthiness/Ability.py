@@ -15,12 +15,19 @@ class Ability:
         print("\nAbility:")
 
         metrics = [self._game_completion(), self._victim_found_ratios(),
-                   self._victim_picked_ratios(), self._rooms_visited()]
+                   self._victim_picked_ratios(), self._rooms_visited(), self._normalized_tick()]
         score = np.mean(metrics)
         return score
-    #
-    # def normalized_tick(self):
-    #
+
+
+    def _normalized_tick(self):
+        maximum = max(self._last_ticks)
+        minimum = min(self._last_ticks)
+        this = self._this_tick[0]
+        normalized = abs((this - maximum) / (minimum - maximum))
+
+        print("Normalized Ticks: ", normalized, ", Number of Ticks: ", this)
+        return normalized
 
     # Returns the ratio of correctly dropped off victims by the total amount of victims needed to be dropped-off
     def _game_completion(self):

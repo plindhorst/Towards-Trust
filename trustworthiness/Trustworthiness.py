@@ -70,13 +70,10 @@ class Trustworthiness:
 
         if len(list_of_files) > 0:
             last_ticks = _last_ticks(list_of_files)
-            print(last_ticks)
             for action_file in list_of_files:
                 print("### ", action_file.split("\\")[-1])
                 this_tick = _last_ticks([action_file])
                 actions = _read_action_file(action_file)
-                print("THIS TICK: ", this_tick)
-                print(actions)
 
                 # _actions_to_string(actions)
 
