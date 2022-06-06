@@ -5,17 +5,19 @@ from world.actions.util import is_in_room
 
 
 class Benevolence:
-    def __init__(self, actions):
+    def __init__(self, actions, ticks, this_tick):
         self._actions = actions
+        self._ticks = ticks
+        self._this_tick = this_tick
 
     # Returns computed benevolence
     def compute(self):
 
         print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
-                   self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found()]
+                   self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found(),
+                   self._average_ticks_to_respond()]
 
-        self._average_ticks_to_respond()
 
         score = 0
         count = 0
@@ -168,27 +170,12 @@ class Benevolence:
 
     # Returns the average number of ticks to respond to the agent
     def _average_ticks_to_respond(self):
-        count = 0
-        ticks = 0
-        start = 0
-        question = None
+        maximum = max(self._ticks)
+        minimum = min(self._ticks)
+        this = self._this_tick[0]
+        if this == -1:
+            this = maximum
+        normalized = abs((this - maximum) / (minimum - maximum))
 
-        for action in self._actions:
-            tick = action.map_state['tick']
-
-            if type(action) in [MessageAskGender, MessageSuggestPickup]:
-                question = action
-                start = tick
-
-            if (type(question) is MessageAskGender and type(action) in [MessageGirl, MessageBoy] \
-                    or type(question) is MessageSuggestPickup and type(action) in [MessageYes, MessageNo]):
-                ticks += tick - start
-                count += 1
-                question = None
-
-        print("The average number of ticks to respond is :", ticks, "/", count)
-
-        if count == 0:
-            return -1
-
-        return ticks / count
+        print("Normalized response ticks: ", normalized, ", Number of Ticks: ", this)
+        return normalized
