@@ -5,8 +5,10 @@ from world.actions.HumanAction import FoundVictim, PickUp, EnterRoom
 
 
 class Ability:
-    def __init__(self, actions):
+    def __init__(self, actions, ticks, this_tick):
         self._actions = actions
+        self._last_ticks = ticks
+        self._this_tick = this_tick
 
     # Returns computed ability
     def compute(self):
@@ -16,6 +18,9 @@ class Ability:
                    self._victim_picked_ratios(), self._rooms_visited()]
         score = np.mean(metrics)
         return score
+    #
+    # def normalized_tick(self):
+    #
 
     # Returns the ratio of correctly dropped off victims by the total amount of victims needed to be dropped-off
     def _game_completion(self):
