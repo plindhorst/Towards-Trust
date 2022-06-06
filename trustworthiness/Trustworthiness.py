@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 import pickle
 
@@ -7,6 +8,8 @@ from trustworthiness.Benevolence import Benevolence
 from trustworthiness.Integrity import Integrity
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
 from world.actions.HumanAction import MessageGirl, MessageYes, MessageBoy, MessageNo
+
+VERBOSE = False
 
 
 def _read_action_file(action_file):
@@ -48,6 +51,12 @@ def _last_ticks(files):
     return last_ticks
 
 
+def _read_questionnaire_answers(file_name):
+    f = open('./data/questionnaire/' + file_name)
+    data = json.load(f)
+    return data
+
+
 def _actions_to_string(actions):
     for action in actions:
         new_attrs = []
@@ -57,6 +66,30 @@ def _actions_to_string(actions):
                 new_attrs.append({attr: action.__dict__[attr]})
 
         print(action.__class__.__name__, new_attrs)
+
+
+def _compute_questionaire(answers):
+    f = open('./trustworthiness/questionnaire.json')
+    questions = json.load(f)
+
+    abi = [0, 0, 0]
+    counts = [0, 0, 0]
+
+    for i, concept in enumerate(["Ability", "Benevolence", "Integrity"]):
+        for question in questions:
+            if question["type"] == concept:
+                for answer in answers:
+                    try:
+                        abi[i] += int(answer[question["name"]])
+                        counts[i] += 1
+                        break
+                    except KeyError:
+                        continue
+        abi[i] /= counts[i]
+
+    abi = [round(x / 6, 2) for x in abi]
+
+    return abi
 
 
 def _compute(ability, benevolence, integrity):
@@ -86,7 +119,6 @@ def _average_ticks_to_respond(list_of_files):
                 count += 1
                 question = None
 
-        print("The average number of ticks to respond is :", ticks, "/", count)
         if count == 0:
             all_ticks_to_respond.append(-1)
         else:
@@ -111,17 +143,26 @@ class Trustworthiness:
                     ticks_to_respond[index] = maximum * 2
 
             for action_file in list_of_files:
-                print("### ", action_file.split("\\")[-1])
                 this_tick = _last_ticks([action_file])
                 this_tick_to_respond = _average_ticks_to_respond([action_file])
+                action_file = action_file.replace("\\", "/")
+                file_name = action_file.split("/")[-1].replace(".pkl", "")
+
+                print("### ", file_name)
+
                 actions = _read_action_file(action_file)
 
                 # _actions_to_string(actions)
 
-                ability = Ability(actions, last_ticks, this_tick)
-                benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond)
-                integrity = Integrity(actions)
+                ability = Ability(actions, last_ticks, this_tick, verbose=VERBOSE)
+                benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond, verbose=VERBOSE)
+                integrity = Integrity(actions, verbose=VERBOSE)
+
 
                 ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
 
-                print("\n--- ABI score: ", ability_score, benevolence_score, integrity_score, "\n")
+                answers = _read_questionnaire_answers(file_name + ".json")
+                abi_questionnaire = _compute_questionaire(answers)
+
+                print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
+                print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")

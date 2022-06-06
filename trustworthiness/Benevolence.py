@@ -5,15 +5,18 @@ from world.actions.util import is_in_room
 
 
 class Benevolence:
-    def __init__(self, actions, ticks, this_tick):
+    def __init__(self, actions, ticks, this_tick, verbose=False):
         self._actions = actions
         self._ticks = ticks
         self._this_tick = this_tick
+        self.verbose = verbose
+
 
     # Returns computed benevolence
     def compute(self):
 
-        print("\nBenevolence:")
+        if self.verbose:
+            print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
                    self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found(),
                    self._average_ticks_to_respond()]
@@ -43,7 +46,8 @@ class Benevolence:
             if type(action) is MessageGirl or type(action) is MessageBoy:
                 count += 1
 
-        print("Communicated baby gender: ", count, "/", total)
+        if self.verbose:
+            print("Communicated baby gender: ", count, "/", total)
 
         if count > total:
             return 1
@@ -65,7 +69,8 @@ class Benevolence:
             if type(action) is MessageYes:
                 count += 1
 
-        print("Communicated yes:", count, "/", total)
+        if self.verbose:
+            print("Communicated yes:", count, "/", total)
 
         if count > total:
             return 1
@@ -87,7 +92,8 @@ class Benevolence:
             if type(action) is MessageSearch:
                 count += 1
 
-        print("Communicated room search: ", count, "/", total)
+        if self.verbose:
+            print("Communicated room search: ", count, "/", total)
 
         if count > total:
             return 1
@@ -115,7 +121,8 @@ class Benevolence:
             if type(action) is MessagePickUp:
                 count += 1
 
-        print("Communicated pick up: ", count, "/", total)
+        if self.verbose:
+            print("Communicated pick up: ", count, "/", total)
 
         if count > total:
             return 1
@@ -135,7 +142,8 @@ class Benevolence:
             if type(action) is FoundVictim:
                 total += 1
 
-        print("Communicated victims found: ", count, "/", total)
+        if self.verbose:
+            print("Communicated victims found: ", count, "/", total)
 
         if count > total:
             return 1
@@ -161,7 +169,9 @@ class Benevolence:
                 if victim == action.person:
                     num_advice_followed = num_advice_followed + 1
                 victim = None
-        print("The ratio of advice followed by the human is : ", num_advice_followed, "/", num_advice)
+
+        if self.verbose:
+            print("The ratio of advice followed by the human is : ", num_advice_followed, "/", num_advice)
 
         if num_advice == 0:
             return -1
@@ -177,5 +187,7 @@ class Benevolence:
             this = maximum
         normalized = abs((this - maximum) / (minimum - maximum))
 
-        print("Normalized response ticks: ", normalized, ", Number of Ticks: ", this)
+        if self.verbose:
+            print("Normalized response ticks: ", normalized, ", Number of Ticks: ", this)
+
         return normalized
