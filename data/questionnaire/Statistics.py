@@ -2,7 +2,6 @@ import json
 import pandas as pd
 import pingouin as pg
 
-
 def _read_questionnaire_answers(file_name):
     f = open(file_name)
     data = json.load(f)
@@ -29,22 +28,13 @@ for jsonList in jsonLists:
     transformedObjectsList.append(fullObject)
 
 pandaFrame = pd.DataFrame.from_records(transformedObjectsList)
-ability = pd.DataFrame.from_records(transformedObjectsList).iloc[:, 5:10]
-
-for c in ability.columns:
-    print(ability[c].dtype.kind)
-    # Right now they seem to be python objects.
-
-assert all([ability[c].dtype.kind in 'bfiu' for c in ability.columns])
-
-print(ability)
-benevolence = pd.DataFrame.from_records(transformedObjectsList).iloc[:, 10:15]
-integrity = pd.DataFrame.from_records(transformedObjectsList).iloc[:, 15:20]
+pandaFrame = pandaFrame.apply(pd.to_numeric, args=('coerce',))
+ability = pandaFrame.iloc[:, 5:10]
+benevolence = pandaFrame.iloc[:, 10:15]
+integrity = pandaFrame.iloc[:, 15:20]
 
 print("Cronbach's alpha, ability: ")
 print(pg.cronbach_alpha(data=ability))
-
-
 
 print("Cronbach's alpha, benevolence: ")
 print(pg.cronbach_alpha(data=benevolence))
