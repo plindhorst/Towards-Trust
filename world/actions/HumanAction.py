@@ -30,6 +30,11 @@ class MessageYes(HumanAction):
         super().__init__(map_state)
 
 
+class MessageHelp(HumanAction):
+    def __init__(self, map_state):
+        super().__init__(map_state)
+
+
 class MessageNo(HumanAction):
     def __init__(self, map_state):
         super().__init__(map_state)
