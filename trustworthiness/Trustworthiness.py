@@ -134,22 +134,22 @@ def _PrintCronbachsAlpha():
     integrityExperimental = pandaFrameExperimental.iloc[:, 15:20]
 
     #Calculate cronbach_alpha
-    print("Cronbach's alpha, control group, ability: ")
+    print("\nCronbach's alpha, control group, ability: ")
     print(pg.cronbach_alpha(data=abilityControl)[0])
 
-    print("Cronbach's alpha, experimental group, ability: ")
+    print("\nCronbach's alpha, experimental group, ability: ")
     print(pg.cronbach_alpha(data=abilityExperimental)[0])
 
-    print("Cronbach's alpha, control group, benevolence: ")
+    print("\nCronbach's alpha, control group, benevolence: ")
     print(pg.cronbach_alpha(data=benevolenceControl)[0])
 
-    print("Cronbach's alpha, experimental group, benevolence: ")
+    print("\nCronbach's alpha, experimental group, benevolence: ")
     print(pg.cronbach_alpha(data=benevolenceExperimental)[0])
 
-    print("Cronbach's alpha, control group, integrity: ")
+    print("\nCronbach's alpha, control group, integrity: ")
     print(pg.cronbach_alpha(data=integrityControl)[0])
 
-    print("Cronbach's alpha, experimental group, integrity: ")
+    print("\nCronbach's alpha, experimental group, integrity: ")
     print(pg.cronbach_alpha(data=integrityExperimental)[0])
 
 def _compute(ability, benevolence, integrity):
@@ -186,9 +186,15 @@ def _average_ticks_to_respond(list_of_files):
 
     return all_ticks_to_respond
 
+def printShapiroResult(result):
+    if result < 0.5:
+        print("\t" + str(result) + "NOT NORMALLY DISTRIBUTED")
+    else:
+        print("\t" + str(result) + "NORMALLY DISTRIBUTED")
 
 class Trustworthiness:
     def __init__(self):
+        _PrintCronbachsAlpha()
         list_of_files = glob.glob('../data/actions/*.pkl')
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
 
@@ -264,24 +270,68 @@ class Trustworthiness:
                     experimental_integrity_tw_o.append(integrity_score)
                     experimental_tw_o.append(trustworthiness_objective)
 
-                    control_ability_tw_s.append(abi_questionnaire[0])
-                    control_benevolence_tw_s.append(abi_questionnaire[1])
-                    control_integrity_tw_s.append(abi_questionnaire[2])
+                    experimental_ability_tw_s.append(abi_questionnaire[0])
+                    experimental_benevolence_tw_s.append(abi_questionnaire[1])
+                    experimental_integrity_tw_s.append(abi_questionnaire[2])
                     experimental_tw_s.append(trustworthiness_subjective)
 
-            print("CONTROL----------")
-            print(control_tw_o)
-            print(control_tw_s)
-            shapiro_test_o = stats.shapiro(control_tw_o)
-            shapiro_test_s = stats.shapiro(control_tw_s)
-            print(shapiro_test_o)
-            print(shapiro_test_s)
+            shapiro_control_ability_o = stats.shapiro(control_ability_tw_o).pvalue
+            shapiro_control_benevolence_o = stats.shapiro(control_benevolence_tw_o).pvalue
+            shapiro_control_integrity_o = stats.shapiro(control_integrity_tw_o).pvalue
+            shapiro_control_o = stats.shapiro(control_tw_o).pvalue
 
-            print("EXPERIMENTAL----------")
+            shapiro_control_ability_s = stats.shapiro(control_ability_tw_s).pvalue
+            shapiro_control_benevolence_s = stats.shapiro(control_benevolence_tw_s).pvalue
+            shapiro_control_integrity_s = stats.shapiro(control_integrity_tw_s).pvalue
+            shapiro_control_s = stats.shapiro(control_tw_s).pvalue
+
+            shapiro_experimental_ability_tw_o = stats.shapiro(experimental_ability_tw_o).pvalue
+            shapiro_experimental_benevolence_o = stats.shapiro(experimental_benevolence_tw_o).pvalue
+            shapiro_experimental_integrity_o = stats.shapiro(experimental_integrity_tw_o).pvalue
+            shapiro_experimental_o = stats.shapiro(experimental_tw_o).pvalue
+
+            shapiro_experimental_ability_s = stats.shapiro(experimental_ability_tw_s).pvalue
+            shapiro_experimental_benevolence_s = stats.shapiro(experimental_benevolence_tw_s).pvalue
+            shapiro_experimental_integrity_s = stats.shapiro(experimental_integrity_tw_s).pvalue
+            shapiro_experimental_s = stats.shapiro(experimental_tw_s).pvalue
+
+            print("\n cronbachs alpha:")
+
+
+            print("\n Shapiro-Wilk test:")
+            print("\n control group - objective - ability:")
+            printShapiroResult(shapiro_control_ability_o)
+            print("\n control group - objective - benevolence:")
+            printShapiroResult(shapiro_control_benevolence_o)
+            print("\n control group - objective - integrity:")
+            printShapiroResult(shapiro_control_integrity_o)
+            print("\n control group - subjective - ability:")
+            printShapiroResult(shapiro_control_ability_s)
+            print("\n control group - subjective - benevolence:")
+            printShapiroResult(shapiro_control_benevolence_s)
+            print("\n control group - subjective - integrity:")
+            printShapiroResult(shapiro_control_integrity_s)
+
+
+
+            if shapiro_control_benevolence_o < 0.5:
+                print("\t" + str(shapiro_control_benevolence_o) + "NOT NORMALLY DISTRIBUTED")
+            else:
+                print("\t" + str(shapiro_control_benevolence_o) + "NORMALLY DISTRIBUTED")
+
+            if shapiro_control_benevolence_o < 0.5:
+                print("\t" + str(shapiro_control_benevolence_o) + "NOT NORMALLY DISTRIBUTED")
+            else:
+                print("\t" + str(shapiro_control_benevolence_o) + "NORMALLY DISTRIBUTED")
+
+
+
+
+
             print(experimental_tw_o)
             print(experimental_tw_s)
-            shapiro_test_o = stats.shapiro(experimental_tw_o)
-            shapiro_test_s = stats.shapiro(experimental_tw_s)
+            shapiro_test_o = stats.shapiro(experimental_tw_o).pvalue
+            shapiro_test_s = stats.shapiro(experimental_tw_s).pvalue
             print(shapiro_test_o)
             print(shapiro_test_s)
 
