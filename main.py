@@ -4,7 +4,6 @@ import sys
 
 import requests
 
-from trustworthiness.QuestionnaireGraph import QuestionnaireGraph
 from trustworthiness.Trustworthiness import Trustworthiness
 from world.agents.custom.FriendlyAgentDutch import FriendlyAgentDutch
 from world.agents.custom.TutorialAgent import TutorialAgent
@@ -37,11 +36,6 @@ if __name__ == "__main__":
 
     if args.tw:
         trustworthiness = Trustworthiness()
-        sys.exit(0)
-
-    if args.qg:
-        questionnaireGraph = QuestionnaireGraph()
-        print("got here")
         sys.exit(0)
 
     agent = None
