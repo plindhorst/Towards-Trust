@@ -135,22 +135,22 @@ def _PrintCronbachsAlpha():
 
     #Calculate cronbach_alpha
     print("\nCronbach's alpha, control group, ability: ")
-    print(pg.cronbach_alpha(data=abilityControl)[0])
+    print("\t" + str(pg.cronbach_alpha(data=abilityControl)[0]))
 
     print("\nCronbach's alpha, experimental group, ability: ")
-    print(pg.cronbach_alpha(data=abilityExperimental)[0])
+    print("\t" + str(pg.cronbach_alpha(data=abilityExperimental)[0]))
 
     print("\nCronbach's alpha, control group, benevolence: ")
-    print(pg.cronbach_alpha(data=benevolenceControl)[0])
+    print("\t" + str(pg.cronbach_alpha(data=benevolenceControl)[0]))
 
     print("\nCronbach's alpha, experimental group, benevolence: ")
-    print(pg.cronbach_alpha(data=benevolenceExperimental)[0])
+    print("\t" + str(pg.cronbach_alpha(data=benevolenceExperimental)[0]))
 
     print("\nCronbach's alpha, control group, integrity: ")
-    print(pg.cronbach_alpha(data=integrityControl)[0])
+    print("\t" + str(pg.cronbach_alpha(data=integrityControl)[0]))
 
     print("\nCronbach's alpha, experimental group, integrity: ")
-    print(pg.cronbach_alpha(data=integrityExperimental)[0])
+    print("\t" + str(pg.cronbach_alpha(data=integrityExperimental)[0]))
 
 def _compute(ability, benevolence, integrity):
     return round(ability.compute(), 2), round(benevolence.compute(), 2), round(integrity.compute(), 2)
@@ -186,15 +186,22 @@ def _average_ticks_to_respond(list_of_files):
 
     return all_ticks_to_respond
 
-def printShapiroResult(result):
-    if result < 0.5:
-        print("\t" + str(result) + "NOT NORMALLY DISTRIBUTED")
+def _printShapiroResult(result):
+    if result < 0.05:
+        print("\t" + str(result) + " NOT NORMALLY DISTRIBUTED")
     else:
-        print("\t" + str(result) + "NORMALLY DISTRIBUTED")
+        print("\t" + str(result) + " NORMALLY DISTRIBUTED")
+
+def _printSignificanceTest(shapiroResultControl, shapiroResultExperimental, controlData, experimentalData):
+    if shapiroResultControl >= 0.05 and shapiroResultExperimental >= 0.05:
+        print("T-Test: ")
+        print("\t" + str(stats.ttest_ind(controlData, experimentalData, alternative="less").pvalue))
+    else:
+        print("mann-Whitney test: ")
+        print("\t" + str(stats.mannwhitneyu(controlData, experimentalData, alternative="less").pvalue))
 
 class Trustworthiness:
     def __init__(self):
-        _PrintCronbachsAlpha()
         list_of_files = glob.glob('../data/actions/*.pkl')
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
         
@@ -300,7 +307,7 @@ class Trustworthiness:
             shapiro_control_integrity_s = stats.shapiro(control_integrity_tw_s).pvalue
             shapiro_control_s = stats.shapiro(control_tw_s).pvalue
 
-            shapiro_experimental_ability_tw_o = stats.shapiro(experimental_ability_tw_o).pvalue
+            shapiro_experimental_ability_o = stats.shapiro(experimental_ability_tw_o).pvalue
             shapiro_experimental_benevolence_o = stats.shapiro(experimental_benevolence_tw_o).pvalue
             shapiro_experimental_integrity_o = stats.shapiro(experimental_integrity_tw_o).pvalue
             shapiro_experimental_o = stats.shapiro(experimental_tw_o).pvalue
@@ -311,51 +318,72 @@ class Trustworthiness:
             shapiro_experimental_s = stats.shapiro(experimental_tw_s).pvalue
 
             print("\n cronbachs alpha:")
-
+            _PrintCronbachsAlpha()
 
             print("\n Shapiro-Wilk test:")
             print("\n control group - objective - ability:")
-            printShapiroResult(shapiro_control_ability_o)
+            _printShapiroResult(shapiro_control_ability_o)
             print("\n control group - objective - benevolence:")
-            printShapiroResult(shapiro_control_benevolence_o)
+            _printShapiroResult(shapiro_control_benevolence_o)
             print("\n control group - objective - integrity:")
-            printShapiroResult(shapiro_control_integrity_o)
+            _printShapiroResult(shapiro_control_integrity_o)
+            print("\n control group - objective - trustworthiness")
+            _printShapiroResult(shapiro_control_o)
+
             print("\n control group - subjective - ability:")
-            printShapiroResult(shapiro_control_ability_s)
+            _printShapiroResult(shapiro_control_ability_s)
             print("\n control group - subjective - benevolence:")
-            printShapiroResult(shapiro_control_benevolence_s)
+            _printShapiroResult(shapiro_control_benevolence_s)
             print("\n control group - subjective - integrity:")
-            printShapiroResult(shapiro_control_integrity_s)
+            _printShapiroResult(shapiro_control_integrity_s)
+            print("\n control group - subjective - trustworthiness")
+            _printShapiroResult(shapiro_control_s)
+
+            print("\n experimental group - objective - ability:")
+            _printShapiroResult(shapiro_experimental_ability_o)
+            print("\n experimental group - objective - benevolence:")
+            _printShapiroResult(shapiro_experimental_benevolence_o)
+            print("\n experimental group - objective - integrity:")
+            _printShapiroResult(shapiro_experimental_integrity_o)
+            print("\n experimental group - objective - trustworthiness:")
+            _printShapiroResult(shapiro_experimental_o)
+
+            print("\n experimental group - subjective - ability:")
+            _printShapiroResult(shapiro_experimental_ability_s)
+            print("\n experimental group - subjective - benevolence:")
+            _printShapiroResult(shapiro_experimental_benevolence_s)
+            print("\n experimental group - subjective - integrity:")
+            _printShapiroResult(shapiro_experimental_integrity_s)
+            print("\n experimental group - subjective - trustworthiness:")
+            _printShapiroResult(shapiro_experimental_s)
+
+            print("\nsignificance test: ")
+            print("\n\tobjective - ability - ", end="")
+            _printSignificanceTest(shapiro_control_ability_o, shapiro_experimental_ability_o, control_ability_tw_o, experimental_ability_tw_o)
+
+            print("\n\tobjective - benevolence - ", end="")
+            _printSignificanceTest(shapiro_control_benevolence_o, shapiro_experimental_benevolence_o, control_benevolence_tw_o, experimental_benevolence_tw_o)
+
+            print("\n\tobjective - integrity - ", end="")
+            _printSignificanceTest(shapiro_control_integrity_o, shapiro_experimental_integrity_o, control_integrity_tw_o, experimental_integrity_tw_o)
+
+            print("\n\tobjective - trustworthiness - ", end="")
+            _printSignificanceTest(shapiro_control_o, shapiro_experimental_o, control_tw_o, experimental_tw_o)
+
+            print("\n\tsubjective - ability - ", end="")
+            _printSignificanceTest(shapiro_control_ability_s, shapiro_experimental_ability_s, control_ability_tw_s, experimental_ability_tw_s)
+
+            print("\n\tsubjective - benevolence - ", end="")
+            _printSignificanceTest(shapiro_control_benevolence_s, shapiro_experimental_benevolence_s, control_benevolence_tw_s, experimental_benevolence_tw_s)
+
+            print("\n\tsubjective - integrity - ", end="")
+            _printSignificanceTest(shapiro_control_integrity_s, shapiro_experimental_integrity_s, control_integrity_tw_s, experimental_integrity_tw_s)
+
+            print("\n\tsubjective - trustworthiness - ", end="")
+            _printSignificanceTest(shapiro_control_s, shapiro_experimental_s, control_tw_s, experimental_tw_s)
 
 
 
-            if shapiro_control_benevolence_o < 0.5:
-                print("\t" + str(shapiro_control_benevolence_o) + "NOT NORMALLY DISTRIBUTED")
-            else:
-                print("\t" + str(shapiro_control_benevolence_o) + "NORMALLY DISTRIBUTED")
-
-            if shapiro_control_benevolence_o < 0.5:
-                print("\t" + str(shapiro_control_benevolence_o) + "NOT NORMALLY DISTRIBUTED")
-            else:
-                print("\t" + str(shapiro_control_benevolence_o) + "NORMALLY DISTRIBUTED")
-
-
-
-
-
-            print(experimental_tw_o)
-            print(experimental_tw_s)
-            shapiro_test_o = stats.shapiro(experimental_tw_o).pvalue
-            shapiro_test_s = stats.shapiro(experimental_tw_s).pvalue
-            print(shapiro_test_o)
-            print(shapiro_test_s)
-
-            t_test_o = stats.ttest_ind(control_tw_o, experimental_tw_o)
-            t_test_s = stats.ttest_ind(control_tw_s, experimental_tw_s)
-            print("OBJECTIVE T-TEST: ")
-            print(t_test_o)
-            print("SUBJECTIVE T-TEST: ")
-            print(t_test_s)
             plt.hist(control_tw_o, bins=7)
             plt.hist(experimental_tw_o, bins=7)
             plt.show()
@@ -396,11 +424,11 @@ class Trustworthiness:
                     experimental_group_integrity.append(integrity_score)
 
             X = ['Ability', 'Benevolence', 'Integrity', 'Trustworthiness']
-            control_bar_values = [numpy.mean(control_group_ability), numpy.mean(control_group_benevolence), numpy.mean(control_group_integrity), numpy.mean(control_group_values)]
-            experimental_bar_values = [numpy.mean(experimental_group_ability), numpy.mean(experimental_group_benevolence),
-                                  numpy.mean(experimental_group_integrity), numpy.mean(experimental_group_values)]
+            control_bar_values = [np.mean(control_group_ability), np.mean(control_group_benevolence), np.mean(control_group_integrity), np.mean(control_group_values)]
+            experimental_bar_values = [np.mean(experimental_group_ability), np.mean(experimental_group_benevolence),
+                                  np.mean(experimental_group_integrity), np.mean(experimental_group_values)]
 
-            X_axis = numpy.arange(len(X))
+            X_axis = np.arange(len(X))
 
             plt.bar(X_axis - 0.2, control_bar_values, 0.4, label='Control Group')
             plt.bar(X_axis + 0.2, experimental_bar_values, 0.4, label='Experimental Group')
