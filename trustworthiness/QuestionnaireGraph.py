@@ -49,7 +49,7 @@ class QuestionnaireGraph:
                     control_a.append(abi_questionnaire[0])
                     control_b.append(abi_questionnaire[1])
                     control_i.append(abi_questionnaire[2])
-                else:
+                if 'advice' in questionnaireFile:
                     count += 1
                     experimental_a.append(abi_questionnaire[0])
                     experimental_b.append(abi_questionnaire[1])
