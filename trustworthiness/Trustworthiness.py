@@ -195,10 +195,18 @@ def _printShapiroResult(result):
 def _printSignificanceTest(shapiroResultControl, shapiroResultExperimental, controlData, experimentalData):
     if shapiroResultControl >= 0.05 and shapiroResultExperimental >= 0.05:
         print("T-Test: ")
-        print("\t" + str(stats.ttest_ind(controlData, experimentalData, alternative="less").pvalue))
+        ttestValue = stats.ttest_ind(controlData, experimentalData, alternative="less").pvalue
+        if(ttestValue < 0.05):
+            print("\t" + str(ttestValue) + " SIGNIFICANT")
+        else:
+            print("\t" + str(ttestValue) + " NOT SIGNIFICANT")
     else:
         print("mann-Whitney test: ")
-        print("\t" + str(stats.mannwhitneyu(controlData, experimentalData, alternative="less").pvalue))
+        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData, alternative="less").pvalue
+        if(mannWhitneyUValue < 0.05):
+            print("\t" + str(mannWhitneyUValue) + " SIGNIFICANT")
+        else:
+            print("\t" + str(mannWhitneyUValue) + " NOT SIGNIFICANT")
 
 class Trustworthiness:
     def __init__(self):
