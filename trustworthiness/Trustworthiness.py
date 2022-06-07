@@ -193,10 +193,26 @@ class Trustworthiness:
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
 
         if len(list_of_files) > 0:
+            control_ability_tw_s = []
+            control_benevolence_tw_s = []
+            control_integrity_tw_s = []
             control_tw_s = []
+
+            control_ability_tw_o = []
+            control_benevolence_tw_o = []
+            control_integrity_tw_o = []
             control_tw_o = []
-            experimental_tw_s = []
+
+            experimental_ability_tw_o = []
+            experimental_benevolence_tw_o = []
+            experimental_integrity_tw_o = []
             experimental_tw_o = []
+
+            experimental_ability_tw_s = []
+            experimental_benevolence_tw_s = []
+            experimental_integrity_tw_s = []
+            experimental_tw_s = []
+
 
             last_ticks = _last_ticks(list_of_files)
             ticks_to_respond = _average_ticks_to_respond(list_of_files)
@@ -231,10 +247,26 @@ class Trustworthiness:
                 trustworthiness_subjective = np.mean(abi_questionnaire)
 
                 if CONTROL_AGENT in file_name:
+
+                    control_ability_tw_o.append(ability_score)
+                    control_benevolence_tw_o.append(benevolence_score)
+                    control_integrity_tw_o.append(integrity_score)
                     control_tw_o.append(trustworthiness_objective)
+
+                    control_ability_tw_s.append(abi_questionnaire[0])
+                    control_benevolence_tw_s.append(abi_questionnaire[1])
+                    control_integrity_tw_s.append(abi_questionnaire[2])
                     control_tw_s.append(trustworthiness_subjective)
+
                 elif EXPERIMENTAL_AGENT in file_name:
+                    experimental_ability_tw_o.append(ability_score)
+                    experimental_benevolence_tw_o.append(benevolence_score)
+                    experimental_integrity_tw_o.append(integrity_score)
                     experimental_tw_o.append(trustworthiness_objective)
+
+                    control_ability_tw_s.append(abi_questionnaire[0])
+                    control_benevolence_tw_s.append(abi_questionnaire[1])
+                    control_integrity_tw_s.append(abi_questionnaire[2])
                     experimental_tw_s.append(trustworthiness_subjective)
 
             print("CONTROL----------")
