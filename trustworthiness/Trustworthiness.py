@@ -204,9 +204,12 @@ class Trustworthiness:
     def __init__(self):
         list_of_files = glob.glob('../data/actions/*.pkl')
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
-        
+
+
+
         control_group = glob.glob('./data/actions/control_*.pkl')
         experimental_group = glob.glob('./data/actions/directing_*.pkl')
+
 
         control_group_values = []
         control_group_ability = []
@@ -390,7 +393,7 @@ class Trustworthiness:
 
             # print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
             # print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
-            
+
             if len(control_group) > 0:
                 for action_file in control_group:
 
@@ -437,5 +440,54 @@ class Trustworthiness:
             plt.title("ABI Objective Measures Comparison")
             plt.legend()
             plt.show()
+
+        ## Plot Questionnaire Graph
+        list_of_questionnaires = glob.glob('../data/questionnaire/*.json')
+        control_a = []
+        control_b = []
+        control_i = []
+        experimental_a = []
+        experimental_b = []
+        experimental_i = []
+        count = 0
+        if len(list_of_questionnaires) > 0:
+
+            for questionnaireFile in list_of_questionnaires:
+                f = open(questionnaireFile)
+                data = json.load(f)
+                abi_questionnaire = _compute_questionaire(data)
+                if CONTROL_AGENT in questionnaireFile:
+                    control_a.append(abi_questionnaire[0])
+                    control_b.append(abi_questionnaire[1])
+                    control_i.append(abi_questionnaire[2])
+                if EXPERIMENTAL_AGENT in questionnaireFile:
+                    count += 1
+                    experimental_a.append(abi_questionnaire[0])
+                    experimental_b.append(abi_questionnaire[1])
+                    experimental_i.append(abi_questionnaire[2])
+
+            if count == 0:
+                print("ERROR: You forgot to include your experimental data in the questionnaire folder. Exiting.")
+                return
+
+            control_avg_ability = np.average(np.array(control_a))
+            control_avg_benevolence = np.average(np.array(control_b))
+            control_avg_integrity = np.average(np.array(control_i))
+            control_abi = np.array([control_avg_ability, control_avg_benevolence, control_avg_integrity]) # contains the average score for ability, benevolence and integrity
+            # of the control group
+
+            experimental_avg_ability = np.average(np.array(experimental_a))
+            experimental_avg_benevolence = np.average(np.array(experimental_b))
+            experimental_avg_integrity = np.average(np.array(experimental_i))
+            experimental_abi = np.array([experimental_avg_ability, experimental_avg_benevolence, experimental_avg_integrity]) # contains the average score for ability, benevolence
+            # and integrity of the experimental group
+
+            df = pd.DataFrame({'control group': control_abi, 'experimental group': experimental_abi}, index=["Ability", "Benevolence", "Integrity"])
+            df.plot(kind='bar')
+            plt.title("ABI Questionnaire Score comparison")
+            plt.show()
+
+            print("Got here")
+
 
 Trustworthiness()
