@@ -29,7 +29,7 @@ class Integrity:
             return 0
         else:
             score /= count
-            return score
+            return score, metrics
 
     # Returns ratio of truthfully identified baby genders
     def _truth_identify_gender(self):

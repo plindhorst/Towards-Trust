@@ -5,16 +5,16 @@ import sys
 import requests
 
 from trustworthiness.Trustworthiness import Trustworthiness
-from world.agents.custom.FriendlyAgentDutch import FriendlyAgentDutch
-from world.agents.custom.TutorialAgent import TutorialAgent
-from world.agents.custom.TutorialAgentDutch import TutorialAgentDutch
-from world.visualizer import visualization_server
 from world.agents.ControlAgent import ControlAgent
 from world.agents.custom.AdviceAgent import AdviceAgent
 from world.agents.custom.ConflictingAgent import ConflictingAgent
 from world.agents.custom.DirectingAgent import DirectingAgent
 from world.agents.custom.FriendlyAgent import FriendlyAgent
+from world.agents.custom.FriendlyAgentDutch import FriendlyAgentDutch
 from world.agents.custom.HelpingAgent import HelpingAgent
+from world.agents.custom.TutorialAgent import TutorialAgent
+from world.agents.custom.TutorialAgentDutch import TutorialAgentDutch
+from world.visualizer import visualization_server
 from world.worldBuilder import create_builder
 
 TICK_DURATION = 0.07
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.tw:
-        trustworthiness = Trustworthiness()
+        trustworthiness = Trustworthiness(group="control", graphs=True)
         sys.exit(0)
 
     agent = None

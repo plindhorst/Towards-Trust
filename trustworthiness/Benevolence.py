@@ -11,7 +11,6 @@ class Benevolence:
         self._this_tick = this_tick
         self.verbose = verbose
 
-
     # Returns computed benevolence
     def compute(self):
 
@@ -20,7 +19,6 @@ class Benevolence:
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
                    self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found(),
                    self._average_ticks_to_respond()]
-
 
         score = 0
         count = 0
@@ -33,7 +31,7 @@ class Benevolence:
             return 0
         else:
             score /= count
-            return score
+            return score, metrics
 
     # Returns the times the human replied to agent when it asked help for identifying gender of baby
     def _communicated_baby_gender(self):
