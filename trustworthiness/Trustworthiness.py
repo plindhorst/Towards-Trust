@@ -192,14 +192,29 @@ def printShapiroResult(result):
     else:
         print("\t" + str(result) + "NORMALLY DISTRIBUTED")
 
-
-
-
 class Trustworthiness:
     def __init__(self):
         _PrintCronbachsAlpha()
         list_of_files = glob.glob('../data/actions/*.pkl')
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
+
+
+
+        control_group = glob.glob('./data/actions/control_*.pkl')
+        experimental_group = glob.glob('./data/actions/directing_*.pkl')
+
+
+        control_group_values = []
+        control_group_ability = []
+        control_group_benevolence = []
+        control_group_integrity = []
+
+
+        experimental_group_values=[]
+        experimental_group_ability = []
+        experimental_group_benevolence = []
+        experimental_group_integrity = []
+
 
         if len(list_of_files) > 0:
             control_ability_tw_s = []
@@ -351,6 +366,52 @@ class Trustworthiness:
             # print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
             # print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
 
+            if len(control_group) > 0:
+                for action_file in control_group:
+
+                    actions = _read_action_file(action_file)
+
+                    ability = Ability(actions)
+                    benevolence = Benevolence(actions)
+                    integrity = Integrity(actions)
+
+                    ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
+                    trustworthiness = (ability_score + benevolence_score + integrity_score) / 3
+                    control_group_values.append(trustworthiness)
+                    control_group_ability.append(ability_score)
+                    control_group_benevolence.append(benevolence_score)
+                    control_group_integrity.append(integrity_score)
+
+            if len(experimental_group) > 0:
+                for action_file in experimental_group:
+
+                    actions = _read_action_file(action_file)
+
+                    ability = Ability(actions)
+                    benevolence = Benevolence(actions)
+                    integrity = Integrity(actions)
+
+                    ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
+                    trustworthiness = (ability_score + benevolence_score + integrity_score) / 3
+                    experimental_group_values.append(trustworthiness)
+                    experimental_group_ability.append(ability_score)
+                    experimental_group_benevolence.append(benevolence_score)
+                    experimental_group_integrity.append(integrity_score)
+
+            X = ['Ability', 'Benevolence', 'Integrity', 'Trustworthiness']
+            control_bar_values = [numpy.mean(control_group_ability), numpy.mean(control_group_benevolence), numpy.mean(control_group_integrity), numpy.mean(control_group_values)]
+            experimental_bar_values = [numpy.mean(experimental_group_ability), numpy.mean(experimental_group_benevolence),
+                                  numpy.mean(experimental_group_integrity), numpy.mean(experimental_group_values)]
+
+            X_axis = numpy.arange(len(X))
+
+            plt.bar(X_axis - 0.2, control_bar_values, 0.4, label='Control Group')
+            plt.bar(X_axis + 0.2, experimental_bar_values, 0.4, label='Experimental Group')
+
+            plt.xticks(X_axis, X)
+            plt.title("ABI Objective Measures Comparison")
+            plt.legend()
+            plt.show()
 
             list_of_questionnaires = glob.glob('./data/questionnaire/*.json')
             control_a = []
