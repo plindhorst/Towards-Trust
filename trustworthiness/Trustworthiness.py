@@ -4,6 +4,8 @@ import os
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+import pingouin as pg
 from scipy.stats import skew
 
 from trustworthiness.Ability import Ability
@@ -15,7 +17,9 @@ from scipy import stats
 
 VERBOSE = False
 CONTROL_AGENT = 'control'
-EXPERIMENTAL_AGENT = 'helper'
+EXPERIMENTAL_AGENT = 'friendly'
+
+
 
 
 def _read_action_file(action_file):
@@ -57,7 +61,7 @@ def _last_ticks(files):
 
 
 def _read_questionnaire_answers(file_name):
-    f = open('./data/questionnaire/' + file_name)
+    f = open('../data/questionnaire/' + file_name)
     data = json.load(f)
     return data
 
@@ -96,6 +100,59 @@ def _compute_questionaire(answers):
 
     return abi
 
+def _PrintCronbachsAlpha():
+    list_of_files = glob.glob('../data/questionnaire/*.json')
+    jsonControlLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files if (CONTROL_AGENT in k)]
+    jsonExperimentalLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files if (EXPERIMENTAL_AGENT in k)]
+
+    transformedObjectsListControl = []
+    transformedObjectsListExperimental = []
+
+    for jsonControlList in jsonControlLists:
+        fullObject = {}
+        for d in jsonControlList:
+            fullObject.update(d)
+        transformedObjectsListControl.append(fullObject)
+
+    for jsonExperimentalList in jsonExperimentalLists:
+        fullObject = {}
+        for d in jsonExperimentalList:
+            fullObject.update(d)
+        transformedObjectsListExperimental.append(fullObject)
+
+    pandaFrameControl = pd.DataFrame.from_records(transformedObjectsListControl)
+    pandaFrameControl = pandaFrameControl.apply(pd.to_numeric, args=('coerce',))
+    pandaFrameExperimental = pd.DataFrame.from_records(transformedObjectsListExperimental)
+    pandaFrameExperimental = pandaFrameExperimental.apply(pd.to_numeric, args=('coerce',))
+
+    abilityControl = pandaFrameControl.iloc[:, 5:10]
+    benevolenceControl = pandaFrameControl.iloc[:, 10:15]
+    integrityControl = pandaFrameControl.iloc[:, 15:20]
+
+    abilityExperimental = pandaFrameExperimental.iloc[:, 5:10]
+    benevolenceExperimental = pandaFrameExperimental.iloc[:, 10:15]
+    integrityExperimental = pandaFrameExperimental.iloc[:, 15:20]
+
+    #Calculate cronbach_alpha
+    print("Cronbach's alpha, control group, ability: ")
+    print(pg.cronbach_alpha(data=abilityControl)[0])
+
+    print("Cronbach's alpha, experimental group, ability: ")
+    print(pg.cronbach_alpha(data=abilityExperimental)[0])
+
+    print("Cronbach's alpha, control group, benevolence: ")
+    print(pg.cronbach_alpha(data=benevolenceControl)[0])
+
+    print("Cronbach's alpha, experimental group, benevolence: ")
+    print(pg.cronbach_alpha(data=benevolenceExperimental)[0])
+
+    print("Cronbach's alpha, control group, integrity: ")
+    print(pg.cronbach_alpha(data=integrityControl)[0])
+
+    print("Cronbach's alpha, experimental group, integrity: ")
+    print(pg.cronbach_alpha(data=integrityExperimental)[0])
+
+_PrintCronbachsAlpha()
 
 def _compute(ability, benevolence, integrity):
     return round(ability.compute(), 2), round(benevolence.compute(), 2), round(integrity.compute(), 2)
