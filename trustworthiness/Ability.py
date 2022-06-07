@@ -11,7 +11,6 @@ class Ability:
         self._this_tick = this_tick
         self.verbose = verbose
 
-
     # Returns computed ability
     def compute(self):
 
@@ -21,8 +20,7 @@ class Ability:
         metrics = [self._game_completion(), self._victim_found_ratios(),
                    self._victim_picked_ratios(), self._rooms_visited(), self._normalized_tick()]
         score = np.mean(metrics)
-        return score
-
+        return score, metrics
 
     def _normalized_tick(self):
         maximum = max(self._last_ticks)
