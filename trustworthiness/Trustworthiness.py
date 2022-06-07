@@ -78,7 +78,7 @@ def _actions_to_string(actions):
 
 
 def _compute_questionaire(answers):
-    f = open('./trustworthiness/questionnaire.json')
+    f = open('./questionnaire.json')
     questions = json.load(f)
 
     abi = [0, 0, 0]
@@ -152,8 +152,6 @@ def _PrintCronbachsAlpha():
     print("Cronbach's alpha, experimental group, integrity: ")
     print(pg.cronbach_alpha(data=integrityExperimental)[0])
 
-_PrintCronbachsAlpha()
-
 def _compute(ability, benevolence, integrity):
     return round(ability.compute(), 2), round(benevolence.compute(), 2), round(integrity.compute(), 2)
 
@@ -191,7 +189,7 @@ def _average_ticks_to_respond(list_of_files):
 
 class Trustworthiness:
     def __init__(self):
-        list_of_files = glob.glob('./data/actions/*.pkl')
+        list_of_files = glob.glob('../data/actions/*.pkl')
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
 
         if len(list_of_files) > 0:
@@ -267,3 +265,5 @@ class Trustworthiness:
 
             # print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
             # print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
+
+Trustworthiness()
