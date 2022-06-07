@@ -17,7 +17,7 @@ from scipy import stats
 
 VERBOSE = False
 CONTROL_AGENT = 'control'
-EXPERIMENTAL_AGENT = 'friendly'
+EXPERIMENTAL_AGENT = 'advice'
 
 
 
@@ -399,11 +399,11 @@ class Trustworthiness:
                     experimental_group_integrity.append(integrity_score)
 
             X = ['Ability', 'Benevolence', 'Integrity', 'Trustworthiness']
-            control_bar_values = [numpy.mean(control_group_ability), numpy.mean(control_group_benevolence), numpy.mean(control_group_integrity), numpy.mean(control_group_values)]
-            experimental_bar_values = [numpy.mean(experimental_group_ability), numpy.mean(experimental_group_benevolence),
-                                  numpy.mean(experimental_group_integrity), numpy.mean(experimental_group_values)]
+            control_bar_values = [np.mean(control_group_ability), np.mean(control_group_benevolence), np.mean(control_group_integrity), np.mean(control_group_values)]
+            experimental_bar_values = [np.mean(experimental_group_ability), np.mean(experimental_group_benevolence),
+                                  np.mean(experimental_group_integrity), np.mean(experimental_group_values)]
 
-            X_axis = numpy.arange(len(X))
+            X_axis = np.arange(len(X))
 
             plt.bar(X_axis - 0.2, control_bar_values, 0.4, label='Control Group')
             plt.bar(X_axis + 0.2, experimental_bar_values, 0.4, label='Experimental Group')
@@ -413,6 +413,7 @@ class Trustworthiness:
             plt.legend()
             plt.show()
 
+            ## Plot Questionnaire Graph
             list_of_questionnaires = glob.glob('./data/questionnaire/*.json')
             control_a = []
             control_b = []
