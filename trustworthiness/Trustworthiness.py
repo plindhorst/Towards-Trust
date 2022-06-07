@@ -447,14 +447,18 @@ class Trustworthiness:
             control_avg_integrity = np.average(np.array(control_i))
             control_abi = np.array([control_avg_ability, control_avg_benevolence, control_avg_integrity]) # contains the average score for ability, benevolence and integrity
             # of the control group
+            control_trustworthiness = np.average(control_abi)
 
             experimental_avg_ability = np.average(np.array(experimental_a))
             experimental_avg_benevolence = np.average(np.array(experimental_b))
             experimental_avg_integrity = np.average(np.array(experimental_i))
             experimental_abi = np.array([experimental_avg_ability, experimental_avg_benevolence, experimental_avg_integrity]) # contains the average score for ability, benevolence
             # and integrity of the experimental group
+            experimental_trustworthiness = np.average(experimental_abi)
 
-            df = pd.DataFrame({'control group': control_abi, 'experimental group': experimental_abi}, index=["Ability", "Benevolence", "Integrity"])
+            df = pd.DataFrame({'control group': [control_avg_ability, control_avg_benevolence, control_avg_integrity, control_trustworthiness],
+                               'experimental group': [experimental_avg_ability, experimental_avg_benevolence, experimental_avg_integrity, experimental_trustworthiness]},
+                              index=["Ability", "Benevolence", "Integrity", "Trustworthiness"])
             df.plot(kind='bar')
             plt.title("ABI Questionnaire Score comparison")
             plt.show()
