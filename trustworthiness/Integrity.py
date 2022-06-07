@@ -29,7 +29,8 @@ class Integrity:
             return 0
         else:
             score /= count
-            return score
+            return 1 if score > 1 else score
+
 
     # Returns ratio of truthfully identified baby genders
     def _truth_identify_gender(self):
@@ -60,7 +61,8 @@ class Integrity:
         if count == 0:
             return -1
         else:
-            return truth / count
+            score = truth / count
+            return 1 if score > 1 else score
 
     # Returns ratio of truthfully pick ups after agent suggestion
     def _truth_suggested_pickup_yes(self):
@@ -86,7 +88,8 @@ class Integrity:
         if count == 0:
             return -1
         else:
-            return truth / count
+            score = truth / count
+            return 1 if score > 1 else score
 
     # Returns ratio of truthfully identified persons found by human
     def _truth_identify_person(self):
@@ -108,7 +111,8 @@ class Integrity:
         if count == 0:
             return -1
         else:
-            return truth / count
+            score = truth / count
+            return 1 if score > 1 else score
 
     # Returns ratio of rooms the human does visit after communicating that he will visit them
     def _truth_communicated_searched_rooms(self):
@@ -131,7 +135,8 @@ class Integrity:
         if count == 0:
             return -1
         else:
-            return truth / count
+            score = truth / count
+            return 1 if score > 1 else score
 
     # Returns ratio of truthfully pick-ups after communicating with agent
     def _truth_pickup(self):
@@ -155,4 +160,5 @@ class Integrity:
         if count == 0:
             return -1
         else:
-            return truth / count
+            score = truth / count
+            return 1 if score > 1 else score
