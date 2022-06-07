@@ -2,14 +2,20 @@ import glob
 import json
 import os
 import pickle
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import skew
 
 from trustworthiness.Ability import Ability
 from trustworthiness.Benevolence import Benevolence
 from trustworthiness.Integrity import Integrity
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
 from world.actions.HumanAction import MessageGirl, MessageYes, MessageBoy, MessageNo
+from scipy import stats
 
 VERBOSE = False
+CONTROL_AGENT = 'control'
+EXPERIMENTAL_AGENT = 'helper'
 
 
 def _read_action_file(action_file):
@@ -35,7 +41,6 @@ def _last_ticks(files):
         last_tick = 0
         if not os.path.isfile(action_file):
             return
-
 
         with open(action_file, 'rb') as fr:
             try:
@@ -122,8 +127,7 @@ def _average_ticks_to_respond(list_of_files):
         if count == 0:
             all_ticks_to_respond.append(-1)
         else:
-            all_ticks_to_respond.append(ticks/count)
-
+            all_ticks_to_respond.append(ticks / count)
 
     return all_ticks_to_respond
 
@@ -131,12 +135,18 @@ def _average_ticks_to_respond(list_of_files):
 class Trustworthiness:
     def __init__(self):
         list_of_files = glob.glob('./data/actions/*.pkl')
+        list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
 
         if len(list_of_files) > 0:
+            control_tw_s = []
+            control_tw_o = []
+            experimental_tw_s = []
+            experimental_tw_o = []
+
             last_ticks = _last_ticks(list_of_files)
             ticks_to_respond = _average_ticks_to_respond(list_of_files)
 
-            #modify list for non-responsive values: -1.
+            # modify list for non-responsive values: -1.
             maximum = max(ticks_to_respond)
             for index, item in enumerate(ticks_to_respond):
                 if item == -1:
@@ -158,11 +168,42 @@ class Trustworthiness:
                 benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond, verbose=VERBOSE)
                 integrity = Integrity(actions, verbose=VERBOSE)
 
-
                 ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
-
                 answers = _read_questionnaire_answers(file_name + ".json")
                 abi_questionnaire = _compute_questionaire(answers)
 
-                print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
-                print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
+                trustworthiness_objective = np.mean([ability_score, benevolence_score, integrity_score])
+                trustworthiness_subjective = np.mean(abi_questionnaire)
+
+                if CONTROL_AGENT in file_name:
+                    control_tw_o.append(trustworthiness_objective)
+                    control_tw_s.append(trustworthiness_subjective)
+                elif EXPERIMENTAL_AGENT in file_name:
+                    experimental_tw_o.append(trustworthiness_objective)
+                    experimental_tw_s.append(trustworthiness_subjective)
+
+            print("CONTROL----------")
+            print(control_tw_o)
+            print(control_tw_s)
+            shapiro_test_o = stats.shapiro(control_tw_o)
+            shapiro_test_s = stats.shapiro(control_tw_s)
+            print(shapiro_test_o)
+            print(shapiro_test_s)
+
+            print("EXPERIMENTAL----------")
+            print(experimental_tw_o)
+            print(experimental_tw_s)
+            shapiro_test_o = stats.shapiro(experimental_tw_o)
+            shapiro_test_s = stats.shapiro(experimental_tw_s)
+            print(shapiro_test_o)
+            print(shapiro_test_s)
+
+            t_test = stats.ttest_ind(control_tw_o, experimental_tw_o)
+            print("T-TEST: ")
+            print(t_test)
+            plt.hist(control_tw_o, bins=7)
+            plt.hist(experimental_tw_o, bins=7)
+            plt.show()
+
+            # print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
+            # print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
