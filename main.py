@@ -29,11 +29,20 @@ if __name__ == "__main__":
                         help="Agent type, choose from: control, control-dutch, helper, conflicting, advice, directing,\
                          friendly, friendly-dutch, tutorial, tutorial-dutch",
                         type=str)
-    parser.add_argument("-tw", action='store_true', help="Measure trustworthiness of action files", default=False)
+    parser.add_argument("-tw", action='store',
+                        help="Compare trustworthiness of control and experiment groups. "
+                             "Enter the name of the experimental group, choose from: "
+                             "helper, conflicting, advice, directing,friendly",
+                        default=False)
     args = parser.parse_args()
 
     if args.tw:
-        trustworthiness = Trustworthiness(group="control", graphs=True)
+        group = args.tw
+        if group == "conflicting":
+            alternative = "greater"
+        else:
+            alternative = "less"
+        trustworthiness = Trustworthiness(group=group, graphs=True, alternative=alternative, verbose_lvl=1)
         sys.exit(0)
 
     agent = None
