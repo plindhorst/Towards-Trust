@@ -241,11 +241,25 @@ class Trustworthiness:
             control_speed_tw_o = []
             control_effectiveness_tw_o = []
             control_ability_tw_o = []
+
+
+            control_communication_tw_o = []
+            control_helping_tw_o = []
+            control_agreeableness_tw_o = []
+            control_responsiveness_tw_o = []
             control_benevolence_tw_o = []
+
             control_integrity_tw_o = []
             control_tw_o = []
 
+            experimental_speed_tw_o = []
+            experimental_effectiveness_tw_o = []
             experimental_ability_tw_o = []
+
+            experimental_communication_tw_o = []
+            experimental_helping_tw_o = []
+            experimental_agreeableness_tw_o = []
+            experimental_responsiveness_tw_o = []
             experimental_benevolence_tw_o = []
             experimental_integrity_tw_o = []
             experimental_tw_o = []
@@ -281,6 +295,14 @@ class Trustworthiness:
                 benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond, verbose=VERBOSE)
                 integrity = Integrity(actions, verbose=VERBOSE)
 
+                speed_score = ability.computeSpeedScore()
+                effectiveness_score = ability.computeEffectivenessScore()
+
+                communication_score = benevolence.computeCommunicationScore()
+                helping_score = benevolence.computeHelpingScore()
+                agreeableness_score = benevolence.computeAgreeablenessScore()
+                responsiveness_score = benevolence.computeResponsivenessScore()
+
                 ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
                 answers = _read_questionnaire_answers(file_name + ".json")
                 abi_questionnaire = _compute_questionaire(answers)
@@ -290,7 +312,14 @@ class Trustworthiness:
 
                 if CONTROL_AGENT in file_name:
 
+                    control_speed_tw_o.append(speed_score)
+                    control_effectiveness_tw_o.append(effectiveness_score)
                     control_ability_tw_o.append(ability_score)
+
+                    control_communication_tw_o.append(communication_score)
+                    control_helping_tw_o.append(helping_score)
+                    control_agreeableness_tw_o.append(agreeableness_score)
+                    control_responsiveness_tw_o.append(responsiveness_score)
                     control_benevolence_tw_o.append(benevolence_score)
                     control_integrity_tw_o.append(integrity_score)
                     control_tw_o.append(trustworthiness_objective)
@@ -301,9 +330,18 @@ class Trustworthiness:
                     control_tw_s.append(trustworthiness_subjective)
 
                 elif EXPERIMENTAL_AGENT in file_name:
+
+                    experimental_speed_tw_o.append(speed_score)
+                    experimental_effectiveness_tw_o.append(effectiveness_score)
                     experimental_ability_tw_o.append(ability_score)
+
+                    experimental_communication_tw_o.append(communication_score)
+                    experimental_helping_tw_o.append(helping_score)
+                    experimental_agreeableness_tw_o.append(agreeableness_score)
+                    experimental_responsiveness_tw_o.append(responsiveness_score)
                     experimental_benevolence_tw_o.append(benevolence_score)
                     experimental_integrity_tw_o.append(integrity_score)
+
                     experimental_tw_o.append(trustworthiness_objective)
 
                     experimental_ability_tw_s.append(abi_questionnaire[0])
@@ -311,8 +349,17 @@ class Trustworthiness:
                     experimental_integrity_tw_s.append(abi_questionnaire[2])
                     experimental_tw_s.append(trustworthiness_subjective)
 
+
+            shapiro_control_speed_o = stats.shapiro(control_speed_tw_o).pvalue
+            shapiro_control_effectiveness_o = stats.shapiro(control_effectiveness_tw_o).pvalue
             shapiro_control_ability_o = stats.shapiro(control_ability_tw_o).pvalue
+
+            shapiro_control_communication_o = stats.shapiro(control_communication_tw_o).pvalue
+            shapiro_control_helping_o = stats.shapiro(control_helping_tw_o).pvalue
+            shapiro_control_agreeableness_o = stats.shapiro(control_agreeableness_tw_o).pvalue
+            shapiro_control_responsiveness_o = stats.shapiro(control_responsiveness_tw_o).pvalue
             shapiro_control_benevolence_o = stats.shapiro(control_benevolence_tw_o).pvalue
+
             shapiro_control_integrity_o = stats.shapiro(control_integrity_tw_o).pvalue
             shapiro_control_o = stats.shapiro(control_tw_o).pvalue
 
@@ -321,7 +368,14 @@ class Trustworthiness:
             shapiro_control_integrity_s = stats.shapiro(control_integrity_tw_s).pvalue
             shapiro_control_s = stats.shapiro(control_tw_s).pvalue
 
+            shapiro_experimental_speed_o = stats.shapiro(experimental_speed_tw_o).pvalue
+            shapiro_experimental_effectiveness_o = stats.shapiro(experimental_effectiveness_tw_o).pvalue
             shapiro_experimental_ability_o = stats.shapiro(experimental_ability_tw_o).pvalue
+
+            shapiro_experimental_communication_o = stats.shapiro(experimental_communication_tw_o).pvalue
+            shapiro_experimental_helping_o = stats.shapiro(experimental_helping_tw_o).pvalue
+            shapiro_experimental_agreeableness_o = stats.shapiro(experimental_agreeableness_tw_o).pvalue
+            shapiro_experimental_responsiveness_o = stats.shapiro(experimental_responsiveness_tw_o).pvalue
             shapiro_experimental_benevolence_o = stats.shapiro(experimental_benevolence_tw_o).pvalue
             shapiro_experimental_integrity_o = stats.shapiro(experimental_integrity_tw_o).pvalue
             shapiro_experimental_o = stats.shapiro(experimental_tw_o).pvalue
@@ -335,10 +389,25 @@ class Trustworthiness:
             _PrintCronbachsAlpha()
 
             print("\n Shapiro-Wilk test:")
+
+            print("\n control group - objective - speed - ability:")
+            _printShapiroResult(shapiro_control_speed_o)
+            print("\n control group - objective - effectiveness - ability:")
+            _printShapiroResult(shapiro_control_effectiveness_o)
             print("\n control group - objective - ability:")
             _printShapiroResult(shapiro_control_ability_o)
+
+            print("\n control group - objective - communication - benevolence:")
+            _printShapiroResult(shapiro_control_communication_o)
+            print("\n control group - objective - helping - benevolence:")
+            _printShapiroResult(shapiro_control_helping_o)
+            print("\n control group - objective - agreeableness - benevolence:")
+            _printShapiroResult(shapiro_control_agreeableness_o)
+            print("\n control group - objective - responsiveness - benevolence:")
+            _printShapiroResult(shapiro_control_responsiveness_o)
             print("\n control group - objective - benevolence:")
             _printShapiroResult(shapiro_control_benevolence_o)
+
             print("\n control group - objective - integrity:")
             _printShapiroResult(shapiro_control_integrity_o)
             print("\n control group - objective - trustworthiness")
@@ -353,8 +422,24 @@ class Trustworthiness:
             print("\n control group - subjective - trustworthiness")
             _printShapiroResult(shapiro_control_s)
 
+
+
+            print("\n experimental group - objective - speed - ability:")
+            _printShapiroResult(shapiro_experimental_speed_o)
+            print("\n experimental group - objective - effectiveness - ability:")
+            _printShapiroResult(shapiro_experimental_effectiveness_o)
             print("\n experimental group - objective - ability:")
             _printShapiroResult(shapiro_experimental_ability_o)
+
+
+            print("\n experimental group - objective - communication - benevolence:")
+            _printShapiroResult(shapiro_experimental_communication_o)
+            print("\n experimental group - objective - helping - benevolence:")
+            _printShapiroResult(shapiro_experimental_helping_o)
+            print("\n experimental group - objective - agreeableness - benevolence:")
+            _printShapiroResult(shapiro_experimental_agreeableness_o)
+            print("\n experimental group - objective - responsiveness - benevolence:")
+            _printShapiroResult(shapiro_experimental_responsiveness_o)
             print("\n experimental group - objective - benevolence:")
             _printShapiroResult(shapiro_experimental_benevolence_o)
             print("\n experimental group - objective - integrity:")

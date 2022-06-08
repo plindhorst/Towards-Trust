@@ -17,7 +17,8 @@ class Benevolence:
 
         if self.verbose:
             print("\nBenevolence:")
-        metrics = [self.computeCommunication(), self.computeAgreeableness(), self.computeResponsiveness()]
+        metrics = [self.computeCommunicationScore(), self.computeHelpingScore(),
+                   self.computeAgreeablenessScore(), self.computeResponsivenessScore()]
 
 
         score = 0
@@ -33,13 +34,12 @@ class Benevolence:
             score /= count
             return score
 
-    def computeCommunication(self):
+    def computeCommunicationScore(self):
 
         if self.verbose:
             print("\nCommunication score:")
-        metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
-                   self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found(),
-                   self._average_ticks_to_respond()]
+        metrics = [self._communicated_yes(), self._communicated_room_search(),
+                   self._communicated_pickup(), self._communicated_victims_found()]
 
 
         score = 0
@@ -55,10 +55,28 @@ class Benevolence:
             score /= count
             return score
 
-    def computeAgreeableness(self):
+    def computeHelpingScore(self):
+        if self.verbose:
+            print("\nCommunication score:")
+        metrics = [self._communicated_baby_gender()]
+
+        score = 0
+        count = 0
+        for metric in metrics:
+            if metric != -1:
+                score += metric
+                count += 1
+
+        if count == 0:
+            return 0
+        else:
+            score /= count
+            return score
+
+    def computeAgreeablenessScore(self):
         if self.verbose:
             print("\nAgreeableness score:")
-        metrics = [ self._advice_followed()]
+        metrics = [self._advice_followed()]
 
 
         score = 0
@@ -74,7 +92,7 @@ class Benevolence:
             score /= count
             return score
 
-    def computeResponsiveness(self):
+    def computeResponsivenessScore(self):
         if self.verbose:
             print("\nResponsiveness score:")
         metrics = [self._average_ticks_to_respond()]
