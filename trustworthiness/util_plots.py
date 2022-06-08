@@ -1,7 +1,57 @@
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import pyplot as plt
+import scipy.stats as stats
+
+
+def plot_distr(group, scores):
+    result_folder = os.getcwd().replace("\\", "/") + "/results/"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    colors = ['r', 'b', 'y', 'g']
+    for i, concept in enumerate(["Ability", "Benevolence", "Integrity", "Trustworthiness"]):
+        concept_score = []
+        if concept == "Trustworthiness":
+            for score in scores:
+                concept_score.append(np.mean(score))
+        else:
+            for score in scores:
+                concept_score.append(score[i])
+
+        fig = plt.gcf()
+        plt.rc("font", **{"size": 22})
+        plt.subplot(1, 3, 1)
+        plt.hist(concept_score, bins=10, facecolor=colors[i], edgecolor='black', linewidth=0.5)
+        plt.xticks([0, 1])
+        plt.xlabel("Value bins")
+        plt.ylabel("Frequency")
+        plt.title("Histogram for " + concept)
+        plt.subplot(1, 3, 2)
+        plt.boxplot(concept_score, notch=False, patch_artist=True,
+                    boxprops=dict(facecolor=colors[i], color=colors[i]),
+                    capprops=dict(color=colors[i]),
+                    whiskerprops=dict(color=colors[i]),
+                    flierprops=dict(color=colors[i], markeredgecolor=colors[i]),
+                    medianprops=dict(color=colors[i]),
+                    )
+        plt.xlabel("")
+        plt.ylabel("Values")
+        plt.yticks([0, 1])
+        plt.title("Boxplot of " + concept)
+        ax1 = plt.subplot(1, 3, 3)
+        stats.probplot(concept_score, dist="norm", plot=plt)
+        ax1.get_lines()[0].set_markerfacecolor(colors[i])
+        ax1.get_lines()[0].set_markeredgecolor('black')
+        ax1.get_lines()[1].set_color('black')
+        ax1.get_lines()[0].set_markersize(12.0)
+        plt.yticks([0, 1])
+        plt.title("Normal Q-Q Plot")
+        fig.tight_layout()
+        fig.set_size_inches(20, 10)
+        plt.savefig(result_folder + group + "_" + concept + "_distr.png", bbox_inches="tight")
+        plt.close(fig)
 
 
 def plot_metrics(metrics):

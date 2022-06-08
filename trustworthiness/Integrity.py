@@ -1,3 +1,5 @@
+import numpy as np
+
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
 from world.actions.HumanAction import MessageGirl, MessageBoy, MessageYes, PickUp, MessageFound, MessageSearch, \
     EnterRoom, \
@@ -6,30 +8,19 @@ from world.actions.util import get_persons_in_room
 
 
 class Integrity:
-    def __init__(self, actions, verbose):
+    def __init__(self, actions, verbose_lvl=0):
         self._actions = actions
-        self.verbose = verbose
+        self.verbose_lvl = verbose_lvl
 
     # Returns computed integrity
     def compute(self):
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("\nIntegrity:")
         metrics = [self._truth_identify_gender(), self._truth_suggested_pickup_yes(), self._truth_identify_person(),
                    self._truth_communicated_searched_rooms(), self._truth_pickup()]
-
-        score = 0
-        count = 0
-        for metric in metrics:
-            if metric != -1:
-                score += metric
-                count += 1
-
-        if count == 0:
-            return 0
-        else:
-            score /= count
-            return score, metrics
+        score = np.mean(metrics)
+        return score, metrics
 
     # Returns ratio of truthfully identified baby genders
     def _truth_identify_gender(self):
@@ -54,11 +45,11 @@ class Integrity:
                                     truth += 1
                                     break
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Truthfully identified asked gender: ", truth, "/", count)
 
         if count == 0:
-            return -1
+            return 0.5
         else:
             return truth / count
 
@@ -80,11 +71,11 @@ class Integrity:
                                         if action.person == other_action_2.person:
                                             truth += 1
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Truthfully completed suggested pickup: ", truth, "/", count)
 
         if count == 0:
-            return -1
+            return 0.5
         else:
             return truth / count
 
@@ -102,11 +93,11 @@ class Integrity:
                         truth += 1
                         break
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Truthfully identified person: ", truth, "/", count)
 
         if count == 0:
-            return -1
+            return 0.5
         else:
             return truth / count
 
@@ -125,11 +116,11 @@ class Integrity:
                                 truth += 1
                             break
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Truthfully communicated room search: ", truth, "/", count)
 
         if count == 0:
-            return -1
+            return 0.5
         else:
             return truth / count
 
@@ -149,10 +140,10 @@ class Integrity:
                                 truth += 1
                             break
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Truthfully communicated pick-up: ", truth, "/", count)
 
         if count == 0:
-            return -1
+            return 0.5
         else:
             return truth / count

@@ -3,14 +3,15 @@ import json
 import os
 import pickle
 
+import numpy as np
+
 from trustworthiness.Ability import Ability
 from trustworthiness.Benevolence import Benevolence
 from trustworthiness.Integrity import Integrity
-from trustworthiness.util_plots import plot_metrics
+from trustworthiness.util_plots import plot_metrics, plot_distr
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
 from world.actions.HumanAction import MessageGirl, MessageYes, MessageBoy, MessageNo
-
-VERBOSE = False
+from scipy.stats import shapiro
 
 
 def _read_action_file(action_file):
@@ -123,8 +124,16 @@ def _average_ticks_to_respond(list_of_files):
     return all_ticks_to_respond
 
 
+def is_normal_distr(scores, alpha=0.05):
+    statistic, p = shapiro(scores)
+
+    normal = p > alpha
+
+    return normal, p
+
+
 class Trustworthiness:
-    def __init__(self, group="control", graphs=False):
+    def __init__(self, group="control", graphs=False, verbose_lvl=0):
         list_of_files = glob.glob('./data/actions/' + group + '_*.pkl')
 
         if len(list_of_files) > 0:
@@ -138,32 +147,60 @@ class Trustworthiness:
                     ticks_to_respond[index] = maximum * 2
 
             metrics = []
+            scores = []
             for action_file in list_of_files:
                 this_tick = _last_ticks([action_file])
                 this_tick_to_respond = _average_ticks_to_respond([action_file])
                 action_file = action_file.replace("\\", "/")
                 file_name = action_file.split("/")[-1].replace(".pkl", "")
 
-                print("### ", file_name)
+                if verbose_lvl >= 1:
+                    print("### ", file_name)
 
                 actions = _read_action_file(action_file)
 
-                # _actions_to_string(actions)
-
-                ability = Ability(actions, last_ticks, this_tick, verbose=VERBOSE)
-                benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond, verbose=VERBOSE)
-                integrity = Integrity(actions, verbose=VERBOSE)
+                ability = Ability(actions, last_ticks, this_tick, verbose_lvl=verbose_lvl)
+                benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond, verbose_lvl=verbose_lvl)
+                integrity = Integrity(actions, verbose_lvl=verbose_lvl)
 
                 ability_score, ability_metrics = ability.compute()
                 benevolence_score, benevolence_metrics = benevolence.compute()
                 integrity_score, integrity_metrics = integrity.compute()
 
                 metrics.append([ability_metrics, benevolence_metrics, integrity_metrics])
+                scores.append([ability_score, benevolence_score, integrity_score])
 
                 answers = _read_questionnaire_answers(file_name + ".json")
                 abi_questionnaire = _compute_questionaire(answers)
 
-                print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
-                print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
+                if verbose_lvl >= 1:
+                    print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
+                    print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
 
-            plot_metrics(metrics)
+            for i, concept in enumerate(["Ability", "Benevolence", "Integrity"]):
+
+                concept_score = []
+                for score in scores:
+                    concept_score.append(score[i])
+
+                normal, p = is_normal_distr(concept_score)
+
+                if normal:
+                    print(group, "(" + concept + ")", "is normally distributed, with p =", str(p))
+                else:
+                    print(group, "(" + concept + ")", "is not normally distributed, with p =", str(p))
+
+            tw = []
+            for score in scores:
+                tw.append(np.mean(score))
+
+            normal, p = is_normal_distr(tw)
+
+            if normal:
+                print(group, "(Trustworthiness)", "is normally distributed, with p =", str(p))
+            else:
+                print(group, "(Trustworthiness)", "is not normally distributed, with p =", str(p))
+
+            if graphs:
+                plot_metrics(metrics)
+                plot_distr(group, scores)

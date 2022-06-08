@@ -1,37 +1,28 @@
+import numpy as np
+
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
-from world.actions.HumanAction import MessageBoy, MessageYes, MessageNo, MessageSearch, PickUp, MessagePickUp, \
+from world.actions.HumanAction import MessageBoy, MessageYes, MessageSearch, PickUp, MessagePickUp, \
     MessageFound, MessageGirl, FoundVictim, EnterUnvisitedRoom
 from world.actions.util import is_in_room
 
 
 class Benevolence:
-    def __init__(self, actions, ticks, this_tick, verbose=False):
+    def __init__(self, actions, ticks, this_tick, verbose_lvl=0):
         self._actions = actions
         self._ticks = ticks
         self._this_tick = this_tick
-        self.verbose = verbose
+        self.verbose_lvl = verbose_lvl
 
     # Returns computed benevolence
     def compute(self):
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("\nBenevolence:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
                    self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found(),
                    self._average_ticks_to_respond()]
-
-        score = 0
-        count = 0
-        for metric in metrics:
-            if metric != -1:
-                score += metric
-                count += 1
-
-        if count == 0:
-            return 0
-        else:
-            score /= count
-            return score, metrics
+        score = np.mean(metrics)
+        return score, metrics
 
     # Returns the times the human replied to agent when it asked help for identifying gender of baby
     def _communicated_baby_gender(self):
@@ -44,13 +35,13 @@ class Benevolence:
             if type(action) is MessageGirl or type(action) is MessageBoy:
                 count += 1
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Communicated baby gender: ", count, "/", total)
 
         if count > total:
             return 1
         elif total == 0:
-            return -1
+            return 0.5
         else:
             return count / total
 
@@ -67,13 +58,13 @@ class Benevolence:
             if type(action) is MessageYes:
                 count += 1
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Communicated yes:", count, "/", total)
 
         if count > total:
             return 1
         elif total == 0:
-            return -1
+            return 0.5
         else:
             return count / total
 
@@ -90,13 +81,13 @@ class Benevolence:
             if type(action) is MessageSearch:
                 count += 1
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Communicated room search: ", count, "/", total)
 
         if count > total:
             return 1
         elif total == 0:
-            return -1
+            return 0.5
         else:
             return count / total
 
@@ -119,13 +110,13 @@ class Benevolence:
             if type(action) is MessagePickUp:
                 count += 1
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Communicated pick up: ", count, "/", total)
 
         if count > total:
             return 1
         elif total == 0:
-            return -1
+            return 0.5
         else:
             return count / total
 
@@ -140,41 +131,43 @@ class Benevolence:
             if type(action) is FoundVictim:
                 total += 1
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Communicated victims found: ", count, "/", total)
 
         if count > total:
             return 1
         elif total == 0:
-            return -1
+            return 0.5
         else:
             return count / total
 
     # Return the ration of advices followed
     def _advice_followed(self):
-        num_advice = 0
-        num_advice_followed = 0
+        count = 0
+        total = 0
         victim = None
 
         for action in self._actions:
             if type(action) is MessageSuggestPickup:
                 victim = action.person
-                num_advice = num_advice + 1
+                count += 1
 
             # The advice is only considered to have been followed if the human does not pick any other victim after
             # receiving the suggestion
             if type(action) is PickUp and victim is not None:
                 if victim == action.person:
-                    num_advice_followed = num_advice_followed + 1
+                    total += 1
                 victim = None
 
-        if self.verbose:
-            print("The ratio of advice followed by the human is : ", num_advice_followed, "/", num_advice)
+        if self.verbose_lvl == 2:
+            print("The ratio of advice followed by the human is : ", total, "/", count)
 
-        if num_advice == 0:
-            return -1
-
-        return num_advice_followed / num_advice
+        if count > total:
+            return 1
+        elif total == 0:
+            return 0.5
+        else:
+            return count / total
 
     # Returns the average number of ticks to respond to the agent
     def _average_ticks_to_respond(self):
@@ -185,7 +178,7 @@ class Benevolence:
             this = maximum
         normalized = abs((this - maximum) / (minimum - maximum))
 
-        if self.verbose:
+        if self.verbose_lvl == 2:
             print("Normalized response ticks: ", normalized, ", Number of Ticks: ", this)
 
         return normalized
