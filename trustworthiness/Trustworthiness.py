@@ -19,7 +19,7 @@ from scipy import stats
 
 VERBOSE = False
 CONTROL_AGENT = 'control'
-EXPERIMENTAL_AGENT = 'helper'
+EXPERIMENTAL_AGENT = 'friendly'
 
 
 def _read_action_file(action_file):
@@ -556,8 +556,72 @@ class Trustworthiness:
             print("\n cronbachs alpha:")
             _PrintCronbachsAlpha()
 
-            print("\n Shapiro-Wilk test:")
+            print("\n results")
+            print("\n control group - objective - speed - ability:")
+            print(np.mean(control_speed_tw_o))
+            print("\n control group - objective - effectiveness - ability:")
+            print(round(np.mean(control_effectiveness_tw_o), 2))
+            print("\n control group - objective - ability:")
+            print(round(np.mean(control_ability_tw_o), 2))
 
+            print("\n control group - objective - communication - benevolence:")
+            print(round(np.mean(control_communication_tw_o), 2))
+            print("\n control group - objective - helping - benevolence:")
+            print(round(np.mean(control_helping_tw_o), 2))
+            print("\n control group - objective - agreeableness - benevolence:")
+            print(round(np.mean(control_agreeableness_tw_o), 2))
+            print("\n control group - objective - responsiveness - benevolence:")
+            print(round(np.mean(control_responsiveness_tw_o), 2))
+            print("\n control group - objective - benevolence:")
+            print(round(np.mean(control_benevolence_tw_o), 2))
+
+            print("\n control group - objective - integrity:")
+            print(round(np.mean(control_integrity_tw_o), 2))
+            print("\n control group - objective - trustworthiness")
+            print(round(np.mean(control_tw_o), 2))
+
+            print("\n control group - subjective - ability:")
+            print(round(np.mean(control_ability_tw_s), 2))
+            print("\n control group - subjective - benevolence:")
+            print(round(np.mean(control_benevolence_tw_s), 2))
+            print("\n control group - subjective - integrity:")
+            print(round(np.mean(control_integrity_tw_s), 2))
+            print("\n control group - subjective - trustworthiness")
+            print(round(np.mean(control_tw_s), 2))
+
+            print("\n experimental group - objective - speed - ability:")
+            print(np.mean(experimental_speed_tw_o))
+            print("\n experimental group - objective - effectiveness - ability:")
+            print(round(np.mean(experimental_effectiveness_tw_o), 2))
+            print("\n experimental group - objective - ability:")
+            print(round(np.mean(experimental_ability_tw_o), 2))
+
+            print("\n experimental group - objective - communication - benevolence:")
+            print(round(np.mean(experimental_communication_tw_o), 2))
+            print("\n experimental group - objective - helping - benevolence:")
+            print(round(np.mean(experimental_helping_tw_o), 2))
+            print("\n experimental group - objective - agreeableness - benevolence:")
+            print(round(np.mean(experimental_agreeableness_tw_o), 2))
+            print("\n experimental group - objective - responsiveness - benevolence:")
+            print(round(np.mean(experimental_responsiveness_tw_o), 2))
+            print("\n experimental group - objective - benevolence:")
+            print(round(np.mean(experimental_benevolence_tw_o), 2))
+
+            print("\n experimental group - objective - integrity:")
+            print(round(np.mean(experimental_integrity_tw_o), 2))
+            print("\n experimental group - objective - trustworthiness")
+            print(round(np.mean(experimental_tw_o), 2))
+
+            print("\n experimental group - subjective - ability:")
+            print(round(np.mean(experimental_ability_tw_s), 2))
+            print("\n experimental group - subjective - benevolence:")
+            print(round(np.mean(experimental_benevolence_tw_s), 2))
+            print("\n experimental group - subjective - integrity:")
+            print(round(np.mean(experimental_integrity_tw_s), 2))
+            print("\n experimental group - subjective - trustworthiness")
+            print(round(np.mean(experimental_tw_s), 2))
+
+            print("\n Shapiro-Wilk test:")
             print("\n control group - objective - speed - ability:")
             _printShapiroResult(shapiro_control_speed_o)
             print("\n control group - objective - effectiveness - ability:")
