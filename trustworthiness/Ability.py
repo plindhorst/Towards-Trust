@@ -23,6 +23,18 @@ class Ability:
         score = np.mean(metrics)
         return score
 
+    def computeSpeedScore(self):
+        if self.verbose:
+            print("\nSpeed score:")
+
+            return self._normalized_tick()
+
+    def computeEffectivenessScore(self):
+        if self.verbose:
+            print("\nEffectiveness score: ")
+
+            return np.mean([self._game_completion(), self._victim_found_ratios(),
+                            self._victim_picked_ratios(), self._rooms_visited()])
 
     def _normalized_tick(self):
         maximum = max(self._last_ticks)
