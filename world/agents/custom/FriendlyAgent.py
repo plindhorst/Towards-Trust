@@ -74,6 +74,7 @@ class FriendlyAgent(BW4TBrain):
         self._introBool4 = False
         self._introBool5 = False
         self._positivenessGiven = []
+        self._ticksForMessages = 0
 
     def initialize(self):
         self._state_tracker = StateTracker(agent_id=self.agent_id)
@@ -85,6 +86,7 @@ class FriendlyAgent(BW4TBrain):
         return state
 
     def decide_on_bw4t_action(self, state: State):
+        self._ticksForMessages += 1
         if self._human_consent == "No":
             exit()
 
@@ -114,10 +116,10 @@ class FriendlyAgent(BW4TBrain):
                 so we were excited to take a little break together.', 'RescueBot')
 
                 if not self._introBool1:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool1 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage('However, this morning I was setting up our tent, when all of the sudden my sister \
                     called me. She sounded exhausted and terrified. She told me that she and the baby fell ill and could \
                     no longer move around. A couple of minutes later, an alarm was raised by the camp site. \
@@ -128,10 +130,10 @@ class FriendlyAgent(BW4TBrain):
                     return None, {}
 
                 if not self._introBool2:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool2 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage('But first things first, I would like to get to know you! \
                     I have a couple of questions. Could you tell me your name? You can type it in and press enter. ',
                                       'RescueBot')
@@ -148,7 +150,7 @@ class FriendlyAgent(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Ahaa hi " + self._human_name + "! I’m glad you stopped by! Are you a man or a woman? \
                      I can never really tell from the name haha. You can select the button ‘Boy’ or ‘Girl‘.", 'RescueBot')
                 else:
@@ -164,7 +166,7 @@ class FriendlyAgent(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     if self._human_gender == "Boy":
                         self._sendMessage('Well hello sir! How old are you? You can type in a number and \
                         press enter.', 'RescueBot')
@@ -184,7 +186,7 @@ class FriendlyAgent(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Oh wow you must have so much life experience. I myself will turn two years old on \
                      the 18th of December. Where are you from? You can type in the country name \
                      and press enter.", 'RescueBot')
@@ -201,7 +203,7 @@ class FriendlyAgent(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     if self._human_gender == "Boy":
                         self._sendMessage("No way! You remind me a lot of my human. His name is Paul, he is "
                                           + str(self._human_age + 2) + " years old and also lives in " +
@@ -216,10 +218,10 @@ class FriendlyAgent(BW4TBrain):
                     return None, {}
 
                 if not self._introBool3:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool3 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Okay let’s get back to the problem we have here. \
                     I need to rescue my family, but I cannot do it alone. Could you please help me? You \
                                       can press the button 'Yes' or 'No'.", 'RescueBot')
@@ -236,7 +238,7 @@ class FriendlyAgent(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     if self._human_consent == "No":
                         self._sendMessage("Ohh that's too bad. But no problem, I will try to save them by myself. Thank you"
                                           "for stopping by!", 'RescueBot')
@@ -244,7 +246,7 @@ class FriendlyAgent(BW4TBrain):
                 else:
                     return None, {}
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage("Okay! I would like to emphasize that in practice, you could save my family\
                      all by yourself. You could lie to me, be lazy or do whatever you want. However, our aim is to save\
                       my family as quickly as possible and with as few moves as possible. Since we can talk to each other,\
@@ -253,10 +255,10 @@ class FriendlyAgent(BW4TBrain):
                     return None, {}
 
                 if not self._introBool4:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool4 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self.confidenceString = "By the way, I just did some calculations. It turns out that "
 
                     if self._human_gender == 'Boy':
@@ -273,13 +275,13 @@ class FriendlyAgent(BW4TBrain):
                     return None, {}
 
                 if not self._introBool5:
-                    self._currentWaitingPoint = state['World']['nr_ticks'] + self._messageWaitingTime
+                    self._currentWaitingPoint = self._ticksForMessages + self._messageWaitingTime
                     self._introBool5 = True
 
-                if state['World']['nr_ticks'] > self._currentWaitingPoint:
+                if self._ticksForMessages > self._currentWaitingPoint:
                     self._sendMessage('Okay, let’s begin. We have to rescue the 8 victims in order from left to right \
-                     (critically injured girl, critically injured elderly woman, critically injured man, critically injured \
-                      dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat),\
+                     (critically injured girl, critically injured elderly woman, critically injured man, critically injured dog \
+                     , mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat),\
                        so it is important to only drop a victim when the previous one already has been dropped. \
                     We have 10 minutes to successfully collect all 8 victims in the correct order. If you understood \
                     everything I just told you, please press the "Ready!" button. We will then start our mission!',

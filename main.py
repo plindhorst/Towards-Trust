@@ -30,6 +30,8 @@ if __name__ == "__main__":
                          friendly, friendly-dutch, tutorial, tutorial-dutch",
                         type=str)
     parser.add_argument("-tw", action='store_true', help="Measure trustworthiness of action files", default=False)
+    parser.add_argument("-qg", action='store_true', help="Plots abi score of questionnaires", default=False)
+
     args = parser.parse_args()
 
     if args.tw:
