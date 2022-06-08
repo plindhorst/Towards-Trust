@@ -401,13 +401,72 @@ class Trustworthiness:
             print("\n\tsubjective - trustworthiness - ", end="")
             _printSignificanceTest(shapiro_control_s, shapiro_experimental_s, control_tw_s, experimental_tw_s)
 
-
+            #Trusworthiness Histogram control vs. experiment, objective.
             plt.hist([control_tw_o, experimental_tw_o], bins=7, label=['control group', 'experimental group'])
-            plt.title("Trustworthiness Histogram")
+            plt.title("Trustworthiness Histogram (Objective)")
             plt.legend()
-            plt.xlabel('Objectively measured trustworthiness')
+            plt.xlabel('Trustworthiness Score')
             plt.ylabel('Frequency')
             plt.show()
+
+            #Ability Histogram control vs. experiment, objective.
+            plt.hist([control_ability_tw_o, experimental_ability_tw_o], bins=7, label=['control group', 'experimental group'])
+            plt.title("Ability Histogram (Objective)")
+            plt.legend()
+            plt.xlabel('Ability Score')
+            plt.ylabel('Frequency')
+            plt.show()
+
+            #Benevolence Histogram control vs. experiment, objective.
+            plt.hist([control_benevolence_tw_o, experimental_benevolence_tw_o], bins=7, label=['control group', 'experimental group'])
+            plt.title("Benevolence Histogram (Objective)")
+            plt.legend()
+            plt.xlabel('Benevolence Score')
+            plt.ylabel('Frequency')
+            plt.show()
+
+            #Integrity Histogram control vs. experiment, objective.
+            plt.hist([control_integrity_tw_o, experimental_integrity_tw_o], bins=7, label=['control group', 'experimental group'])
+            plt.title("Integrity Histogram (Objective)")
+            plt.legend()
+            plt.xlabel('Integrity Score')
+            plt.ylabel('Frequency')
+            plt.show()
+
+            #Trusworthiness Histogram control vs. experiment, subjective.
+            plt.hist([control_tw_s, experimental_tw_s], bins=7, label=['control group', 'experimental group'])
+            plt.title("Trustworthiness Histogram")
+            plt.legend()
+            plt.xlabel('Subjectively measured trustworthiness')
+            plt.ylabel('Frequency')
+            plt.show()
+
+            #Ability Histogram control vs. experiment, subjective.
+            plt.hist([control_ability_tw_s, experimental_ability_tw_s], bins=7, label=['control group', 'experimental group'])
+            plt.title("Ability Histogram (Subjective)")
+            plt.legend()
+            plt.xlabel('Ability Score')
+            plt.ylabel('Frequency')
+            plt.show()
+
+            #Benevolence Histogram control vs. experiment, subjective.
+            plt.hist([control_benevolence_tw_s, experimental_benevolence_tw_s], bins=7, label=['control group', 'experimental group'])
+            plt.title("Benevolence Histogram (Subjective)")
+            plt.legend()
+            plt.xlabel('Benevolence Score')
+            plt.ylabel('Frequency')
+            plt.show()
+
+            #Integrity Histogram control vs. experiment, subjective.
+            plt.hist([control_integrity_tw_s, experimental_integrity_tw_s], bins=7, label=['control group', 'experimental group'])
+            plt.title("Integrity Histogram (Subjective)")
+            plt.legend()
+            plt.xlabel('Integrity Score')
+            plt.ylabel('Frequency')
+            plt.show()
+
+
+
 
             # print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
             # print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
