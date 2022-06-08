@@ -237,6 +237,9 @@ class Trustworthiness:
             control_integrity_tw_s = []
             control_tw_s = []
 
+
+            control_speed_tw_o = []
+            control_effectiveness_tw_o = []
             control_ability_tw_o = []
             control_benevolence_tw_o = []
             control_integrity_tw_o = []

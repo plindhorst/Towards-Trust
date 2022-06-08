@@ -18,8 +18,7 @@ class Ability:
         if self.verbose:
             print("\nAbility:")
 
-        metrics = [self._game_completion(), self._victim_found_ratios(),
-                   self._victim_picked_ratios(), self._rooms_visited(), self._normalized_tick()]
+        metrics = [self.computeSpeedScore(), self.computeEffectivenessScore()]
         score = np.mean(metrics)
         return score
 

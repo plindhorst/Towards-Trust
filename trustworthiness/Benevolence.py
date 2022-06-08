@@ -17,6 +17,26 @@ class Benevolence:
 
         if self.verbose:
             print("\nBenevolence:")
+        metrics = [self.computeCommunication(), self.computeAgreeableness(), self.computeResponsiveness()]
+
+
+        score = 0
+        count = 0
+        for metric in metrics:
+            if metric != -1:
+                score += metric
+                count += 1
+
+        if count == 0:
+            return 0
+        else:
+            score /= count
+            return score
+
+    def computeCommunication(self):
+
+        if self.verbose:
+            print("\nCommunication score:")
         metrics = [self._communicated_baby_gender(), self._communicated_yes(), self._communicated_room_search(),
                    self._communicated_pickup(), self._advice_followed(), self._communicated_victims_found(),
                    self._average_ticks_to_respond()]
@@ -34,6 +54,44 @@ class Benevolence:
         else:
             score /= count
             return score
+
+    def computeAgreeableness(self):
+        if self.verbose:
+            print("\nAgreeableness score:")
+        metrics = [ self._advice_followed()]
+
+
+        score = 0
+        count = 0
+        for metric in metrics:
+            if metric != -1:
+                score += metric
+                count += 1
+
+        if count == 0:
+            return 0
+        else:
+            score /= count
+            return score
+
+    def computeResponsiveness(self):
+        if self.verbose:
+            print("\nResponsiveness score:")
+        metrics = [self._average_ticks_to_respond()]
+
+        score = 0
+        count = 0
+        for metric in metrics:
+            if metric != -1:
+                score += metric
+                count += 1
+
+        if count == 0:
+            return 0
+        else:
+            score /= count
+            return score
+
 
     # Returns the times the human replied to agent when it asked help for identifying gender of baby
     def _communicated_baby_gender(self):
