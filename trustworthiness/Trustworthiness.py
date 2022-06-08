@@ -96,7 +96,7 @@ def _compute_questionaire(answers):
                         continue
         abi[i] /= counts[i]
 
-    abi = [round(x / 6, 2) for x in abi]
+    abi = [round(x / 5, 2) for x in abi]
 
     return abi
 
