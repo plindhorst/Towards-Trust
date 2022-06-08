@@ -457,8 +457,28 @@ class Trustworthiness:
             _printShapiroResult(shapiro_experimental_s)
 
             print("\nsignificance test: ")
+
+            print("\n\tobjective - speed - ", end="")
+            _printSignificanceTest(shapiro_control_speed_o, shapiro_experimental_speed_o, control_speed_tw_o, experimental_speed_tw_o)
+
+            print("\n\tobjective - effectiveness - ", end="")
+            _printSignificanceTest(shapiro_control_effectiveness_o, shapiro_experimental_effectiveness_o, control_effectiveness_tw_o, experimental_effectiveness_tw_o)
+
             print("\n\tobjective - ability - ", end="")
             _printSignificanceTest(shapiro_control_ability_o, shapiro_experimental_ability_o, control_ability_tw_o, experimental_ability_tw_o)
+
+
+            print("\n\tobjective - communication - ", end="")
+            _printSignificanceTest(shapiro_control_communication_o, shapiro_experimental_communication_o, control_communication_tw_o, experimental_communication_tw_o)
+
+            print("\n\tobjective - helping - ", end="")
+            _printSignificanceTest(shapiro_control_helping_o, shapiro_experimental_helping_o, control_helping_tw_o, experimental_helping_tw_o)
+
+            print("\n\tobjective - agreeableness - ", end="")
+            _printSignificanceTest(shapiro_control_agreeableness_o, shapiro_experimental_agreeableness_o, control_agreeableness_tw_o, experimental_agreeableness_tw_o)
+
+            print("\n\tobjective - responsiveness - ", end="")
+            _printSignificanceTest(shapiro_control_responsiveness_o, shapiro_experimental_responsiveness_o, control_responsiveness_tw_o, experimental_responsiveness_tw_o)
 
             print("\n\tobjective - benevolence - ", end="")
             _printSignificanceTest(shapiro_control_benevolence_o, shapiro_experimental_benevolence_o, control_benevolence_tw_o, experimental_benevolence_tw_o)
