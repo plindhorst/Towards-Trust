@@ -99,8 +99,7 @@ def _compute_questionaire(answers):
     abi = [round(x / 5, 2) for x in abi]
 
     return abi
-
-def _PrintCronbachsAlpha():
+def _getQuestionnaireInDataFrame():
     list_of_files = glob.glob('../data/questionnaire/*.json')
     jsonControlLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files if (CONTROL_AGENT in k)]
     jsonExperimentalLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files if (EXPERIMENTAL_AGENT in k)]
@@ -125,36 +124,200 @@ def _PrintCronbachsAlpha():
     pandaFrameExperimental = pd.DataFrame.from_records(transformedObjectsListExperimental)
     pandaFrameExperimental = pandaFrameExperimental.apply(pd.to_numeric, args=('coerce',))
 
+    demographicsControl = pandaFrameControl.iloc[:, 0:5]
     abilityControl = pandaFrameControl.iloc[:, 5:10]
     benevolenceControl = pandaFrameControl.iloc[:, 10:15]
     integrityControl = pandaFrameControl.iloc[:, 15:20]
 
+    demographicsExperimental = pandaFrameExperimental.iloc[:, 0:5]
     abilityExperimental = pandaFrameExperimental.iloc[:, 5:10]
     benevolenceExperimental = pandaFrameExperimental.iloc[:, 10:15]
     integrityExperimental = pandaFrameExperimental.iloc[:, 15:20]
 
+    return [demographicsControl, abilityControl, benevolenceControl, integrityControl, demographicsExperimental, abilityExperimental, benevolenceExperimental, integrityExperimental]
+
+def _PrintCronbachsAlpha():
+    dataframes = _getQuestionnaireInDataFrame()
+
     #Calculate cronbach_alpha
     print("\nCronbach's alpha, control group, ability: ")
-    print("\t" + str(pg.cronbach_alpha(data=abilityControl)[0]))
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[1])[0]))
 
     print("\nCronbach's alpha, experimental group, ability: ")
-    print("\t" + str(pg.cronbach_alpha(data=abilityExperimental)[0]))
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[5])[0]))
 
     print("\nCronbach's alpha, control group, benevolence: ")
-    print("\t" + str(pg.cronbach_alpha(data=benevolenceControl)[0]))
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[2])[0]))
 
     print("\nCronbach's alpha, experimental group, benevolence: ")
-    print("\t" + str(pg.cronbach_alpha(data=benevolenceExperimental)[0]))
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[6])[0]))
 
     print("\nCronbach's alpha, control group, integrity: ")
-    print("\t" + str(pg.cronbach_alpha(data=integrityControl)[0]))
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[3])[0]))
 
     print("\nCronbach's alpha, experimental group, integrity: ")
-    print("\t" + str(pg.cronbach_alpha(data=integrityExperimental)[0]))
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[7])[0]))
+
+def _showPieValue(value):
+    showValue = round((value/100) * 20)
+
+    if showValue > 0:
+        return showValue
+    else:
+        return None
+
+def _plotDemographics():
+    dataframes = _getQuestionnaireInDataFrame()
+    controlDemographics = pd.DataFrame.to_numpy(dataframes[0])
+    controlAgeArray = controlDemographics[:,0]
+    controlGenderArray = controlDemographics[:,1]
+    controlBirthplaceArray = controlDemographics[:,2]
+    controlGameExperienceArray = controlDemographics[:,3]
+    controlLanguageExperienceArray = controlDemographics[:,4]
+
+    experimentalDemographics = pd.DataFrame.to_numpy(dataframes[4])
+    experimentalAgeArray = experimentalDemographics[:,0]
+    experimentalGenderArray = experimentalDemographics[:,1]
+    experimentalBirthplaceArray = experimentalDemographics[:,2]
+    experimentalGameExperienceArray = experimentalDemographics[:,3]
+    experimentalLanguageExperienceArray = experimentalDemographics[:,4]
+
+    controlAgeFrequencies = [0, 0, 0, 0, 0, 0]
+    controlGenderFrequencies = [0, 0, 0, 0]
+    controlBirthplaceFrequencies = [0, 0, 0, 0, 0, 0, 0]
+    controlGameExperienceFrequencies = [0, 0, 0]
+    controlLanguageExperienceFrequencies = [0, 0, 0]
+
+    experimentalAgeFrequencies = [0, 0, 0, 0, 0, 0]
+    experimentalGenderFrequencies = [0, 0, 0, 0]
+    experimentalBirthplaceFrequencies = [0, 0, 0, 0, 0, 0, 0]
+    experimentalGameExperienceFrequencies = [0, 0, 0]
+    experimentalLanguageExperienceFrequencies = [0, 0, 0]
+
+    for i in controlAgeArray:
+        controlAgeFrequencies[i] += 1
+
+    for i in controlGenderArray:
+        controlGenderFrequencies[i] += 1
+
+    for i in controlBirthplaceArray:
+        controlBirthplaceFrequencies[i] += 1
+
+    for i in controlGameExperienceArray:
+        controlGameExperienceFrequencies[i] += 1
+
+    for i in controlLanguageExperienceArray:
+        controlLanguageExperienceFrequencies[i] += 1
+
+    for i in experimentalAgeArray:
+        experimentalAgeFrequencies[i] += 1
+
+    for i in experimentalGenderArray:
+        experimentalGenderFrequencies[i] += 1
+
+    for i in experimentalBirthplaceArray:
+        experimentalBirthplaceFrequencies[i] += 1
+
+    for i in experimentalGameExperienceArray:
+        experimentalGameExperienceFrequencies[i] += 1
+
+    for i in experimentalLanguageExperienceArray:
+        experimentalLanguageExperienceFrequencies[i] += 1
+
+    _, _, autoTexts = plt.pie(controlAgeFrequencies, labels=["18-24", "25-34", "35-44", "45-54", "55-64", "65+"], autopct=_showPieValue, colors=["#00A6D6", "#229bbd", "#ababab", "#FFFFFF","#454545", "#000000"])
+    i=0
+    for autoText in autoTexts:
+        if i == 4:
+            autoText.set_color('white')
+        i += 1
+    plt.title("Control group ages")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(experimentalAgeFrequencies, labels=["18-24", "25-34", "35-44", "45-54", "55-64", "65+"], autopct=_showPieValue, colors=["#00A6D6", "#229bbd", "#ababab", "#FFFFFF","#454545", "#000000"])
+    i=0
+    for autoText in autoTexts:
+        if i == 4:
+            autoText.set_color('white')
+        i += 1
+    plt.title("Experimental group ages")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(controlGenderFrequencies, labels=["male", "female", "Other", "I prefer not to say"], autopct=_showPieValue, colors=["#00A6D6", "#ababab", "#000000"])
+    i=0
+    for autoText in autoTexts:
+        if i == 2:
+            autoText.set_color('white')
+        i += 1
+    plt.title("control group genders")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(experimentalGenderFrequencies, labels=["male", "female", "Other", "I prefer not to say"], autopct=_showPieValue, colors=["#00A6D6", "#ababab", "#000000"])
+    i=0
+    for autoText in autoTexts:
+        if i == 2:
+            autoText.set_color('white')
+        i += 1
+    plt.title("experimental group genders")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(controlBirthplaceFrequencies, labels=["Africa", "Asia", "Australia", "Europe", "North/Central America", "South America", "Other"], autopct=_showPieValue, colors=["#706e6e", "#229bbd", "#ababab", "#00A6D6", "#FFFFFF", "#454545", "#000000"])
+    i=0
+    for autoText in autoTexts:
+        if i == 2:
+            autoText.set_color('white')
+        i += 1
+    plt.title("Control group birthplace")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(experimentalBirthplaceFrequencies, labels=["Africa", "Asia", "Australia", "Europe", "North/Central America", "South America", "Other"], autopct=_showPieValue, colors=["#706e6e", "#229bbd", "#ababab", "#00A6D6", "#FFFFFF", "#454545", "#000000"])
+    i=0
+    for autoText in autoTexts:
+        if i == 2:
+            autoText.set_color('white')
+        i += 1
+    plt.title("experimental group birthplace")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(controlGameExperienceFrequencies, labels=["low", "Average", "High"], autopct=_showPieValue, colors=["#000000", "#00A6D6", "#ababab"])
+    i=0
+    for autoText in autoTexts:
+        if i == 0:
+            autoText.set_color('white')
+        i += 1
+    plt.title("Control group Game Experience")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(experimentalGameExperienceFrequencies, labels=["low", "Average", "High"], autopct=_showPieValue, colors=["#000000", "#00A6D6", "#ababab"])
+    i=0
+    for autoText in autoTexts:
+        if i == 0:
+            autoText.set_color('white')
+        i += 1
+    plt.title("experimental group Game Experience")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(controlLanguageExperienceFrequencies, labels=["low", "Average", "High"], autopct=_showPieValue, colors=["#ababab", "#000000", "#00A6D6"])
+    i=0
+    for autoText in autoTexts:
+        if i == 1:
+            autoText.set_color('white')
+        i += 1
+    plt.title("Control group language proficiency")
+    plt.show()
+
+    _, _, autoTexts = plt.pie(experimentalLanguageExperienceFrequencies, labels=["low", "Average", "High"], autopct=_showPieValue, colors=["#ababab", "#000000", "#00A6D6"])
+    i=0
+    for autoText in autoTexts:
+        if i == 2:
+            autoText.set_color('white')
+        i += 1
+    plt.title("experimental group language proficiency")
+    plt.show()
+
+
 
 def _compute(ability, benevolence, integrity):
     return round(ability.compute(), 2), round(benevolence.compute(), 2), round(integrity.compute(), 2)
-
 
 def _average_ticks_to_respond(list_of_files):
     all_ticks_to_respond = []
@@ -501,7 +664,7 @@ class Trustworthiness:
             print("\n\tsubjective - trustworthiness - ", end="")
             _printSignificanceTest(shapiro_control_s, shapiro_experimental_s, control_tw_s, experimental_tw_s)
 
-
+            _plotDemographics()
 
             plt.hist(control_tw_o, bins=7)
             plt.hist(experimental_tw_o, bins=7)
