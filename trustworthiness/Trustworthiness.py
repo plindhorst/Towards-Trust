@@ -2,6 +2,8 @@ import glob
 import json
 import os
 import pickle
+import statistics
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,7 +19,7 @@ from scipy import stats
 
 VERBOSE = False
 CONTROL_AGENT = 'control'
-EXPERIMENTAL_AGENT = 'friendly'
+EXPERIMENTAL_AGENT = 'helper'
 
 
 
@@ -261,11 +263,13 @@ class Trustworthiness:
                 benevolence = Benevolence(actions, ticks_to_respond, this_tick_to_respond, verbose=VERBOSE)
                 integrity = Integrity(actions, verbose=VERBOSE)
 
+
                 ability_score, benevolence_score, integrity_score = _compute(ability, benevolence, integrity)
                 answers = _read_questionnaire_answers(file_name + ".json")
                 abi_questionnaire = _compute_questionaire(answers)
 
                 trustworthiness_objective = np.mean([ability_score, benevolence_score, integrity_score])
+                print(trustworthiness_objective)
                 trustworthiness_subjective = np.mean(abi_questionnaire)
 
                 if CONTROL_AGENT in file_name:
@@ -290,6 +294,27 @@ class Trustworthiness:
                     experimental_benevolence_tw_s.append(abi_questionnaire[1])
                     experimental_integrity_tw_s.append(abi_questionnaire[2])
                     experimental_tw_s.append(trustworthiness_subjective)
+
+
+            print("### STATISTICS OF DISTRIBUTION EXPERIMENTAL GROUP:")
+            variance_exp = statistics.variance(experimental_tw_o)
+            variance_a_exp = statistics.variance(experimental_ability_tw_o)
+            variance_b_exp = statistics.variance(experimental_benevolence_tw_o)
+            variance_i_exp = statistics.variance(experimental_integrity_tw_o)
+            print("VARIANCE TW EXPERIMENTAL: ", variance_exp)
+            print("VARIANCE ABILITY EXPERIMENTAL: ", variance_a_exp)
+            print("VARIANCE BENEVOLENCE EXPERIMENTAL: ", variance_b_exp)
+            print("VARIANCE INTEGRITY EXPERIMENTAL: ", variance_i_exp)
+
+            print("### STATISTICS OF DISTRIBUTION CONTROL GROUP:")
+            variance_exp = statistics.variance(control_tw_o)
+            variance_a_exp = statistics.variance(control_ability_tw_o)
+            variance_b_exp = statistics.variance(control_benevolence_tw_o)
+            variance_i_exp = statistics.variance(control_integrity_tw_o)
+            print("VARIANCE TW CONTROL: ", variance_exp)
+            print("VARIANCE ABILITY CONTROL: ", variance_a_exp)
+            print("VARIANCE BENEVOLENCE CONTROL: ", variance_b_exp)
+            print("VARIANCE INTEGRITY CONTROL: ", variance_i_exp)
 
             shapiro_control_ability_o = stats.shapiro(control_ability_tw_o).pvalue
             shapiro_control_benevolence_o = stats.shapiro(control_benevolence_tw_o).pvalue
@@ -377,9 +402,11 @@ class Trustworthiness:
             _printSignificanceTest(shapiro_control_s, shapiro_experimental_s, control_tw_s, experimental_tw_s)
 
 
-
-            plt.hist(control_tw_o, bins=7)
-            plt.hist(experimental_tw_o, bins=7)
+            plt.hist([control_tw_o, experimental_tw_o], bins=7, label=['control group', 'experimental group'])
+            plt.title("Trustworthiness Histogram")
+            plt.legend()
+            plt.xlabel('Objectively measured trustworthiness')
+            plt.ylabel('Frequency')
             plt.show()
 
             # print("\n--- ABI score (metrics): ", [ability_score, benevolence_score, integrity_score])
@@ -501,7 +528,9 @@ class Trustworthiness:
                                'experimental group': [experimental_avg_ability, experimental_avg_benevolence, experimental_avg_integrity, experimental_trustworthiness]},
                               index=["Ability", "Benevolence", "Integrity", "Trustworthiness"])
             df.plot(kind='bar')
-            plt.title("ABI Questionnaire Score comparison")
+            plt.title("ABI Questionnaire Score Comparison")
+            plt.xticks(X_axis, X)
+            plt.legend()
             plt.show()
 
             print("Got here")
