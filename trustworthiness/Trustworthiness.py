@@ -19,7 +19,7 @@ from scipy import stats
 
 VERBOSE = False
 CONTROL_AGENT = 'control'
-EXPERIMENTAL_AGENT = 'helper'
+EXPERIMENTAL_AGENT = 'advice'
 
 
 def _read_action_file(action_file):
@@ -530,6 +530,46 @@ class Trustworthiness:
                 experimental_group_benevolence.append(benevolence_score)
                 experimental_group_integrity.append(integrity_score)
 
+        print("Control Objective Mean Ability : ")
+        print(np.mean(np.array(control_group_ability)))
+        print("Control Objective SD Ability : ")
+        print(np.std(np.array(control_group_ability)))
+
+        print("Control Objective Mean Benevolence : ")
+        print(np.mean(np.array(control_group_benevolence)))
+        print("Control Objective SD Benevolence : ")
+        print(np.std(np.array(control_group_benevolence)))
+
+        print("Control Objective Mean Integrity : ")
+        print(np.mean(np.array(control_group_integrity)))
+        print("Control Objective SD Integrity : ")
+        print(np.std(np.array(control_group_integrity)))
+
+        print("Control Objective Mean Trustworthiness : ")
+        print(np.mean(np.array(control_group_values)))
+        print("Control Objective SD Trustworthiness : ")
+        print(np.std(np.array(control_group_values)))
+
+        print("Experimental Objective Mean Ability : ")
+        print(np.mean(np.array(experimental_group_ability)))
+        print("Experimental Objective SD Ability : ")
+        print(np.std(np.array(experimental_group_ability)))
+
+        print("Experimental Objective Mean Benevolence : ")
+        print(np.mean(np.array(experimental_group_benevolence)))
+        print("Experimental Objective SD Benevolence : ")
+        print(np.std(np.array(experimental_group_benevolence)))
+
+        print("Experimental Objective Mean Integrity : ")
+        print(np.mean(np.array(experimental_group_integrity)))
+        print("Experimental Objective SD Integrity : ")
+        print(np.std(np.array(experimental_group_integrity)))
+
+        print("Experimental Objective Mean Trustworthiness : ")
+        print(np.mean(np.array(experimental_group_values)))
+        print("Experimental Objective SD Trustworthiness : ")
+        print(np.std(np.array(experimental_group_values)))
+
         X = ['Ability', 'Benevolence', 'Integrity', 'Trustworthiness']
         control_bar_values = [np.mean(control_group_ability), np.mean(control_group_benevolence),
                               np.mean(control_group_integrity), np.mean(control_group_values)]
@@ -551,9 +591,11 @@ class Trustworthiness:
         control_a = []
         control_b = []
         control_i = []
+        control_trustworthiness = []
         experimental_a = []
         experimental_b = []
         experimental_i = []
+        experimental_trustworthiness = []
         count = 0
         if len(list_of_questionnaires) > 0:
 
@@ -565,40 +607,80 @@ class Trustworthiness:
                     control_a.append(abi_questionnaire[0])
                     control_b.append(abi_questionnaire[1])
                     control_i.append(abi_questionnaire[2])
+                    control_trustworthiness.append((abi_questionnaire[0] + abi_questionnaire[1] + abi_questionnaire[2])/3)
                 if EXPERIMENTAL_AGENT in questionnaireFile:
                     count += 1
                     experimental_a.append(abi_questionnaire[0])
                     experimental_b.append(abi_questionnaire[1])
                     experimental_i.append(abi_questionnaire[2])
+                    experimental_trustworthiness.append((abi_questionnaire[0] + abi_questionnaire[1] + abi_questionnaire[2])/3)
+
 
             if count == 0:
                 print("ERROR: You forgot to include your experimental data in the questionnaire folder. Exiting.")
                 return
 
             control_avg_ability = np.average(np.array(control_a))
+            print("Control Subjective Mean Ability : ")
+            print(control_avg_ability)
+            print("Control Subjective SD Ability : ")
+            print(np.std(np.array(control_a)))
+
             control_avg_benevolence = np.average(np.array(control_b))
+            print("Control Subjective Mean Benevolence : ")
+            print(control_avg_benevolence)
+            print("Control Subjective SD Benevolence : ")
+            print(np.std(np.array(control_b)))
+
             control_avg_integrity = np.average(np.array(control_i))
-            control_abi = np.array([control_avg_ability, control_avg_benevolence,
-                                    control_avg_integrity])  # contains the average score for ability, benevolence and integrity
+            print("Control Subjective Mean Integrity : ")
+            print(control_avg_integrity)
+            print("Control Subjective SD Integrity : ")
+            print(np.std(np.array(control_i)))
+
+            control_avg_trustworthiness = np.mean(np.array(control_trustworthiness))
+            print("Control Subjective Mean Trustworthiness : ")
+            print(control_avg_trustworthiness)
+            print("Control Subjective SD Trustworthiness : ")
+            print(np.std(np.array(control_trustworthiness)))
+
+            control_abi = np.array([control_avg_ability, control_avg_benevolence, control_avg_integrity]) # contains the average score for ability, benevolence and integrity
             # of the control group
             control_trustworthiness = np.average(control_abi)
 
             experimental_avg_ability = np.average(np.array(experimental_a))
+            print("Experimental Subjective Mean Ability : ")
+            print(experimental_avg_ability)
+            print("Experimental Subjective SD Ability : ")
+            print(np.std(np.array(experimental_a)))
+
             experimental_avg_benevolence = np.average(np.array(experimental_b))
+            print("Experimental Subjective Mean Benevolence : ")
+            print(experimental_avg_benevolence)
+            print("Experimental Subjective SD Benevolence : ")
+            print(np.std(np.array(experimental_b)))
+
             experimental_avg_integrity = np.average(np.array(experimental_i))
-            experimental_abi = np.array([experimental_avg_ability, experimental_avg_benevolence,
-                                         experimental_avg_integrity])  # contains the average score for ability, benevolence
+            print("Experimental Subjective Mean Integrity : ")
+            print(experimental_avg_integrity)
+            print("Experimental Subjective SD Integrity : ")
+            print(np.std(np.array(experimental_i)))
+
+            experimental_avg_trustworthiness = np.mean(np.array(experimental_trustworthiness))
+            print("Experimental Subjective Mean Trustworthiness : ")
+            print(experimental_avg_trustworthiness)
+            print("Experimental Subjective SD Trustworthiness : ")
+            print(np.std(np.array(experimental_trustworthiness)))
+
+            experimental_abi = np.array([experimental_avg_ability, experimental_avg_benevolence, experimental_avg_integrity]) # contains the average score for ability, benevolence
             # and integrity of the experimental group
             experimental_trustworthiness = np.average(experimental_abi)
 
-            df = pd.DataFrame({'control group': [control_avg_ability, control_avg_benevolence, control_avg_integrity,
-                                                 control_trustworthiness],
-                               'experimental group': [experimental_avg_ability, experimental_avg_benevolence,
-                                                      experimental_avg_integrity, experimental_trustworthiness]},
+            df = pd.DataFrame({'control group': [control_avg_ability, control_avg_benevolence, control_avg_integrity, control_avg_trustworthiness],
+                               'experimental group': [experimental_avg_ability, experimental_avg_benevolence, experimental_avg_integrity, experimental_avg_trustworthiness]},
                               index=["Ability", "Benevolence", "Integrity", "Trustworthiness"])
             df.plot(kind='bar')
-            plt.title("ABI Questionnaire Score Comparison")
-            plt.legend()
+            plt.title("ABI Questionnaire Score comparison")
             plt.show()
 
             print("Got here")
