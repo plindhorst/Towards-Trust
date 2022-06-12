@@ -101,9 +101,11 @@ def _compute_questionaire(answers):
     return abi
 def _getQuestionnaireInDataFrame():
     list_of_files = glob.glob('../data/questionnaire/*.json')
+    jsonBothLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files]
     jsonControlLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files if (CONTROL_AGENT in k)]
     jsonExperimentalLists = [_read_questionnaire_answers(k[22:]) for k in list_of_files if (EXPERIMENTAL_AGENT in k)]
 
+    transformedObjectsListBoth = []
     transformedObjectsListControl = []
     transformedObjectsListExperimental = []
 
@@ -119,10 +121,18 @@ def _getQuestionnaireInDataFrame():
             fullObject.update(d)
         transformedObjectsListExperimental.append(fullObject)
 
+    for jsonBothList in jsonBothLists:
+        fullObject = {}
+        for d in jsonBothList:
+            fullObject.update(d)
+        transformedObjectsListBoth.append(fullObject)
+
     pandaFrameControl = pd.DataFrame.from_records(transformedObjectsListControl)
     pandaFrameControl = pandaFrameControl.apply(pd.to_numeric, args=('coerce',))
     pandaFrameExperimental = pd.DataFrame.from_records(transformedObjectsListExperimental)
     pandaFrameExperimental = pandaFrameExperimental.apply(pd.to_numeric, args=('coerce',))
+    pandaFrameBoth = pd.DataFrame.from_records(transformedObjectsListBoth)
+    pandaFrameBoth = pandaFrameBoth.apply(pd.to_numeric, args=('coerce',))
 
     demographicsControl = pandaFrameControl.iloc[:, 0:5]
     abilityControl = pandaFrameControl.iloc[:, 5:10]
@@ -134,7 +144,12 @@ def _getQuestionnaireInDataFrame():
     benevolenceExperimental = pandaFrameExperimental.iloc[:, 10:15]
     integrityExperimental = pandaFrameExperimental.iloc[:, 15:20]
 
-    return [demographicsControl, abilityControl, benevolenceControl, integrityControl, demographicsExperimental, abilityExperimental, benevolenceExperimental, integrityExperimental]
+    demographicsBoth = pandaFrameBoth.iloc[:, 0:5]
+    abilityBoth = pandaFrameBoth.iloc[:, 5:10]
+    benevolenceBoth = pandaFrameBoth.iloc[:, 10:15]
+    integrityBoth = pandaFrameBoth.iloc[:, 15:20]
+
+    return [demographicsControl, abilityControl, benevolenceControl, integrityControl, demographicsExperimental, abilityExperimental, benevolenceExperimental, integrityExperimental, demographicsBoth, abilityBoth, benevolenceBoth, integrityBoth]
 
 def _PrintCronbachsAlpha():
     dataframes = _getQuestionnaireInDataFrame()
@@ -157,6 +172,13 @@ def _PrintCronbachsAlpha():
 
     print("\nCronbach's alpha, experimental group, integrity: ")
     print("\t" + str(pg.cronbach_alpha(data=dataframes[7])[0]))
+
+    print("\nCronbach's alpha, combined groups, ability: ")
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[9])[0]))
+    print("\nCronbach's alpha, combined groups, benevolence: ")
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[10])[0]))
+    print("\nCronbach's alpha, combined groups, integrity: ")
+    print("\t" + str(pg.cronbach_alpha(data=dataframes[11])[0]))
 
 def _showPieValue(value):
     showValue = round((value/100) * 20)
@@ -498,8 +520,7 @@ class Trustworthiness:
                     experimental_tw_s.append(trustworthiness_subjective)
 
 
-            shapiro_control_speed_o = stats.shapiro(control_speed_tw_o).pvalue
-            shapiro_control_effectiveness_o = stats.shapiro(control_effectiveness_tw_o).pvalue
+
             print("### STATISTICS OF DISTRIBUTION EXPERIMENTAL GROUP:")
             variance_exp = statistics.variance(experimental_tw_o)
             variance_a_exp = statistics.variance(experimental_ability_tw_o)
@@ -520,6 +541,8 @@ class Trustworthiness:
             print("VARIANCE BENEVOLENCE CONTROL: ", variance_b_exp)
             print("VARIANCE INTEGRITY CONTROL: ", variance_i_exp)
 
+            shapiro_control_speed_o = stats.shapiro(control_speed_tw_o).pvalue
+            shapiro_control_effectiveness_o = stats.shapiro(control_effectiveness_tw_o).pvalue
             shapiro_control_ability_o = stats.shapiro(control_ability_tw_o).pvalue
 
             shapiro_control_communication_o = stats.shapiro(control_communication_tw_o).pvalue
@@ -558,7 +581,7 @@ class Trustworthiness:
 
             print("\n results")
             print("\n control group - objective - speed - ability:")
-            print(np.mean(control_speed_tw_o))
+            print(round(np.mean(control_speed_tw_o), 2))
             print("\n control group - objective - effectiveness - ability:")
             print(round(np.mean(control_effectiveness_tw_o), 2))
             print("\n control group - objective - ability:")
@@ -590,7 +613,7 @@ class Trustworthiness:
             print(round(np.mean(control_tw_s), 2))
 
             print("\n experimental group - objective - speed - ability:")
-            print(np.mean(experimental_speed_tw_o))
+            print(round(np.mean(experimental_speed_tw_o)), 2)
             print("\n experimental group - objective - effectiveness - ability:")
             print(round(np.mean(experimental_effectiveness_tw_o), 2))
             print("\n experimental group - objective - ability:")
