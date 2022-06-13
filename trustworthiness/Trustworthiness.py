@@ -270,7 +270,7 @@ def _plotDemographics():
         if i == 2:
             autoText.set_color('white')
         i += 1
-    plt.title("control group genders")
+    plt.title("Control group genders")
     plt.show()
 
     _, _, autoTexts = plt.pie(experimentalGenderFrequencies, labels=["male", "female", "Other", "I prefer not to say"], autopct=_showPieValue, colors=["#00A6D6", "#ababab", "#000000"])
@@ -279,7 +279,7 @@ def _plotDemographics():
         if i == 2:
             autoText.set_color('white')
         i += 1
-    plt.title("experimental group genders")
+    plt.title("Experimental group genders")
     plt.show()
 
     _, _, autoTexts = plt.pie(controlBirthplaceFrequencies, labels=["Africa", "Asia", "Australia", "Europe", "North/Central America", "South America", "Other"], autopct=_showPieValue, colors=["#706e6e", "#229bbd", "#ababab", "#00A6D6", "#FFFFFF", "#454545", "#000000"])
@@ -297,7 +297,7 @@ def _plotDemographics():
         if i == 2:
             autoText.set_color('white')
         i += 1
-    plt.title("experimental group birthplace")
+    plt.title("Experimental group birthplace")
     plt.show()
 
     _, _, autoTexts = plt.pie(controlGameExperienceFrequencies, labels=["low", "Average", "High"], autopct=_showPieValue, colors=["#000000", "#00A6D6", "#ababab"])
@@ -315,7 +315,7 @@ def _plotDemographics():
         if i == 0:
             autoText.set_color('white')
         i += 1
-    plt.title("experimental group Game Experience")
+    plt.title("Experimental group Game Experience")
     plt.show()
 
     _, _, autoTexts = plt.pie(controlLanguageExperienceFrequencies, labels=["low", "Average", "High"], autopct=_showPieValue, colors=["#ababab", "#000000", "#00A6D6"])
@@ -333,7 +333,7 @@ def _plotDemographics():
         if i == 2:
             autoText.set_color('white')
         i += 1
-    plt.title("experimental group language proficiency")
+    plt.title("Experimental group language proficiency")
     plt.show()
 
 
@@ -373,24 +373,24 @@ def _average_ticks_to_respond(list_of_files):
 
 
 def _printShapiroResult(result):
-    if result < 0.05:
+    if result.pvalue < 0.05:
         print("\t" + str(result) + " NOT NORMALLY DISTRIBUTED")
     else:
         print("\t" + str(result) + " NORMALLY DISTRIBUTED")
 
 
 def _printSignificanceTest(shapiroResultControl, shapiroResultExperimental, controlData, experimentalData):
-    if shapiroResultControl >= 0.05 and shapiroResultExperimental >= 0.05:
+    if shapiroResultControl.pvalue >= 0.05 and shapiroResultExperimental.pvalue >= 0.05:
         print("T-Test: ")
-        ttestValue = stats.ttest_ind(controlData, experimentalData, alternative="less").pvalue
-        if (ttestValue < 0.05):
+        ttestValue = stats.ttest_ind(controlData, experimentalData, alternative="less")
+        if (ttestValue.pvalue < 0.05):
             print("\t" + str(ttestValue) + " SIGNIFICANT")
         else:
             print("\t" + str(ttestValue) + " NOT SIGNIFICANT")
     else:
         print("mann-Whitney test: ")
-        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData, alternative="less").pvalue
-        if (mannWhitneyUValue < 0.05):
+        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData, alternative="less")
+        if (mannWhitneyUValue.pvalue < 0.05):
             print("\t" + str(mannWhitneyUValue) + " SIGNIFICANT")
         else:
             print("\t" + str(mannWhitneyUValue) + " NOT SIGNIFICANT")
@@ -541,40 +541,40 @@ class Trustworthiness:
             print("VARIANCE BENEVOLENCE CONTROL: ", variance_b_exp)
             print("VARIANCE INTEGRITY CONTROL: ", variance_i_exp)
 
-            shapiro_control_speed_o = stats.shapiro(control_speed_tw_o).pvalue
-            shapiro_control_effectiveness_o = stats.shapiro(control_effectiveness_tw_o).pvalue
-            shapiro_control_ability_o = stats.shapiro(control_ability_tw_o).pvalue
+            shapiro_control_speed_o = stats.shapiro(control_speed_tw_o)
+            shapiro_control_effectiveness_o = stats.shapiro(control_effectiveness_tw_o)
+            shapiro_control_ability_o = stats.shapiro(control_ability_tw_o)
 
-            shapiro_control_communication_o = stats.shapiro(control_communication_tw_o).pvalue
-            shapiro_control_helping_o = stats.shapiro(control_helping_tw_o).pvalue
-            shapiro_control_agreeableness_o = stats.shapiro(control_agreeableness_tw_o).pvalue
-            shapiro_control_responsiveness_o = stats.shapiro(control_responsiveness_tw_o).pvalue
-            shapiro_control_benevolence_o = stats.shapiro(control_benevolence_tw_o).pvalue
+            shapiro_control_communication_o = stats.shapiro(control_communication_tw_o)
+            shapiro_control_helping_o = stats.shapiro(control_helping_tw_o)
+            shapiro_control_agreeableness_o = stats.shapiro(control_agreeableness_tw_o)
+            shapiro_control_responsiveness_o = stats.shapiro(control_responsiveness_tw_o)
+            shapiro_control_benevolence_o = stats.shapiro(control_benevolence_tw_o)
 
-            shapiro_control_integrity_o = stats.shapiro(control_integrity_tw_o).pvalue
-            shapiro_control_o = stats.shapiro(control_tw_o).pvalue
+            shapiro_control_integrity_o = stats.shapiro(control_integrity_tw_o)
+            shapiro_control_o = stats.shapiro(control_tw_o)
 
-            shapiro_control_ability_s = stats.shapiro(control_ability_tw_s).pvalue
-            shapiro_control_benevolence_s = stats.shapiro(control_benevolence_tw_s).pvalue
-            shapiro_control_integrity_s = stats.shapiro(control_integrity_tw_s).pvalue
-            shapiro_control_s = stats.shapiro(control_tw_s).pvalue
+            shapiro_control_ability_s = stats.shapiro(control_ability_tw_s)
+            shapiro_control_benevolence_s = stats.shapiro(control_benevolence_tw_s)
+            shapiro_control_integrity_s = stats.shapiro(control_integrity_tw_s)
+            shapiro_control_s = stats.shapiro(control_tw_s)
 
-            shapiro_experimental_speed_o = stats.shapiro(experimental_speed_tw_o).pvalue
-            shapiro_experimental_effectiveness_o = stats.shapiro(experimental_effectiveness_tw_o).pvalue
-            shapiro_experimental_ability_o = stats.shapiro(experimental_ability_tw_o).pvalue
+            shapiro_experimental_speed_o = stats.shapiro(experimental_speed_tw_o)
+            shapiro_experimental_effectiveness_o = stats.shapiro(experimental_effectiveness_tw_o)
+            shapiro_experimental_ability_o = stats.shapiro(experimental_ability_tw_o)
 
-            shapiro_experimental_communication_o = stats.shapiro(experimental_communication_tw_o).pvalue
-            shapiro_experimental_helping_o = stats.shapiro(experimental_helping_tw_o).pvalue
-            shapiro_experimental_agreeableness_o = stats.shapiro(experimental_agreeableness_tw_o).pvalue
-            shapiro_experimental_responsiveness_o = stats.shapiro(experimental_responsiveness_tw_o).pvalue
-            shapiro_experimental_benevolence_o = stats.shapiro(experimental_benevolence_tw_o).pvalue
-            shapiro_experimental_integrity_o = stats.shapiro(experimental_integrity_tw_o).pvalue
-            shapiro_experimental_o = stats.shapiro(experimental_tw_o).pvalue
+            shapiro_experimental_communication_o = stats.shapiro(experimental_communication_tw_o)
+            shapiro_experimental_helping_o = stats.shapiro(experimental_helping_tw_o)
+            shapiro_experimental_agreeableness_o = stats.shapiro(experimental_agreeableness_tw_o)
+            shapiro_experimental_responsiveness_o = stats.shapiro(experimental_responsiveness_tw_o)
+            shapiro_experimental_benevolence_o = stats.shapiro(experimental_benevolence_tw_o)
+            shapiro_experimental_integrity_o = stats.shapiro(experimental_integrity_tw_o)
+            shapiro_experimental_o = stats.shapiro(experimental_tw_o)
 
-            shapiro_experimental_ability_s = stats.shapiro(experimental_ability_tw_s).pvalue
-            shapiro_experimental_benevolence_s = stats.shapiro(experimental_benevolence_tw_s).pvalue
-            shapiro_experimental_integrity_s = stats.shapiro(experimental_integrity_tw_s).pvalue
-            shapiro_experimental_s = stats.shapiro(experimental_tw_s).pvalue
+            shapiro_experimental_ability_s = stats.shapiro(experimental_ability_tw_s)
+            shapiro_experimental_benevolence_s = stats.shapiro(experimental_benevolence_tw_s)
+            shapiro_experimental_integrity_s = stats.shapiro(experimental_integrity_tw_s)
+            shapiro_experimental_s = stats.shapiro(experimental_tw_s)
 
             print("\n cronbachs alpha:")
             _PrintCronbachsAlpha()
@@ -582,67 +582,121 @@ class Trustworthiness:
             print("\n results")
             print("\n control group - objective - speed - ability:")
             print(round(np.mean(control_speed_tw_o), 2))
+            print(round(np.std(control_speed_tw_o), 2))
+            print(round(np.median(control_speed_tw_o), 2))
             print("\n control group - objective - effectiveness - ability:")
             print(round(np.mean(control_effectiveness_tw_o), 2))
+            print(round(np.std(control_effectiveness_tw_o), 2))
+            print(round(np.median(control_effectiveness_tw_o), 2))
             print("\n control group - objective - ability:")
             print(round(np.mean(control_ability_tw_o), 2))
-
+            print(round(np.std(control_ability_tw_o), 2))
+            print(round(np.median(control_ability_tw_o), 2))
             print("\n control group - objective - communication - benevolence:")
             print(round(np.mean(control_communication_tw_o), 2))
+            print(round(np.std(control_communication_tw_o), 2))
+            print(round(np.median(control_communication_tw_o), 2))
             print("\n control group - objective - helping - benevolence:")
             print(round(np.mean(control_helping_tw_o), 2))
+            print(round(np.std(control_helping_tw_o), 2))
+            print(round(np.median(control_helping_tw_o), 2))
             print("\n control group - objective - agreeableness - benevolence:")
             print(round(np.mean(control_agreeableness_tw_o), 2))
+            print(round(np.std(control_agreeableness_tw_o), 2))
+            print(round(np.median(control_agreeableness_tw_o), 2))
             print("\n control group - objective - responsiveness - benevolence:")
             print(round(np.mean(control_responsiveness_tw_o), 2))
+            print(round(np.std(control_responsiveness_tw_o), 2))
+            print(round(np.median(control_responsiveness_tw_o), 2))
             print("\n control group - objective - benevolence:")
             print(round(np.mean(control_benevolence_tw_o), 2))
+            print(round(np.std(control_benevolence_tw_o), 2))
+            print(round(np.median(control_benevolence_tw_o), 2))
 
             print("\n control group - objective - integrity:")
             print(round(np.mean(control_integrity_tw_o), 2))
+            print(round(np.std(control_integrity_tw_o), 2))
+            print(round(np.median(control_integrity_tw_o), 2))
             print("\n control group - objective - trustworthiness")
             print(round(np.mean(control_tw_o), 2))
+            print(round(np.std(control_tw_o), 2))
+            print(round(np.median(control_tw_o), 2))
 
             print("\n control group - subjective - ability:")
             print(round(np.mean(control_ability_tw_s), 2))
+            print(round(np.std(control_ability_tw_s), 2))
+            print(round(np.median(control_ability_tw_s), 2))
             print("\n control group - subjective - benevolence:")
             print(round(np.mean(control_benevolence_tw_s), 2))
+            print(round(np.std(control_benevolence_tw_s), 2))
+            print(round(np.median(control_benevolence_tw_s), 2))
             print("\n control group - subjective - integrity:")
             print(round(np.mean(control_integrity_tw_s), 2))
+            print(round(np.std(control_integrity_tw_s), 2))
+            print(round(np.median(control_integrity_tw_s), 2))
             print("\n control group - subjective - trustworthiness")
             print(round(np.mean(control_tw_s), 2))
+            print(round(np.std(control_tw_s), 2))
+            print(round(np.median(control_tw_s), 2))
 
             print("\n experimental group - objective - speed - ability:")
-            print(round(np.mean(experimental_speed_tw_o)), 2)
+            print(round(np.mean(experimental_speed_tw_o), 2))
+            print(round(np.std(experimental_speed_tw_o), 2))
+            print(round(np.median(experimental_speed_tw_o), 2))
             print("\n experimental group - objective - effectiveness - ability:")
             print(round(np.mean(experimental_effectiveness_tw_o), 2))
+            print(round(np.std(experimental_effectiveness_tw_o), 2))
+            print(round(np.median(experimental_effectiveness_tw_o), 2))
             print("\n experimental group - objective - ability:")
             print(round(np.mean(experimental_ability_tw_o), 2))
+            print(round(np.std(experimental_ability_tw_o), 2))
+            print(round(np.median(experimental_ability_tw_o), 2))
 
             print("\n experimental group - objective - communication - benevolence:")
             print(round(np.mean(experimental_communication_tw_o), 2))
+            print(round(np.std(experimental_communication_tw_o), 2))
+            print(round(np.median(experimental_communication_tw_o), 2))
             print("\n experimental group - objective - helping - benevolence:")
             print(round(np.mean(experimental_helping_tw_o), 2))
+            print(round(np.std(experimental_helping_tw_o), 2))
+            print(round(np.median(experimental_helping_tw_o), 2))
             print("\n experimental group - objective - agreeableness - benevolence:")
             print(round(np.mean(experimental_agreeableness_tw_o), 2))
+            print(round(np.std(experimental_agreeableness_tw_o), 2))
+            print(round(np.median(experimental_agreeableness_tw_o), 2))
             print("\n experimental group - objective - responsiveness - benevolence:")
             print(round(np.mean(experimental_responsiveness_tw_o), 2))
+            print(round(np.std(experimental_responsiveness_tw_o), 2))
+            print(round(np.median(experimental_responsiveness_tw_o), 2))
             print("\n experimental group - objective - benevolence:")
             print(round(np.mean(experimental_benevolence_tw_o), 2))
-
+            print(round(np.std(experimental_benevolence_tw_o), 2))
+            print(round(np.median(experimental_benevolence_tw_o), 2))
             print("\n experimental group - objective - integrity:")
             print(round(np.mean(experimental_integrity_tw_o), 2))
+            print(round(np.std(experimental_integrity_tw_o), 2))
+            print(round(np.median(experimental_integrity_tw_o), 2))
             print("\n experimental group - objective - trustworthiness")
             print(round(np.mean(experimental_tw_o), 2))
+            print(round(np.std(experimental_tw_o), 2))
+            print(round(np.median(experimental_tw_o), 2))
 
             print("\n experimental group - subjective - ability:")
             print(round(np.mean(experimental_ability_tw_s), 2))
+            print(round(np.std(experimental_ability_tw_s), 2))
+            print(round(np.median(experimental_ability_tw_s), 2))
             print("\n experimental group - subjective - benevolence:")
             print(round(np.mean(experimental_benevolence_tw_s), 2))
+            print(round(np.std(experimental_benevolence_tw_s), 2))
+            print(round(np.median(experimental_benevolence_tw_s), 2))
             print("\n experimental group - subjective - integrity:")
             print(round(np.mean(experimental_integrity_tw_s), 2))
+            print(round(np.std(experimental_integrity_tw_s), 2))
+            print(round(np.median(experimental_integrity_tw_s), 2))
             print("\n experimental group - subjective - trustworthiness")
             print(round(np.mean(experimental_tw_s), 2))
+            print(round(np.std(experimental_tw_s), 2))
+            print(round(np.median(experimental_tw_s), 2))
 
             print("\n Shapiro-Wilk test:")
             print("\n control group - objective - speed - ability:")
