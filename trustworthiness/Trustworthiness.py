@@ -515,10 +515,6 @@ class Trustworthiness:
                     control_tw_s.append(trustworthiness_subjective)
 
                 elif EXPERIMENTAL_AGENT in file_name:
-
-                    #During the experiments there was a small bug that started the tick-count before the participant
-                    #pressed 'ready'. The participants missed on average 10.97% of the time
-                    #tick result to correct for the bug.
                     experimental_speed_tw_o.append(speed_score)
 
                     experimental_effectiveness_tw_o.append(ability.computeEffectivenessScore(True))
