@@ -535,7 +535,11 @@ class Trustworthiness:
 
                 elif EXPERIMENTAL_AGENT in file_name:
                     experimental_speed_tw_o.append(speed_score)
-                    experimental_effectiveness_tw_o.append(effectiveness_score)
+
+                    #During the experiments there was a small bug that started the tick-count before the participant
+                    #pressed 'ready'. The participants missed 10.97 percent of time. Therefore, the effectiveness is
+                    # corrected for by dividing by 0.9.
+                    experimental_effectiveness_tw_o.append(effectiveness_score / 0.8903)
                     experimental_completion.append(completion_score)
                     experimental_found.append(found_score)
                     experimental_picked.append(picked_score)
