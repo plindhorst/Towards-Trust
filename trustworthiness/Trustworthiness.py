@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import pickle
+import shutil
 
 import numpy as np
 
@@ -76,21 +77,28 @@ def _compute_abi_questionaire(answers):
     abi = [0, 0, 0]
     counts = [0, 0, 0]
 
+    answers_ = []
+
     for i, concept in enumerate(["Ability", "Benevolence", "Integrity"]):
         for question in questions:
+            answered = False
             if question["type"] == concept:
                 for answer in answers:
                     try:
                         abi[i] += int(answer[question["name"]])
+                        answers_.append(int(answer[question["name"]]))
                         counts[i] += 1
+                        answered = True
                         break
                     except KeyError:
                         continue
+                if not answered:
+                    answers_.append(0)
         abi[i] /= counts[i]
 
     abi = [round(x / 6, 2) for x in abi]
 
-    return abi
+    return abi, answers_
 
 
 def _average_ticks_to_respond(list_of_files):
@@ -133,45 +141,66 @@ def is_normal_distr(scores, alpha=0.05):
 
 
 class Trustworthiness:
-    def __init__(self, group="control", graphs=False, alternative="greater", verbose_lvl=0):
+    def __init__(self, group="control", graphs=False, alternative="two-sided", verbose_lvl=0):
         abi_ctrl, abi_normal_ctrl, abi_questionnaire_ctrl, abi_questionnaire_normal_ctrl, tw_ctrl, tw_normal_ctrl, tw_questionnaire_ctrl, tw_questionnaire_normal_ctrl = get_group_trustworthiness(
             "control", graphs, verbose_lvl)
         abi_exp, abi_normal_exp, abi_questionnaire_exp, abi_questionnaire_normal_exp, tw_exp, tw_normal_exp, tw_questionnaire_exp, tw_questionnaire_normal_exp = get_group_trustworthiness(
             group, graphs, verbose_lvl)
 
-        print()
+        print("\nPerforming statistical inference. Hypothesis is '" + alternative + "'.")
         for i, concept in enumerate(["Ability", "Benevolence", "Integrity"]):
-            significant, p_value, test = significance_test(abi_ctrl[i], abi_exp[i],
-                                                           (abi_normal_ctrl[i] and abi_normal_exp[i]), alternative)
+            significant, p_value, statistic, test = significance_test(abi_ctrl[i], abi_exp[i],
+                                                                      (abi_normal_ctrl[i] and abi_normal_exp[i]),
+                                                                      alternative)
 
             if significant:
-                print(concept, "SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
+                print(concept, "SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ", test-statistic = " + str(
+                    round(statistic, 3)) + ")")
             else:
-                print(concept, "NOT SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
+                print(concept,
+                      "NOT SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ", test-statistic = " + str(
+                          round(statistic, 3)) + ")")
 
-            significant, p_value, test = significance_test(abi_questionnaire_ctrl[i], abi_questionnaire_exp[i], (
-                    abi_questionnaire_normal_ctrl[i] and abi_questionnaire_normal_exp[i]), alternative)
+            significant, p_value, statistic, test = significance_test(abi_questionnaire_ctrl[i],
+                                                                      abi_questionnaire_exp[i], (
+                                                                              abi_questionnaire_normal_ctrl[i] and
+                                                                              abi_questionnaire_normal_exp[i]),
+                                                                      alternative)
 
             if significant:
-                print(concept, "questionnaire SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
+                print(concept, "questionnaire SIGNIFICANT (" + test + ", p = " + str(
+                    round(p_value, 3)) + ", test-statistic = " + str(
+                    round(statistic, 3)) + ")")
             else:
-                print(concept, "questionnaire NOT SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
+                print(concept, "questionnaire NOT SIGNIFICANT (" + test + ", p = " + str(
+                    round(p_value, 3)) + ", test-statistic = " + str(
+                    round(statistic, 3)) + ")")
 
-        significant, p_value, test = significance_test(tw_ctrl, tw_exp, (tw_normal_ctrl and tw_normal_exp), alternative)
-
-        if significant:
-            print("Trustworthiness SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
-        else:
-            print("Trustworthiness NOT SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
-
-        significant, p_value, test = significance_test(tw_questionnaire_ctrl, tw_questionnaire_exp,
-                                                       (tw_questionnaire_normal_ctrl and tw_questionnaire_normal_exp),
-                                                       alternative)
+        significant, p_value, statistic, test = significance_test(tw_ctrl, tw_exp, (tw_normal_ctrl and tw_normal_exp),
+                                                                  alternative)
 
         if significant:
-            print("Trustworthiness questionnaire SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
+            print("Trustworthiness SIGNIFICANT (" + test + ", p = " + str(
+                round(p_value, 3)) + ", test-statistic = " + str(
+                round(statistic, 3)) + ")")
         else:
-            print("Trustworthiness questionnaire NOT SIGNIFICANT (" + test + ", p = " + str(round(p_value, 3)) + ")")
+            print("Trustworthiness NOT SIGNIFICANT (" + test + ", p = " + str(
+                round(p_value, 3)) + ", test-statistic = " + str(
+                round(statistic, 3)) + ")")
+
+        significant, p_value, statistic, test = significance_test(tw_questionnaire_ctrl, tw_questionnaire_exp,
+                                                                  (
+                                                                          tw_questionnaire_normal_ctrl and tw_questionnaire_normal_exp),
+                                                                  alternative)
+
+        if significant:
+            print("Trustworthiness questionnaire SIGNIFICANT (" + test + ", p = " + str(
+                round(p_value, 3)) + ", test-statistic = " + str(
+                round(statistic, 3)) + ")")
+        else:
+            print("Trustworthiness questionnaire NOT SIGNIFICANT (" + test + ", p = " + str(
+                round(p_value, 3)) + ", test-statistic = " + str(
+                round(statistic, 3)) + ")")
 
         if graphs:
             plot_abi(abi_ctrl, abi_exp, tw_ctrl, tw_exp, type_="objective metrics")
@@ -182,13 +211,24 @@ class Trustworthiness:
 def significance_test(control_data, experimental_data, normal, alternative="greater", alpha=0.05):
     if normal:
         p_value = ttest_ind(control_data, experimental_data, alternative=alternative).pvalue
+        statistic = ttest_ind(control_data, experimental_data, alternative=alternative).statistic
         test = "T-Test"
     else:
         p_value = mannwhitneyu(control_data, experimental_data, alternative=alternative).pvalue
+        statistic = mannwhitneyu(control_data, experimental_data, alternative=alternative).statistic
         test = "Mann-Whitney U Test"
 
     significant = p_value < alpha
-    return significant, p_value, test
+    return significant, p_value, statistic, test
+
+
+def cronbach_alpha(scores):
+    scores = np.asarray(scores, dtype=object)
+    itemvars = scores.var(axis=1, ddof=1)
+    tscores = scores.sum(axis=0)
+    nitems = len(scores)
+
+    return nitems / (nitems - 1.) * (1 - itemvars.sum() / tscores.var(ddof=1))
 
 
 def get_group_trustworthiness(group, graphs, verbose_lvl):
@@ -206,19 +246,25 @@ def get_group_trustworthiness(group, graphs, verbose_lvl):
         metrics = []
         scores = []
         questionnaire_scores = []
+        questionnaire_answers = []
         for action_file in list_of_files:
 
-            metrics_, scores_, abi_questionnaire = get_trustworthiness_from_file(action_file, last_ticks,
-                                                                                 ticks_to_respond,
-                                                                                 verbose_lvl)
+            metrics_, scores_, abi_questionnaire, answers = get_trustworthiness_from_file(action_file, last_ticks,
+                                                                                          ticks_to_respond,
+                                                                                          verbose_lvl)
 
             metrics.append(metrics_)
             scores.append(scores_)
             questionnaire_scores.append(abi_questionnaire)
+            questionnaire_answers.append(answers)
 
             if verbose_lvl >= 2:
                 print("\n--- ABI score (metrics): ", scores_)
                 print("--- ABI score (questionnaire): ", abi_questionnaire, "\n")
+
+        if verbose_lvl >= 1:
+            print()
+            print(group, "Cronbach's Alpha =", round(cronbach_alpha(questionnaire_answers), 3))
 
         abi_scores = [[], [], []]
         abi_questionnaire_scores = [[], [], []]
@@ -241,18 +287,26 @@ def get_group_trustworthiness(group, graphs, verbose_lvl):
 
             if verbose_lvl >= 1:
                 if normal:
-                    print(group, "(" + concept + ")", "is normally distributed, with p =", str(round(p, 3)))
+                    print(group, "(" + concept + ")", "is normally distributed, with p =", round(p, 3), ", mean =",
+                          round(np.mean(np.array(concept_score)), 3), ", STD =",
+                          round(np.std(np.array(concept_score)), 3))
                 else:
-                    print(group, "(" + concept + ")", "is not normally distributed, with p =", str(round(p, 3)))
+                    print(group, "(" + concept + ")", "is not normally distributed, with p =", round(p, 3), ", mean =",
+                          round(np.mean(np.array(concept_score)), 3), ", STD =",
+                          round(np.std(np.array(concept_score)), 3))
 
             normal, p = is_normal_distr(concept_questionaire_score)
             abi_questionnaire_normal.append(normal)
 
             if verbose_lvl >= 1:
                 if normal:
-                    print(group, "(" + concept + ") questionnaire", "is normally distributed, with p =", str(round(p, 3)))
+                    print(group, "(" + concept + ") questionnaire", "is normally distributed, with p =", round(p, 3),
+                          ", mean =", round(np.mean(np.array(concept_questionaire_score)), 3), ", STD =",
+                          round(np.std(np.array(concept_questionaire_score)), 3))
                 else:
-                    print(group, "(" + concept + ") questionnaire", "is not normally distributed, with p =", str(round(p, 3)))
+                    print(group, "(" + concept + ") questionnaire", "is not normally distributed, with p =",
+                          round(p, 3), ", mean =", round(np.mean(np.array(concept_questionaire_score)), 3), ", STD =",
+                          round(np.std(np.array(concept_questionaire_score)), 3))
 
         tw_scores = []
         for score in scores:
@@ -262,9 +316,11 @@ def get_group_trustworthiness(group, graphs, verbose_lvl):
 
         if verbose_lvl >= 1:
             if tw_normal:
-                print(group, "(Trustworthiness)", "is normally distributed, with p =", str(round(p, 3)))
+                print(group, "(Trustworthiness)", "is normally distributed, with p =", round(p, 3), ", mean =",
+                      round(np.mean(np.array(tw_scores)), 3), ", STD =", round(np.std(np.array(tw_scores)), 3))
             else:
-                print(group, "(Trustworthiness)", "is not normally distributed, with p =", str(round(p, 3)))
+                print(group, "(Trustworthiness)", "is not normally distributed, with p =", round(p, 3), ", mean =",
+                      round(np.mean(np.array(tw_scores)), 3), ", STD =", round(np.std(np.array(tw_scores)), 3))
 
         tw_questionnaire_scores = []
         for score in questionnaire_scores:
@@ -274,11 +330,16 @@ def get_group_trustworthiness(group, graphs, verbose_lvl):
 
         if verbose_lvl >= 1:
             if tw_questionnaire_normal:
-                print(group, "(Trustworthiness) questionnaire", "is normally distributed, with p =", str(round(p, 3)))
+                print(group, "(Trustworthiness) questionnaire", "is normally distributed, with p =", round(p, 3),
+                      ", mean =", round(np.mean(np.array(tw_questionnaire_scores)), 3), ", STD =",
+                      round(np.std(np.array(tw_questionnaire_scores)), 3))
             else:
-                print(group, "(Trustworthiness) questionnaire", "is not normally distributed, with p =", str(round(p, 3)))
+                print(group, "(Trustworthiness) questionnaire", "is not normally distributed, with p =", round(p, 3),
+                      ", mean =", round(np.mean(np.array(tw_questionnaire_scores)), 3), ", STD =",
+                      round(np.std(np.array(tw_questionnaire_scores)), 3))
 
         if graphs:
+            shutil.rmtree('./results')
             plot_metrics(metrics)
             plot_distr(group, scores)
             plot_distr(group + "_questionnaire", questionnaire_scores)
@@ -309,6 +370,6 @@ def get_trustworthiness_from_file(action_file, last_ticks, ticks_to_respond, ver
     scores = [ability_score, benevolence_score, integrity_score]
 
     answers = _read_questionnaire_answers(file_name + ".json")
-    abi_questionnaire = _compute_abi_questionaire(answers)
+    abi_questionnaire, answers = _compute_abi_questionaire(answers)
 
-    return metrics, scores, abi_questionnaire
+    return metrics, scores, abi_questionnaire, answers

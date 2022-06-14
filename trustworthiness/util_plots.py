@@ -90,6 +90,7 @@ def plot_metrics(metrics):
 
 def plot_abi(abi_ctrl, abi_exp, tw_ctrl, tw_exp, type_):
     fig = plt.gcf()
+    plt.rc("font", **{"size": 27})
 
     bar_width = 1
 
@@ -126,7 +127,6 @@ def plot_abi(abi_ctrl, abi_exp, tw_ctrl, tw_exp, type_):
                ['Control', 'Experimental'],
                loc='upper left', frameon=False)
     plt.yticks([0, 1])
-    plt.rc("font", **{"size": 22})
-    fig.set_size_inches(20, 10)
+    fig.set_size_inches(25, 12)
     plt.savefig(result_folder + "ABI_" + type_.replace(" metrics", "") + ".png", bbox_inches="tight")
     plt.close(fig)

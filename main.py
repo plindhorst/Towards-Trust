@@ -27,22 +27,44 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-agent", action='store',
                         help="Agent type, choose from: control, control-dutch, helper, conflicting, advice, directing,\
-                         friendly, friendly-dutch, tutorial, tutorial-dutch",
-                        type=str)
+                         friendly, friendly-dutch, tutorial, tutorial-dutch", type=str)
     parser.add_argument("-tw", action='store',
                         help="Compare trustworthiness of control and experiment groups. "
                              "Enter the name of the experimental group, choose from: "
-                             "helper, conflicting, advice, directing,friendly",
-                        default=False)
+                             "helper, conflicting, advice, directing, friendly",
+                        default="conflicting", type=str)
+    parser.add_argument("-alt", action='store',
+                        help="Defines the alternative hypothesis. The following options are available (default is ‘two-sided’):"
+                             "‘two-sided’: the means of the distributions underlying the samples are unequal."
+                             "‘less’: the mean of the distribution underlying the first sample is less than the mean of the distribution underlying the second sample."
+                             "‘greater’: the mean of the distribution underlying the first sample is greater than the mean of the distribution underlying the second sample.",
+                        default="two-sided", type=str)
+    parser.add_argument("-verbose_lvl", action='store',
+                        help="Choose how much information to print. Verbose levels are: 0, 1, 2",
+                        default="0", type=str)
     args = parser.parse_args()
 
     if args.tw:
         group = args.tw
-        if group == "conflicting":
-            alternative = "greater"
-        else:
-            alternative = "less"
-        trustworthiness = Trustworthiness(group=group, graphs=True, alternative=alternative, verbose_lvl=1)
+        if group not in ["helper", "conflicting", "advice", "directing", "friendly"]:
+            print("Invalid experimental group name. Choose from: helper, conflicting, advice, directing, friendly")
+            sys.exit(0)
+
+        alt = "two-sided"
+        if args.alt:
+            alt = args.alt
+            if alt not in ["two-sided", "less", "greater"]:
+                print("Invalid alternative hypothesis. Choose from: two-sided, greater, less")
+                sys.exit(0)
+
+        verbose_lvl = 0
+        if args.verbose_lvl:
+            verbose_lvl = int(args.verbose_lvl)
+            if verbose_lvl not in [0, 1, 2]:
+                print("Invalid verbose level. Choose from: 0, 1, 2")
+                sys.exit(0)
+
+        trustworthiness = Trustworthiness(group=group, graphs=True, alternative=alt, verbose_lvl=verbose_lvl)
         sys.exit(0)
 
     agent = None
