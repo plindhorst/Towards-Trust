@@ -50,7 +50,14 @@ def _last_ticks(files):
             try:
                 while True:
                     data = pickle.load(fr)
-                    last_tick = data.__dict__["map_state"]['tick']
+
+                    #During the experiments there was a small bug that started the tick-count before the participant
+                    #pressed 'ready'. The reading time is tested and about 940. This number gets subtracted from the
+                    #tick result to correct for the bug.
+                    if "friendly" in action_file:
+                        last_tick = data.__dict__["map_state"]['tick'] - 940
+                    else:
+                        last_tick = data.__dict__["map_state"]['tick']
 
             except EOFError:
                 pass
@@ -410,6 +417,12 @@ class Trustworthiness:
 
             control_speed_tw_o = []
             control_effectiveness_tw_o = []
+            control_completion = []
+            control_found = []
+            control_picked = []
+            control_rooms_visited = []
+
+
             control_ability_tw_o = []
 
 
@@ -424,6 +437,12 @@ class Trustworthiness:
 
             experimental_speed_tw_o = []
             experimental_effectiveness_tw_o = []
+
+            experimental_completion = []
+            experimental_found = []
+            experimental_picked = []
+            experimental_rooms_visited = []
+
             experimental_ability_tw_o = []
 
             experimental_communication_tw_o = []
@@ -466,6 +485,10 @@ class Trustworthiness:
 
                 speed_score = ability.computeSpeedScore()
                 effectiveness_score = ability.computeEffectivenessScore()
+                completion_score = ability._game_completion()
+                found_score = ability._victim_found_ratios()
+                picked_score = ability._victim_picked_ratios()
+                room_visited_score = ability._rooms_visited()
 
                 communication_score = benevolence.computeCommunicationScore()
                 helping_score = benevolence.computeHelpingScore()
@@ -484,6 +507,13 @@ class Trustworthiness:
 
                     control_speed_tw_o.append(speed_score)
                     control_effectiveness_tw_o.append(effectiveness_score)
+
+                    control_effectiveness_tw_o.append(effectiveness_score)
+                    control_completion.append(completion_score)
+                    control_found.append(found_score)
+                    control_picked.append(picked_score)
+                    control_rooms_visited.append(room_visited_score)
+
                     control_ability_tw_o.append(ability_score)
 
                     control_communication_tw_o.append(communication_score)
@@ -500,9 +530,13 @@ class Trustworthiness:
                     control_tw_s.append(trustworthiness_subjective)
 
                 elif EXPERIMENTAL_AGENT in file_name:
-
                     experimental_speed_tw_o.append(speed_score)
                     experimental_effectiveness_tw_o.append(effectiveness_score)
+                    experimental_completion.append(completion_score)
+                    experimental_found.append(found_score)
+                    experimental_picked.append(picked_score)
+                    experimental_rooms_visited.append(room_visited_score)
+
                     experimental_ability_tw_o.append(ability_score)
 
                     experimental_communication_tw_o.append(communication_score)
@@ -588,6 +622,57 @@ class Trustworthiness:
             print(round(np.mean(control_effectiveness_tw_o), 2))
             print(round(np.std(control_effectiveness_tw_o), 2))
             print(round(np.median(control_effectiveness_tw_o), 2))
+
+            print("\n control group - objective - Completion - ability:")
+            print(round(np.mean(control_completion), 2))
+            print(round(np.std(control_completion), 2))
+            print(round(np.median(control_completion), 2))
+
+            print("\n control group - objective - Found - ability:")
+            print(round(np.mean(control_found), 2))
+            print(round(np.std(control_found), 2))
+            print(round(np.median(control_found), 2))
+
+            print("\n control group - objective - Picked - ability:")
+            print(round(np.mean(control_picked), 2))
+            print(round(np.std(control_picked), 2))
+            print(round(np.median(control_picked), 2))
+
+            print("\n control group - objective - rooms visited - ability:")
+            print(round(np.mean(control_rooms_visited), 2))
+            print(round(np.std(control_rooms_visited), 2))
+            print(round(np.median(control_rooms_visited), 2))
+
+            print("\n experimental group - objective - Completion - ability:")
+            print(round(np.mean(experimental_completion), 2))
+            print(round(np.std(experimental_completion), 2))
+            print(round(np.median(experimental_completion), 2))
+
+            print("\n experimental group - objective - Found - ability:")
+            print(round(np.mean(experimental_found), 2))
+            print(round(np.std(experimental_found), 2))
+            print(round(np.median(experimental_found), 2))
+
+            print("\n experimental group - objective - Picked - ability:")
+            print(round(np.mean(experimental_picked), 2))
+            print(round(np.std(experimental_picked), 2))
+            print(round(np.median(experimental_picked), 2))
+
+            print("\n experimental group - objective - rooms visited - ability:")
+            print(round(np.mean(experimental_rooms_visited), 2))
+            print(round(np.std(experimental_rooms_visited), 2))
+            print(round(np.median(experimental_rooms_visited), 2))
+
+
+
+
+
+
+
+
+
+
+
             print("\n control group - objective - ability:")
             print(round(np.mean(control_ability_tw_o), 2))
             print(round(np.std(control_ability_tw_o), 2))
