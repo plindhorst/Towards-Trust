@@ -382,14 +382,14 @@ def _printShapiroResult(result):
 def _printSignificanceTest(shapiroResultControl, shapiroResultExperimental, controlData, experimentalData):
     if shapiroResultControl.pvalue >= 0.05 and shapiroResultExperimental.pvalue >= 0.05:
         print("T-Test: ")
-        ttestValue = stats.ttest_ind(controlData, experimentalData, alternative="less")
+        ttestValue = stats.ttest_ind(controlData, experimentalData)
         if (ttestValue.pvalue < 0.05):
             print("\t" + str(ttestValue) + " SIGNIFICANT")
         else:
             print("\t" + str(ttestValue) + " NOT SIGNIFICANT")
     else:
         print("mann-Whitney test: ")
-        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData, alternative="less")
+        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData)
         if (mannWhitneyUValue.pvalue < 0.05):
             print("\t" + str(mannWhitneyUValue) + " SIGNIFICANT")
         else:
