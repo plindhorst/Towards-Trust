@@ -458,15 +458,6 @@ class Trustworthiness:
             experimental_integrity_tw_s = []
             experimental_tw_s = []
 
-            last_ticks = _last_ticks(list_of_files)
-            ticks_to_respond = _average_ticks_to_respond(list_of_files)
-
-            # modify list for non-responsive values: -1.
-            maximum = max(ticks_to_respond)
-            for index, item in enumerate(ticks_to_respond):
-                if item == -1:
-                    ticks_to_respond[index] = maximum * 2
-
             for action_file in list_of_files:
                 this_tick = _last_ticks([action_file])
                 this_tick_to_respond = _average_ticks_to_respond([action_file])
@@ -474,6 +465,19 @@ class Trustworthiness:
                 file_name = action_file.split("/")[-1].replace(".pkl", "")
 
                 print("### ", file_name)
+
+                list_of_tick_files = [k for k in list_of_files if (EXPERIMENTAL_AGENT in k)]
+                if CONTROL_AGENT in file_name:
+                    list_of_tick_files = [k for k in list_of_files if (CONTROL_AGENT in k)]
+
+                last_ticks = _last_ticks(list_of_tick_files)
+                ticks_to_respond = _average_ticks_to_respond(list_of_tick_files)
+
+                # modify list for non-responsive values: -1.
+                maximum = max(ticks_to_respond)
+                for index, item in enumerate(ticks_to_respond):
+                    if item == -1:
+                        ticks_to_respond[index] = maximum * 2
 
                 actions = _read_action_file(action_file)
 
