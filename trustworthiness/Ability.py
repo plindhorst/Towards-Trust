@@ -13,13 +13,14 @@ class Ability:
 
 
     # Returns computed ability
-    def compute(self):
+    def compute(self, isFriendly):
 
         if self.verbose:
             print("\nAbility:")
 
-        metrics = [self.computeSpeedScore(), self.computeEffectivenessScore()]
+        metrics = [self.computeSpeedScore(), self.computeEffectivenessScore(isFriendly)]
         score = np.mean(metrics)
+
         return score
 
     def computeSpeedScore(self):
@@ -28,12 +29,20 @@ class Ability:
 
         return self._normalized_tick()
 
-    def computeEffectivenessScore(self):
+    #During the experiments there was a small bug that started the tick-count before the participant
+    #pressed 'ready'. The participants missed on average 10.97 percent of time. Therefore, the effectiveness is
+    # corrected for by dividing by 0.8903.
+
+    def computeEffectivenessScore(self, isFriendly=False):
         if self.verbose:
             print("\nEffectiveness score: ")
 
-        return np.mean([self._game_completion(), self._victim_found_ratios(),
-                        self._victim_picked_ratios(), self._rooms_visited()])
+        if isFriendly:
+            return np.mean([self._game_completion(), self._victim_found_ratios(),
+                            self._victim_picked_ratios(), self._rooms_visited()]) / 0.8903
+        else:
+            return np.mean([self._game_completion(), self._victim_found_ratios(),
+                            self._victim_picked_ratios(), self._rooms_visited()])
 
     def _normalized_tick(self):
         maximum = max(self._last_ticks)
@@ -65,7 +74,7 @@ class Ability:
         if count > NUMBER_OF_VICTIMS:
             return 1
 
-        return count / NUMBER_OF_VICTIMS
+        return (count / NUMBER_OF_VICTIMS)
 
     # returns the ratio of vicims found
     def _victim_found_ratios(self):
@@ -79,7 +88,7 @@ class Ability:
 
         if found_victim_count > NUMBER_OF_VICTIMS:
             return 1
-        return found_victim_count / NUMBER_OF_VICTIMS
+        return (found_victim_count / NUMBER_OF_VICTIMS)
 
     # returns the ratio of victim picked up by the human
     def _victim_picked_ratios(self):
@@ -94,7 +103,7 @@ class Ability:
         if picked_up_victim_count > NUMBER_OF_VICTIMS:
             return 1
 
-        return picked_up_victim_count / NUMBER_OF_VICTIMS
+        return (picked_up_victim_count / NUMBER_OF_VICTIMS)
 
     # Returns the ratio of number of rooms visited by human by the total amount of rooms
     def _rooms_visited(self):
@@ -110,4 +119,4 @@ class Ability:
         if self.verbose:
             print("Rooms visited: ", count, "/", number_of_rooms)
 
-        return count / number_of_rooms
+        return (count / number_of_rooms)
