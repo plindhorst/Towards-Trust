@@ -9,12 +9,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pingouin as pg
 from scipy.stats import skew
+import seaborn as sns
 
 from trustworthiness.Ability import Ability
 from trustworthiness.Benevolence import Benevolence
 from trustworthiness.Integrity import Integrity
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
-from world.actions.HumanAction import MessageGirl, MessageYes, MessageBoy, MessageNo
+from world.actions.HumanAction import MessageGirl, MessageYes, MessageBoy, MessageNo, MessageHelp
 from scipy import stats
 
 VERBOSE = False
@@ -199,15 +200,15 @@ def _printShapiroResult(result):
 def _printSignificanceTest(shapiroResultControl, shapiroResultExperimental, controlData, experimentalData):
     if shapiroResultControl >= 0.05 and shapiroResultExperimental >= 0.05:
         print("T-Test: ")
-        ttestValue = stats.ttest_ind(controlData, experimentalData, alternative="less").pvalue
-        if (ttestValue < 0.05):
+        ttestValue = stats.ttest_ind(controlData, experimentalData)
+        if (ttestValue.pvalue < 0.05):
             print("\t" + str(ttestValue) + " SIGNIFICANT")
         else:
             print("\t" + str(ttestValue) + " NOT SIGNIFICANT")
     else:
         print("mann-Whitney test: ")
-        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData, alternative="less").pvalue
-        if (mannWhitneyUValue < 0.05):
+        mannWhitneyUValue = stats.mannwhitneyu(controlData, experimentalData)
+        if (mannWhitneyUValue.pvalue < 0.05):
             print("\t" + str(mannWhitneyUValue) + " SIGNIFICANT")
         else:
             print("\t" + str(mannWhitneyUValue) + " NOT SIGNIFICANT")
@@ -219,6 +220,8 @@ class Trustworthiness:
         list_of_files = [k for k in list_of_files if (CONTROL_AGENT in k) or (EXPERIMENTAL_AGENT in k)]
 
         if len(list_of_files) > 0:
+            help_counters = []
+            help_trustworthiness = []
             control_ability_tw_s = []
             control_benevolence_tw_s = []
             control_integrity_tw_s = []
@@ -239,6 +242,7 @@ class Trustworthiness:
             experimental_integrity_tw_s = []
             experimental_tw_s = []
 
+
             for action_file in list_of_files:
                 this_tick = _last_ticks([action_file])
                 this_tick_to_respond = _average_ticks_to_respond([action_file])
@@ -258,7 +262,8 @@ class Trustworthiness:
                 maximum = max(ticks_to_respond)
                 for index, item in enumerate(ticks_to_respond):
                     if item == -1:
-                        ticks_to_respond[index] = maximum * 2
+                        ticks_to_respond[index] = maximum
+
 
                 actions = _read_action_file(action_file)
 
@@ -289,6 +294,19 @@ class Trustworthiness:
                     control_tw_s.append(trustworthiness_subjective)
 
                 elif EXPERIMENTAL_AGENT in file_name:
+                    help_count = 0
+
+                    for act in actions:
+
+                        if type(act) is MessageHelp:
+                            # print(act)
+                            # print(action_file)
+                            help_count += 1
+
+                    if help_count > 0:
+                        help_counters.append(help_count)
+                        help_trustworthiness.append(trustworthiness_objective)
+                    # print(help_counters)
                     experimental_ability_tw_o.append(ability_score)
                     experimental_benevolence_tw_o.append(benevolence_score)
                     experimental_integrity_tw_o.append(integrity_score)
@@ -298,26 +316,148 @@ class Trustworthiness:
                     experimental_benevolence_tw_s.append(abi_questionnaire[1])
                     experimental_integrity_tw_s.append(abi_questionnaire[2])
                     experimental_tw_s.append(trustworthiness_subjective)
+            coef_corr = np.corrcoef(help_counters, help_trustworthiness)
+            print("\n\nPEARSON CORRELATION: ", coef_corr, "\n\n")
 
             print("### STATISTICS OF DISTRIBUTION EXPERIMENTAL GROUP:")
+            variance_exp = statistics.mean(experimental_tw_o)
+            variance_a_exp = statistics.mean(experimental_ability_tw_o)
+            variance_b_exp = statistics.mean(experimental_benevolence_tw_o)
+            variance_i_exp = statistics.mean(experimental_integrity_tw_o)
+            print("MEAN TW EXPERIMENTAL: ", round(variance_exp, 3))
+            print("MEAN ABILITY EXPERIMENTAL: ",  round(variance_a_exp, 3))
+            print("MEAN BENEVOLENCE EXPERIMENTAL: ",  round(variance_b_exp, 3))
+            print("MEAN INTEGRITY EXPERIMENTAL: ",  round(variance_i_exp, 3))
             variance_exp = statistics.variance(experimental_tw_o)
             variance_a_exp = statistics.variance(experimental_ability_tw_o)
             variance_b_exp = statistics.variance(experimental_benevolence_tw_o)
             variance_i_exp = statistics.variance(experimental_integrity_tw_o)
-            print("VARIANCE TW EXPERIMENTAL: ", variance_exp)
-            print("VARIANCE ABILITY EXPERIMENTAL: ", variance_a_exp)
-            print("VARIANCE BENEVOLENCE EXPERIMENTAL: ", variance_b_exp)
-            print("VARIANCE INTEGRITY EXPERIMENTAL: ", variance_i_exp)
+            print("VARIANCE TW EXPERIMENTAL: ",  round(variance_exp, 3))
+            print("VARIANCE ABILITY EXPERIMENTAL: ",  round(variance_a_exp, 3))
+            print("VARIANCE BENEVOLENCE EXPERIMENTAL: ",  round(variance_b_exp, 3))
+            print("VARIANCE INTEGRITY EXPERIMENTAL: ",  round(variance_i_exp, 3))
+            variance_exp = statistics.stdev(experimental_tw_o)
+            variance_a_exp = statistics.stdev(experimental_ability_tw_o)
+            variance_b_exp = statistics.stdev(experimental_benevolence_tw_o)
+            variance_i_exp = statistics.stdev(experimental_integrity_tw_o)
+            print("STD TW EXPERIMENTAL: ",  round(variance_exp, 3))
+            print("STD ABILITY EXPERIMENTAL: ",  round(variance_a_exp, 3))
+            print("STD BENEVOLENCE EXPERIMENTAL: ",  round(variance_b_exp, 3))
+            print("STD INTEGRITY EXPERIMENTAL: ",  round(variance_i_exp, 3))
+            variance_exp = skew(experimental_tw_o)
+            variance_a_exp = skew(experimental_ability_tw_o)
+            variance_b_exp = skew(experimental_benevolence_tw_o)
+            variance_i_exp = skew(experimental_integrity_tw_o)
+            print("SKEW TW EXPERIMENTAL: ", round(variance_exp, 3))
+            print("SKEW ABILITY EXPERIMENTAL: ",round(variance_a_exp, 3))
+            print("SKEW BENEVOLENCE EXPERIMENTAL: ", round(variance_b_exp, 3))
+            print("SKEW INTEGRITY EXPERIMENTAL: ", round(variance_i_exp, 3))
+
 
             print("### STATISTICS OF DISTRIBUTION CONTROL GROUP:")
+            variance_exp = statistics.mean(control_tw_o)
+            variance_a_exp = statistics.mean(control_ability_tw_o)
+            variance_b_exp = statistics.mean(control_benevolence_tw_o)
+            variance_i_exp = statistics.mean(control_integrity_tw_o)
+            print("MEAN TW CONTROL: ", round(variance_exp, 3))
+            print("MEAN ABILITY  CONTROL: ",round(variance_a_exp, 3))
+            print("MEAN BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("MEAN INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
             variance_exp = statistics.variance(control_tw_o)
             variance_a_exp = statistics.variance(control_ability_tw_o)
             variance_b_exp = statistics.variance(control_benevolence_tw_o)
             variance_i_exp = statistics.variance(control_integrity_tw_o)
-            print("VARIANCE TW CONTROL: ", variance_exp)
-            print("VARIANCE ABILITY CONTROL: ", variance_a_exp)
-            print("VARIANCE BENEVOLENCE CONTROL: ", variance_b_exp)
-            print("VARIANCE INTEGRITY CONTROL: ", variance_i_exp)
+            print("VARIANCE TW  CONTROL: ", round(variance_exp, 3))
+            print("VARIANCE ABILITY  CONTROL: ",round(variance_a_exp, 3))
+            print("VARIANCE BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("VARIANCE INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
+            variance_exp = statistics.stdev(control_tw_o)
+            variance_a_exp = statistics.stdev(control_ability_tw_o)
+            variance_b_exp = statistics.stdev(control_benevolence_tw_o)
+            variance_i_exp = statistics.stdev(control_integrity_tw_o)
+            print("STD TW  CONTROL: ", round(variance_exp, 3))
+            print("STD ABILITY  CONTROL: ",round(variance_a_exp, 3))
+            print("STD BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("STD INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
+            variance_exp = skew(control_tw_o)
+            variance_a_exp = skew(control_ability_tw_o)
+            variance_b_exp = skew(control_benevolence_tw_o)
+            variance_i_exp = skew(control_integrity_tw_o)
+            print("SKEW TW  CONTROL: ", round(variance_exp, 3))
+            print("SKEW ABILITY  CONTROL: ",round(variance_a_exp, 3))
+            print("SKEW BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("SKEW INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
+
+
+            print("\n SUBJECTIVE \n")
+
+            print("### STATISTICS OF DISTRIBUTION EXPERIMENTAL GROUP:")
+            variance_exp = statistics.mean(experimental_tw_s)
+            variance_a_exp = statistics.mean(experimental_ability_tw_s)
+            variance_b_exp = statistics.mean(experimental_benevolence_tw_s)
+            variance_i_exp = statistics.mean(experimental_integrity_tw_s)
+            print("MEAN TW EXPERIMENTAL: ", round(variance_exp, 3))
+            print("MEAN ABILITY EXPERIMENTAL: ", round(variance_a_exp, 3))
+            print("MEAN BENEVOLENCE EXPERIMENTAL: ", round(variance_b_exp, 3))
+            print("MEAN INTEGRITY EXPERIMENTAL: ", round(variance_i_exp, 3))
+            variance_exp = statistics.variance(experimental_tw_s)
+            variance_a_exp = statistics.variance(experimental_ability_tw_s)
+            variance_b_exp = statistics.variance(experimental_benevolence_tw_s)
+            variance_i_exp = statistics.variance(experimental_integrity_tw_s)
+            print("VARIANCE TW EXPERIMENTAL: ", round(variance_exp, 3))
+            print("VARIANCE ABILITY EXPERIMENTAL: ", round(variance_a_exp, 3))
+            print("VARIANCE BENEVOLENCE EXPERIMENTAL: ", round(variance_b_exp, 3))
+            print("VARIANCE INTEGRITY EXPERIMENTAL: ", round(variance_i_exp, 3))
+            variance_exp = statistics.stdev(experimental_tw_s)
+            variance_a_exp = statistics.stdev(experimental_ability_tw_s)
+            variance_b_exp = statistics.stdev(experimental_benevolence_tw_s)
+            variance_i_exp = statistics.stdev(experimental_integrity_tw_s)
+            print("STD TW EXPERIMENTAL: ", round(variance_exp, 3))
+            print("STD ABILITY EXPERIMENTAL: ", round(variance_a_exp, 3))
+            print("STD BENEVOLENCE EXPERIMENTAL: ", round(variance_b_exp, 3))
+            print("STD INTEGRITY EXPERIMENTAL: ", round(variance_i_exp, 3))
+            variance_exp = skew(experimental_tw_s)
+            variance_a_exp = skew(experimental_ability_tw_s)
+            variance_b_exp = skew(experimental_benevolence_tw_s)
+            variance_i_exp = skew(experimental_integrity_tw_s)
+            print("SKEW TW EXPERIMENTAL: ", round(variance_exp, 3))
+            print("SKEW ABILITY EXPERIMENTAL: ", round(variance_a_exp, 3))
+            print("SKEW BENEVOLENCE EXPERIMENTAL: ", round(variance_b_exp, 3))
+            print("SKEW INTEGRITY EXPERIMENTAL: ", round(variance_i_exp, 3))
+
+            print("### STATISTICS OF DISTRIBUTION CONTROL GROUP:")
+            variance_exp = statistics.mean(control_tw_s)
+            variance_a_exp = statistics.mean(control_ability_tw_s)
+            variance_b_exp = statistics.mean(control_benevolence_tw_s)
+            variance_i_exp = statistics.mean(control_integrity_tw_s)
+            print("MEAN TW CONTROL: ", round(variance_exp, 3))
+            print("MEAN ABILITY  CONTROL: ", round(variance_a_exp, 3))
+            print("MEAN BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("MEAN INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
+            variance_exp = statistics.variance(control_tw_s)
+            variance_a_exp = statistics.variance(control_ability_tw_s)
+            variance_b_exp = statistics.variance(control_benevolence_tw_s)
+            variance_i_exp = statistics.variance(control_integrity_tw_s)
+            print("VARIANCE TW  CONTROL: ", round(variance_exp, 3))
+            print("VARIANCE ABILITY  CONTROL: ", round(variance_a_exp, 3))
+            print("VARIANCE BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("VARIANCE INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
+            variance_exp = statistics.stdev(control_tw_s)
+            variance_a_exp = statistics.stdev(control_ability_tw_s)
+            variance_b_exp = statistics.stdev(control_benevolence_tw_s)
+            variance_i_exp = statistics.stdev(control_integrity_tw_s)
+            print("STD TW  CONTROL: ", round(variance_exp, 3))
+            print("STD ABILITY  CONTROL: ", round(variance_a_exp, 3))
+            print("STD BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("STD INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
+            variance_exp = skew(control_tw_s)
+            variance_a_exp = skew(control_ability_tw_s)
+            variance_b_exp = skew(control_benevolence_tw_s)
+            variance_i_exp = skew(control_integrity_tw_s)
+            print("SKEW TW  CONTROL: ", round(variance_exp, 3))
+            print("SKEW ABILITY  CONTROL: ", round(variance_a_exp, 3))
+            print("SKEW BENEVOLENCE  CONTROL: ", round(variance_b_exp, 3))
+            print("SKEW INTEGRITY  CONTROL: ", round(variance_i_exp, 3))
 
             shapiro_control_ability_o = stats.shapiro(control_ability_tw_o).pvalue
             shapiro_control_benevolence_o = stats.shapiro(control_benevolence_tw_o).pvalue
@@ -410,6 +550,13 @@ class Trustworthiness:
             print("\n\tsubjective - trustworthiness - ", end="")
             _printSignificanceTest(shapiro_control_s, shapiro_experimental_s, control_tw_s, experimental_tw_s)
 
+            # plt.scatter(help_counters, help_trustworthiness, alpha=0.5)
+            # plt.plot(help_counters,help_trustworthiness)
+            # m, b = np.polyfit(help_counters, help_trustworthiness,)
+            # plt.plot(help_counters, m * help_counters + b)
+            # plt.show()
+
+
             # Trusworthiness Histogram control vs. experiment, objective.
             plt.hist([control_tw_o, experimental_tw_o], bins=7, label=['control group', 'experimental group'],
                      color=['#0072BD','#77AC30'])
@@ -418,6 +565,7 @@ class Trustworthiness:
             plt.xlabel('Trustworthiness Score')
             plt.ylabel('Frequency')
             plt.show()
+
 
             # Ability Histogram control vs. experiment, objective.
             plt.hist([control_ability_tw_o, experimental_ability_tw_o], bins=7,
@@ -604,6 +752,7 @@ class Trustworthiness:
             plt.title("ABI Questionnaire Score Comparison")
             plt.legend()
             plt.show()
+
 
             print("Got here")
 
