@@ -31,17 +31,14 @@ if __name__ == "__main__":
     parser.add_argument("-tw", action='store',
                         help="Compare trustworthiness of control and experiment groups. "
                              "Enter the name of the experimental group, choose from: "
-                             "helper, conflicting, advice, directing, friendly",
-                        default="conflicting", type=str)
+                             "helper, conflicting, advice, directing, friendly", type=str)
     parser.add_argument("-alt", action='store',
-                        help="Defines the alternative hypothesis. The following options are available (default is ‘two-sided’):"
+                        help="Defines the alternative hypothesis. The following options are available:"
                              "‘two-sided’: the means of the distributions underlying the samples are unequal."
                              "‘less’: the mean of the distribution underlying the first sample is less than the mean of the distribution underlying the second sample."
-                             "‘greater’: the mean of the distribution underlying the first sample is greater than the mean of the distribution underlying the second sample.",
-                        default="two-sided", type=str)
+                             "‘greater’: the mean of the distribution underlying the first sample is greater than the mean of the distribution underlying the second sample.", type=str)
     parser.add_argument("-verbose_lvl", action='store',
-                        help="Choose how much information to print. Verbose levels are: 0, 1, 2",
-                        default="0", type=str)
+                        help="Choose how much information to print. Verbose levels are: 0, 1, 2", type=str)
     args = parser.parse_args()
 
     if args.tw:

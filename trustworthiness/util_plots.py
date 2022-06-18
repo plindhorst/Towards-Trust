@@ -130,3 +130,49 @@ def plot_abi(abi_ctrl, abi_exp, tw_ctrl, tw_exp, type_):
     fig.set_size_inches(25, 12)
     plt.savefig(result_folder + "ABI_" + type_.replace(" metrics", "") + ".png", bbox_inches="tight")
     plt.close(fig)
+
+
+def plot_participant_stats(group, participants_stats):
+    result_folder = os.getcwd().replace("\\", "/") + "/results/"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    plot_coords = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    titles = ["Age", "Gender", "Birthplace", "Game Experience"]
+    name_stats = ["age", "Gender", "Birthplace", "GameExperience"]
+    values_stats = [["18-24", "25-34", "35-44", "45-54", "55-64", "65+"],
+                    ["Male", "Female", "Other", "Prefer not to say"],
+                    ["Africa", "Asia", "Australia", "Europe", "North/Central America", "South America", "Other"],
+                    ["Low", "Average", "High"]]
+
+    fig = plt.figure(figsize=(25, 25))
+    plt.rc("font", **{"size": 28})
+    for i, name_stat in enumerate(name_stats):
+        counts = []
+        for j in range(len(values_stats[i])):
+            counts.append(0)
+
+        for participants_stat in participants_stats:
+            try:
+                counts[int(participants_stat[i][name_stat])] += 1
+            except KeyError:
+                continue
+
+        pop_idx = []
+        for j, count in enumerate(counts):
+            if count == 0:
+                pop_idx.append(j)
+
+        for j, idx in enumerate(pop_idx):
+            counts.pop(idx - j)
+            values_stats[i].pop(idx - j)
+
+        ax1 = plt.subplot2grid((2, 2), plot_coords[i])
+        plt.title(titles[i].title())
+
+        plt.pie(counts, labels=values_stats[i], autopct='%1.1f%%')
+
+    fig.suptitle("Population Statistics for " + group.replace("_", " ").title() + " Group")
+    fig.tight_layout()
+    plt.savefig(result_folder + "population_stats_" + group + ".png", bbox_inches="tight")
+    plt.close(fig)

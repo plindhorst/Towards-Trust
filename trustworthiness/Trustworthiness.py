@@ -9,7 +9,7 @@ import numpy as np
 from trustworthiness.Ability import Ability
 from trustworthiness.Benevolence import Benevolence
 from trustworthiness.Integrity import Integrity
-from trustworthiness.util_plots import plot_metrics, plot_distr, plot_abi
+from trustworthiness.util_plots import plot_metrics, plot_distr, plot_abi, plot_participant_stats
 from world.actions.AgentAction import MessageAskGender, MessageSuggestPickup
 from world.actions.HumanAction import MessageGirl, MessageYes, MessageBoy, MessageNo
 from scipy.stats import shapiro, mannwhitneyu, ttest_ind
@@ -142,6 +142,8 @@ def is_normal_distr(scores, alpha=0.05):
 
 class Trustworthiness:
     def __init__(self, group="control", graphs=False, alternative="two-sided", verbose_lvl=0):
+        if graphs:
+            shutil.rmtree('./results')
         abi_ctrl, abi_normal_ctrl, abi_questionnaire_ctrl, abi_questionnaire_normal_ctrl, tw_ctrl, tw_normal_ctrl, tw_questionnaire_ctrl, tw_questionnaire_normal_ctrl = get_group_trustworthiness(
             "control", graphs, verbose_lvl)
         abi_exp, abi_normal_exp, abi_questionnaire_exp, abi_questionnaire_normal_exp, tw_exp, tw_normal_exp, tw_questionnaire_exp, tw_questionnaire_normal_exp = get_group_trustworthiness(
@@ -247,16 +249,17 @@ def get_group_trustworthiness(group, graphs, verbose_lvl):
         scores = []
         questionnaire_scores = []
         questionnaire_answers = []
+        participant_stats = []
         for action_file in list_of_files:
 
-            metrics_, scores_, abi_questionnaire, answers = get_trustworthiness_from_file(action_file, last_ticks,
+            metrics_, scores_, abi_questionnaire, answers, participant_stat = get_trustworthiness_from_file(action_file, last_ticks,
                                                                                           ticks_to_respond,
                                                                                           verbose_lvl)
-
             metrics.append(metrics_)
             scores.append(scores_)
             questionnaire_scores.append(abi_questionnaire)
             questionnaire_answers.append(answers)
+            participant_stats.append(participant_stat)
 
             if verbose_lvl >= 2:
                 print("\n--- ABI score (metrics): ", scores_)
@@ -339,10 +342,10 @@ def get_group_trustworthiness(group, graphs, verbose_lvl):
                       round(np.std(np.array(tw_questionnaire_scores)), 3))
 
         if graphs:
-            shutil.rmtree('./results')
             plot_metrics(metrics)
             plot_distr(group, scores)
             plot_distr(group + "_questionnaire", questionnaire_scores)
+            plot_participant_stats(group, participant_stats)
 
         return abi_scores, abi_normal, abi_questionnaire_scores, abi_questionnaire_normal, tw_scores, tw_normal, tw_questionnaire_scores, tw_questionnaire_normal
 
@@ -370,6 +373,9 @@ def get_trustworthiness_from_file(action_file, last_ticks, ticks_to_respond, ver
     scores = [ability_score, benevolence_score, integrity_score]
 
     answers = _read_questionnaire_answers(file_name + ".json")
+    participant_stat = []
+    for i in range(5):
+        participant_stat.append(answers[i])
     abi_questionnaire, answers = _compute_abi_questionaire(answers)
 
-    return metrics, scores, abi_questionnaire, answers
+    return metrics, scores, abi_questionnaire, answers, participant_stat
