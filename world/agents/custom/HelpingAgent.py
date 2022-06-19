@@ -51,7 +51,6 @@ class HelpingAgent(BW4TBrain):
         self._searchedRooms = []
         self._foundVictims = []
         self._collectedVictims = []
-        self._pickupRequests = {}
         self._foundVictimLocs = {}
         self._maxTicks = 11577
         HelpingAgent.numberOfTicksWhenReady = self._maxTicks
@@ -73,23 +72,29 @@ class HelpingAgent(BW4TBrain):
 
     def decide_on_bw4t_action(self, state: State):
         ticksLeft = self._maxTicks - state['World']['nr_ticks']
-
         while True:
-
-            if self.received_messages and self.received_messages[-1].startswith('What are the commands to move'):
-                self._sendMessage("You move up with 'w', down with 's', left with 'a' and right with 'd'", 'RescueBot')
-            if self.received_messages and self.received_messages[-1].startswith('What are the commands for'):
-                self._sendMessage("To pick up a victim press the 'Q' key. To drop off a victim press the 'W' key.",
+            if self.received_messages and self.received_messages[-1].startswith('What are the commands'):
+                self._sendMessage("You move up with 'W', down with 'S', left with 'A' and right with 'D'" +
+                                  "To pick up a victim press the 'Q' key. To drop off a victim press the 'E' key.",
                                   'RescueBot')
+            if self.received_messages and self.received_messages[-1].startswith('Which victims'):
+                msg = "I can carry: "
+                for victim in self._all_victims:
+                    if victim not in self._uncarryable:
+                        msg = msg + victim + " "
+                msg = msg + ". I am not able to carry: "
+                for victim in self._all_victims:
+                    if victim in self._uncarryable:
+                        msg = msg + victim + " "
+                self._sendMessage(msg + ".", 'RescueBot')
             if self.received_messages and self.received_messages[-1].startswith('What are the injury severity'):
-                self._sendMessage(
-                    "Red is high severity injury. We prioritize these. Yellow is a mild severity injury. " +
-                    "We rescue them too but at a lesser priority. Green is for healthy human/animals" +
-                    ". We are not concerned with them.", 'RescueBot')
+                self._sendMessage("Red (like critically injured man) is high severity injury. We prioritize these. " +
+                                  "Yellow (like mildly injured elderly woman) is a mild severity injury. " +
+                                  "We rescue them too but at a lesser priority. Green (like healthy boy) is for " +
+                                  "healthy humans/animals. We are not concerned with them.", 'RescueBot')
             if self.received_messages and self.received_messages[-1].startswith('How much time'):
                 self._timeLeft(ticksLeft)
             if self.received_messages and self.received_messages[-1].startswith('Who'):
-
                 if self._foundVictims == []:
                     self._sendMessage("We have not found any victim yet. Let's keep searching !", 'RescueBot')
                 else:
@@ -106,10 +111,38 @@ class HelpingAgent(BW4TBrain):
 
                     self._sendMessage(msg, 'RescueBot')
 
+            if self.received_messages and self.received_messages[-1].startswith('Pick-up:'):
+                msg = self.received_messages[-1].replace(' in ', ";").replace("Pick-up: ", ";").split(";")[1:3]
+                foundVic = msg[0]
+                loc = msg[1]
+                if loc not in self._searchedRooms:
+                    self._searchedRooms.append(loc)
+                if foundVic not in self._foundVictims:
+                    self._foundVictims.append(foundVic)
+                    self._foundVictimLocs[foundVic] = {'room': loc}
+                    print("1")
+                    print(foundVic)
+                    print(self._foundVictimLocs[foundVic])
+                if foundVic in self._foundVictims and self._foundVictimLocs[foundVic]['room'] != loc:
+                    print("Did not cahnge:")
+                    print(self._foundVictimLocs[foundVic])
+                if self._phase == Phase.INTRODUCTION:
+                    self._sendMessage("First press Ready to start the game.", 'RescueBot')
+                else:
+                    if self._goalVic != foundVic:
+                        self._sendMessage("Right now we need to find " + self._goalVic + ". But I will help you pick up " +
+                                          foundVic + " as soon as it becomse their turn.", 'RescueBot')
+                    else:
+                        self._sendMessage("Consider it done and continue searching for the rest", 'RescueBot')
+
+
+
             if Phase.INTRODUCTION == self._phase:
                 self._sendMessage('Hello! My name is RescueBot. Together we will collaborate and try to search and rescue the 8 victims on our left as quickly as possible. \
                 We have to rescue the 8 victims in order from left to right (critically injured girl, critically injured elderly woman, critically injured man, critically injured dog, mildly injured boy, mildly injured elderly man, mildly injured woman, mildly injured cat), so it is important to only drop a victim when the previous one already has been dropped. \
                 We have 10 minutes to successfully collect all 8 victims in the correct order. \
+                Please remember I am here to help you at any time. Press any of the yellow/dark blue buttons \
+                below to ask a question or any of the green buttons if you need help picking up a victim. \
                 If you understood everything I just told you, please press the "Ready!" button. We will then start our mission!',
                                   'RescueBot')
 
@@ -131,7 +164,14 @@ class HelpingAgent(BW4TBrain):
                 else:
                     return None, {}
 
+            if ticksLeft % 1000 == 0:
+                self._sendMessage(
+                    "Please remember I am here to help you at any time. Press any of the yellow buttons " +
+                    "below to ask a question or any of the green buttons if you need help picking up a victim.",
+                    "RescueBot")
+
             if Phase.FIND_NEXT_GOAL == self._phase:
+
                 zones = self._getDropZones(state)
                 locs = [zone['location'] for zone in zones]
                 self._firstVictim = str(zones[0]['img_name'])[8:-4]
@@ -153,6 +193,7 @@ class HelpingAgent(BW4TBrain):
                         return Idle.__name__, {'duration_in_ticks': 25}
                     if self._mode == 'quick':
                         return Idle.__name__, {'duration_in_ticks': 10}
+
 
                 if self._goalVic in self._foundVictims and 'location' in self._foundVictimLocs[self._goalVic].keys():
                     if self._foundVictimLocs[self._goalVic]['room'] in ['area A1', 'area A2', 'area A3', 'area A4'] and \
@@ -325,6 +366,7 @@ class HelpingAgent(BW4TBrain):
                 self._navigator.reset_full()
                 if self._goalVic in self._foundVictims and 'location' not in self._foundVictimLocs[
                     self._goalVic].keys():
+                    print(self._foundVictimLocs[self._goalVic])
                     self._door = state.get_room_doors(self._foundVictimLocs[self._goalVic]['room'])[0]
                     doorLoc = self._door['location']
                 else:
@@ -616,6 +658,8 @@ class HelpingAgent(BW4TBrain):
             if Phase.TAKE_VICTIM == self._phase:
                 self._phase = Phase.PLAN_PATH_TO_DROPPOINT
                 self._collectedVictims.append(self._goalVic)
+                print(self._goalVic)
+                print( self._foundVictimLocs[self._goalVic])
                 return GrabObject.__name__, {'object_id': self._foundVictimLocs[self._goalVic]['obj_id']}
 
             if Phase.PLAN_PATH_TO_DROPPOINT == self._phase:
