@@ -29,9 +29,9 @@ class Ability:
 
         return self._normalized_tick()
 
-    #During the experiments there was a small bug that started the tick-count before the participant
-    #pressed 'ready'. The participants missed on average 10.97 percent of time. Therefore, the effectiveness is
-    # corrected for by dividing by 0.8903.
+    #During the experiments for the friendly agent there was a small bug that started the tick-count before
+    # the participant pressed 'ready'. The participants missed on average 10.97 percent of time.
+    # Therefore, the effectiveness is corrected for by dividing by 0.8903.
 
     def computeEffectivenessScore(self, isFriendly=False):
         if self.verbose:

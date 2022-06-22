@@ -51,9 +51,9 @@ def _last_ticks(files):
                 while True:
                     data = pickle.load(fr)
 
-                    #During the experiments there was a small bug that started the tick-count before the participant
-                    #pressed 'ready'. The reading time is tested and about 940. This number gets subtracted from the
-                    #tick result to correct for the bug.
+                    #During the experiments for the friendly agent there was a small bug that started the tick-count
+                    # before the participant pressed 'ready'. The reading time is tested and about 940 ticks.
+                    # This number gets subtracted from the tick result to correct for the bug.
                     if "friendly" in action_file:
                         last_tick = data.__dict__["map_state"]['tick'] - 940
                     else:
