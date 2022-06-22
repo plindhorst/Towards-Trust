@@ -1,2 +1,2 @@
 # Towards Trust
-Run using `main.py -agent "agent_type"`, choose from: `control`, `helper`, `conflicting`, `advice`, `directing`, `friendly` 
+Run using `main.py -agent "agent_type"`, choose from: `control`, `helper`, `conflicting`, `advice`, `directing`, `friendly`. To compute trustworthiness run `main.py -tw "agent_type" -alt "alternative"`, for alternative choose from `greater`, `less`, `two-sided`.
