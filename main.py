@@ -10,7 +10,7 @@ from world.agents.custom.TutorialAgent import TutorialAgent
 from world.agents.custom.TutorialAgentDutch import TutorialAgentDutch
 from world.visualizer import visualization_server
 from world.agents.ControlAgent import ControlAgent
-from world.agents.custom.AdviceAgent import AdviceAgent
+from world.agents.custom.HelpSeekerAgent import HelpSeekerAgent
 from world.agents.custom.ConflictingAgent import ConflictingAgent
 from world.agents.custom.DirectingAgent import DirectingAgent
 from world.agents.custom.FriendlyAgent import FriendlyAgent
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     agent = None
 
-    agent_type = args.agent
+    agent_type = "control"
     if agent_type == "control":
         print("Playing with control agent")
         agent = ControlAgent(AGENT_SLOWDOWN)
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         agent = ConflictingAgent(AGENT_SLOWDOWN)
     elif agent_type == "advice":
         print("Playing with advice seeking agent")
-        agent = AdviceAgent(AGENT_SLOWDOWN)
+        agent = HelpSeekerAgent(AGENT_SLOWDOWN)
     elif agent_type == "directing":
         print("Playing with directing agent")
         agent = DirectingAgent(AGENT_SLOWDOWN)

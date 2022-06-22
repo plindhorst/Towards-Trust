@@ -20,7 +20,7 @@ from scipy import stats
 
 VERBOSE = False
 CONTROL_AGENT = 'control'
-EXPERIMENTAL_AGENT = 'helper'
+EXPERIMENTAL_AGENT = 'advice'
 
 
 def _read_action_file(action_file):
@@ -683,6 +683,17 @@ class Trustworthiness:
                 experimental_group_integrity.append(integrity_score)
 
         X = ['Ability', 'Benevolence', 'Integrity', 'Trustworthiness']
+
+        print("control -- The mean is : ")
+        print(np.mean(control_group_benevolence))
+        print("The sd is ")
+        print(np.std(control_group_benevolence))
+        print("experimental -- The mean is : ")
+        print(np.mean(experimental_group_benevolence))
+        print("The sd is ")
+        print(np.std(experimental_group_benevolence))
+
+
         control_bar_values = [np.mean(control_group_ability), np.mean(control_group_benevolence),
                               np.mean(control_group_integrity), np.mean(control_group_values)]
         experimental_bar_values = [np.mean(experimental_group_ability), np.mean(experimental_group_benevolence),
@@ -690,8 +701,8 @@ class Trustworthiness:
 
         X_axis = np.arange(len(X))
 
-        plt.bar(X_axis - 0.2, control_bar_values, 0.4, label='Control Group', color='#0072BD')
-        plt.bar(X_axis + 0.2, experimental_bar_values, 0.4, label='Experimental Group', color='#77AC30')
+        plt.bar(X_axis - 0.2, control_bar_values, 0.4, label='Control Group')
+        plt.bar(X_axis + 0.2, experimental_bar_values, 0.4, label='Experimental Group')
 
         plt.xticks(X_axis, X)
         plt.title("ABI Objective Measures Comparison")
@@ -726,6 +737,10 @@ class Trustworthiness:
             if count == 0:
                 print("ERROR: You forgot to include your experimental data in the questionnaire folder. Exiting.")
                 return
+
+            print("The medians : ")
+            print(np.median(np.array(control_i)))
+            print(np.median(np.array(experimental_i)))
 
             control_avg_ability = np.average(np.array(control_a))
             control_avg_benevolence = np.average(np.array(control_b))
